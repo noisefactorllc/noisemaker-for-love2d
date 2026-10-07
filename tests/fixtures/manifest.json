@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "solid-red",
+      "effects": ["synth/solid"],
+      "source": "search synth\nsolid(color: #ff0000).write(o0)\nrender(o0)",
+      "capture": { "width": 257, "height": 129, "backend": "webgl2", "target": "o0", "frame": 0, "frames": 1, "time": 0, "deltaTime": 0.016666666666666666, "seed": 1, "reset": true, "inputs": [] }
+    },
+    {
+      "id": "solid-alpha",
+      "effects": ["synth/solid"],
+      "source": "search synth\nsolid(color: #40a0e0, alpha: 0.5).write(o0)\nrender(o0)",
+      "capture": { "width": 257, "height": 129, "backend": "webgl2", "target": "o0", "frame": 0, "frames": 1, "time": 0, "deltaTime": 0.016666666666666666, "seed": 1, "reset": true, "inputs": [] }
+    },
+    {
+      "id": "utf16-source",
+      "effects": ["synth/solid"],
+      "source": "// 😀\nsearch synth\nsolid(color: #ff0000).write(o0)\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "unknown-effect",
+      "effects": [],
+      "source": "search synth\nmissing().write(o0)\nrender(o0)",
+      "capture": null
+    }
+  ]
+}

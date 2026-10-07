@@ -1,0 +1,4 @@
+/parity/out/
+/parity/.cache/
+*.love
+.DS_Store

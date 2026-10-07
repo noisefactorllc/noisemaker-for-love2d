@@ -2,7 +2,7 @@
 
 ## 1. Goal and execution boundary
 
-Build the Lua compiler and LÖVE GPU runtime described in [the architecture](../ARCHITECTURE.md) and [porting guide](../PORTING-GUIDE.md). This document is an implementation proposal; no tasks have been executed. All paths and commands below are planned and do not currently exist. Implement only after the operator requests implementation.
+Build the Lua compiler and LÖVE GPU runtime described in [the architecture](../ARCHITECTURE.md) and [porting guide](../PORTING-GUIDE.md). Implementation has started with Task 1 following operator authorization. Reference export, catalog import, CPU checks, and native capability probes now exist. Later runtime, compiler, parity, and package tasks remain unimplemented. Task 1 remains open until its required capabilities or exact lowerings are proven.
 
 Use failing behavioral fixtures followed by the minimal implementation and focused regression checks for each task. Review each task's evidence before expanding scope. Work in the existing default-branch checkout; publication and automation integration are separate decisions.
 
@@ -25,12 +25,12 @@ Use failing behavioral fixtures followed by the minimal implementation and focus
 
 **Interface:** exporter consumes the locked authority (`NM_REFERENCE_ROOT` at the commit in `parity/reference.json`, or a clone of that commit) and fixture descriptors, and emits normalized graphs, stage dumps, source inventory, and capture specifications. Capability probe emits actual host identity, Lua runtime, feature values, format combinations, and render/readback results.
 
-- [ ] Pin the authority in `parity/reference.json`; export directly from that commit and assert catalog inventory is independent of candidate data.
-- [ ] Create solid, asymmetric texture, float target, MRT, half packing, uniform-block (`synth/remap`), `gl_VertexID` points draw, vertex-stage `texelFetch`, per-vertex `gl_PointSize`, and volume-texture capability cases.
-- [ ] Generate the feature-to-effect inventory from the locked catalog, counting `.glsl`, `.vert` and `.frag` sources; fail when it finds a requirement (compute, storage, integer sampler, cube texture) that the architecture says the authority does not use.
-- [ ] Probe with `love parity/capabilities`; require correct pixels, not only object construction.
+- [x] Pin the authority in `parity/reference.json`; export directly from that commit and assert catalog inventory is independent of candidate data.
+- [x] Create solid, asymmetric texture, float target, MRT, half packing, uniform-block (`synth/remap`), `gl_VertexID` points draw, vertex-stage `texelFetch`, per-vertex `gl_PointSize`, and volume-texture capability cases.
+- [x] Generate the feature-to-effect inventory from the locked catalog, counting `.glsl`, `.vert` and `.frag` sources; fail when it finds a requirement (compute, storage, integer sampler, cube texture) that the architecture says the authority does not use.
+- [x] Probe with `love parity/capabilities`; require correct pixels, not only object construction.
 - [ ] Establish whether desktop LÖVE 11.5 can cover the catalog with public GPU APIs. Record any exact lowering needed and its proving fixture before implementing it.
-- [ ] Start `scripts/test` with the GPU-free checks available so far: catalog freshness against the lock and inventory consistency.
+- [x] Start `scripts/test` with the GPU-free checks available so far: catalog freshness against the lock and inventory consistency.
 
 **Acceptance:** repeatable graph export plus actual GPU capability evidence; unresolved capabilities remain explicit full-port blockers. No capability result is claimed by this plan.
 

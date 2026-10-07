@@ -24,7 +24,7 @@ Cache keys include source hash, complete define values, stage, attachment format
 
 First render a four-corner RGBA marker, a one-pixel border, gradients, and alpha ramps at 257×129. Compare intermediate and presented output separately. Define one boundary transformation for each path that needs it; never scatter effect-specific Y flips through shaders.
 
-Match reference texture filtering and wrap modes per descriptor. Set host drawing color to white and use explicit blend state. Replacement passes must not inherit normal sprite alpha blending; additive simulation deposits must preserve the reference factors and attachment contents. Define linear internal color and test host gamma-correct modes separately. Do not silently change global application gamma settings.
+Match reference texture filtering and wrap modes per descriptor. Set host drawing color to white and use explicit blend state. Replacement passes use `setBlendMode('replace', 'premultiplied')` so LÖVE does not multiply source RGB by alpha; the mode name describes the blend input contract, and replacement preserves the shader's RGBA values. They must not inherit normal sprite alpha blending; additive simulation deposits must preserve the reference factors and attachment contents. Define linear internal color and test host gamma-correct modes separately. Do not silently change global application gamma settings.
 
 Restore saved graphics state on success and failure. Verify using a host draw before and after Noisemaker under non-default transform, canvas, scissor, color, blend, shader, depth and cull state. Include nested renders and a shader failure. Restore the previous target before readback or cleanup.
 

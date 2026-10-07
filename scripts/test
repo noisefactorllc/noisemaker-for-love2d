@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$ROOT"
+node --test tests/*.test.mjs
+node tools/import-catalog.mjs --check
+if [ -n "${LUAJIT_BIN:-}" ]; then
+  "$LUAJIT_BIN" tests/capabilities.lua
+  "$LUAJIT_BIN" tests/catalog.lua
+elif command -v luajit >/dev/null 2>&1; then
+  luajit tests/capabilities.lua
+  luajit tests/catalog.lua
+elif [ -n "${LOVE_BIN:-}" ]; then
+  "$LOVE_BIN" tests/unit
+elif command -v love >/dev/null 2>&1; then
+  love tests/unit
+else
+  echo 'scripts/test: LuaJIT or LÖVE is required for CPU Lua tests; set LUAJIT_BIN or LOVE_BIN.' >&2
+  exit 1
+fi

@@ -2,7 +2,7 @@
 
 ## 1. Status
 
-Planned GPU port of Noisemaker for Lua applications using LÖVE. This repository currently contains guiding documents only. No renderer, Lua module, demo, or release exists yet.
+GPU port of Noisemaker for Lua applications using LÖVE, in early implementation. The repository has locked-reference export, generated catalog data, and a native GPU capability probe. No render-graph executor, native DSL compiler, demo, or release exists yet.
 
 ## 2. Intended result
 
@@ -22,13 +22,28 @@ Execute upstream-exported graphs through a real LÖVE Shader and floating-point 
 
 ## 5. Repository state
 
-Private development repository under `noisefactorllc`, with default branch `main`. This repository remains private until the port is ready to use and the operator explicitly authorizes a public release. It currently contains planning documents only; no implementation or release is qualified. The existing scheduled port audits discover live `noisemaker-for-*` repositories, including private repositories they can access. This repository has no CI, release, or deployment workflows. There are no installed dependencies or usable build/test commands yet. Commands in the plan describe future deliverables. License and third-party notice review precede importing source or distributing a package.
+Private development repository under `noisefactorllc`, with default branch `main`. This repository remains private until the port is ready to use and the operator explicitly authorizes a public release. The initial tooling is implemented; no renderer or release is qualified. The existing scheduled port audits discover live `noisemaker-for-*` repositories, including private repositories they can access. This repository has no CI, release, or deployment workflows. Development tools use Node.js built-ins. CPU Lua tests require LuaJIT or LÖVE; GPU probes require a real LÖVE graphics context. Most commands in the plan remain future deliverables. License and third-party notice review precede importing source or distributing a package.
 
-## 6. Contributing
+## 6. Development checks
+
+Set `NM_REFERENCE_ROOT` to a clean upstream Noisemaker checkout at the commit in `parity/reference.json`. Without it, the tools obtain an immutable source archive from the locked repository. The lock identifies the comparison authority, not a product build version.
+
+```sh
+NM_REFERENCE_ROOT=/path/to/noisemaker LOVE_BIN=/path/to/love scripts/test
+NM_REFERENCE_ROOT=/path/to/noisemaker node tools/export-reference.mjs --out /tmp/love-reference.json
+NM_REFERENCE_ROOT=/path/to/noisemaker node tools/import-catalog.mjs --check
+love parity/capabilities
+```
+
+The CPU test entrypoint checks reference identity, compiler-stage export, catalog freshness, and Lua probe accounting with graphics disabled. `LUAJIT_BIN` can replace `LOVE_BIN`. To regenerate catalog data after a deliberate authority update, omit `--check` from the import command.
+
+The GPU command prints `CAPABILITIES-RESULT` with host identity, pixel checks, and separate pass, fail, and unsupported counts. Set `NM_CAPABILITIES_RESULT` to save that line outside the source tree. It exits nonzero when any required probe fails or is unsupported. The probes include raw replacement RGBA, float targets, MRT, half packing, the remap data-texture lowering, custom vertex behavior, volume textures, and graphics-state recovery. Capability passes do not establish reference-versus-port parity or platform support. Generated catalog data records JavaScript lifecycle hooks for later native implementation; it does not implement those hooks.
+
+## 7. Contributing
 
 See the Noise Factor [contributing policy](https://github.com/noisefactorllc/.github/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/noisefactorllc/.github/blob/main/CODE_OF_CONDUCT.md).
 
-## 7. License and trademark
+## 8. License and trademark
 
 MIT (see [LICENSE](LICENSE)). Use of the Noisemaker and Noise Factor names in derivative products is subject to the [Trademark Policy](TRADEMARK.md).
 

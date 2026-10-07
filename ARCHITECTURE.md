@@ -4,7 +4,7 @@
 
 This is a planned, independent GPU port of Noisemaker's shader engine and Polymorphic DSL. The intended deliverable is an embeddable library with a native compiler, GPU render-graph executor, effect catalog, example host, and source-bound parity harness. It is not a port of the classic CPU renderer.
 
-Status: planning documents only. There is no implementation, package, working API, measured performance, or qualified platform. All API signatures, source layouts, and commands below are proposed contracts. Repository creation does not qualify any effect or platform.
+Status: reference-export tooling, generated catalog data, and native capability probes are implemented. The render-graph executor and native compiler remain unimplemented; there is no package, measured performance, or qualified platform. The embedding API and later runtime modules below remain proposed contracts. Capability evidence alone does not qualify any effect or platform.
 
 The scope is the current upstream shader engine: compiler stages, effect definitions, shader programs, resource allocation, runtime state, host inputs, user-defined Portable effects, and output textures. Full catalog parity is the destination; incremental milestones do not reduce that destination. Derive the denominator from the upstream commit in the authority lock (section 4) at each qualification run, never from a count written into a document.
 
