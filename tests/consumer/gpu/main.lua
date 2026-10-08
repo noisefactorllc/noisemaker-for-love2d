@@ -175,6 +175,86 @@ local function check()
       assert(collectgarbage('count')<=luaBaseline+1024,'Lua memory exceeded 1 MiB growth bound after warm-up')
     end
   end
+  local audioGraph={
+    passes={{id='audio',program='audio',inputs={},outputs={color='global_o0'},uniforms={}}},
+    programs={audio={glsl='uniform float audioSpectrum[128]; out vec4 fragColor; void main(){fragColor=vec4(audioSpectrum[0],0,0,1);}'}},
+    textures={},renderSurface='o0',
+  }
+  local audioRenderer=assert(nm.newRenderer(audioGraph,{width=4,height=4}))
+  local function audioRed(frame)
+    local pixels=assert(audioRenderer:render(frame)):newImageData()
+    local red=pixels:getPixel(0,0)
+    pixels:release()
+    return red
+  end
+  assert(math.abs(audioRed({audio={spectrum={.75}}})-.75)<.02)
+  assert(audioRed({})<.02,'Omitted audio retained prior GPU uniform')
+  audioRenderer:release()
+  local memoryGraph={
+    passes={
+      {id='update',program='update',inputs={prev='global_memory'},outputs={color='global_memory'},uniforms={enabled=1},stepIndex=0,conditions={runIf={{uniform='enabled',equals=1}}}},
+      {id='show',program='show',inputs={src='global_memory'},outputs={color='global_o0'},uniforms={}},
+    },
+    programs={
+      update={glsl='uniform sampler2D prev; out vec4 fragColor; void main(){fragColor=texture(prev,vec2(0.5,0.5))+vec4(0.25,0,0,0);}'},
+      show={glsl='uniform sampler2D src; out vec4 fragColor; void main(){fragColor=texture(src,vec2(0.5,0.5));}'},
+    },
+    textures={global_memory={width='screen',height='screen',format='rgba16f',persistent=true}},
+    renderSurface='o0',
+  }
+  local memoryRenderer=assert(nm.newRenderer(memoryGraph,{width=4,height=4}))
+  local function memoryRed()
+    local pixels=assert(memoryRenderer:render({})):newImageData()
+    local red=pixels:getPixel(0,0)
+    pixels:release()
+    return red
+  end
+  assert(math.abs(memoryRed()-.25)<.02)
+  assert(memoryRenderer:setParameter(0,'enabled',0))
+  assert(math.abs(memoryRed()-.25)<.02)
+  assert(memoryRenderer:setParameter(0,'enabled',1))
+  assert(math.abs(memoryRed()-.5)<.02,'Custom feedback lost state after a skipped writer')
+  memoryRenderer:release()
+  memoryGraph.passes[1].storageTextures=memoryGraph.passes[1].outputs
+  memoryGraph.passes[1].outputs=nil
+  local storageRenderer=assert(nm.newRenderer(memoryGraph,{width=4,height=4}))
+  local function storageRed()
+    local pixels=assert(storageRenderer:render({})):newImageData()
+    local red=pixels:getPixel(0,0)
+    pixels:release()
+    return red
+  end
+  assert(math.abs(storageRed()-.25)<.02)
+  assert(storageRenderer:setParameter(0,'enabled',0))
+  assert(math.abs(storageRed()-.25)<.02)
+  assert(storageRenderer:setParameter(0,'enabled',1))
+  assert(math.abs(storageRed()-.5)<.02,'Storage output feedback lost state after a skipped writer')
+  storageRenderer:release()
+  local originalNew=viewer.new
+  local capturedSession
+  viewer.new=function(...)
+    capturedSession=originalNew(...)
+    return capturedSession
+  end
+  dofile(root..'/examples/viewer/main.lua')
+  love.load()
+  love.update(1/60)
+  love.keypressed('space')
+  local pausedFrame=capturedSession.renderer.frameIndex
+  for _=1,3 do love.update(1/60) end
+  assert(capturedSession.renderer.frameIndex==pausedFrame,'Viewer pause advanced feedback frame')
+  local dropped='search synth\nsolid(color: #00ff00).write(o0)\nrender(o0)'
+  love.filedropped({
+    open=function() return true end,
+    read=function() return dropped end,
+    close=function() end,
+    getFilename=function() return 'dropped.dsl' end,
+  })
+  assert(capturedSession.source==dropped,'Viewer did not load dropped DSL')
+  love.keypressed('f5')
+  assert(capturedSession.source==dropped,'Viewer F5 replaced dropped DSL')
+  love.quit()
+  viewer.new=originalNew
   print('clean consumer GPU hot replacement and 100 lifecycle cycles passed; GPU object counts and texture bytes returned to baseline, Lua growth below 1 MiB')
 end
 function love.load()

@@ -3,7 +3,7 @@ local lexer = require('noisemaker.shaders.lexer')
 local half = require('noisemaker.shaders.half')
 local arrayIndex = require('noisemaker.shaders.array_index')
 local constantTrig = require('noisemaker.shaders.constant_trig')
-local M = {version = 4}
+local M = {version = 5}
 
 local function significant(tokens)
   local result = {}
@@ -111,6 +111,14 @@ local function fixedPointSize(code)
   end
   return writes > 0 and positive or nil
 end
+local outputQualifiers = {highp = true, mediump = true, lowp = true}
+local function fragmentOutput(code, outIndex)
+  local typeIndex = outIndex + (code[outIndex + 1] and outputQualifiers[code[outIndex + 1].text] and 2 or 1)
+  local nameToken, semicolon = code[typeIndex + 1], code[typeIndex + 2]
+  if code[typeIndex] and nameToken and nameToken.kind == 'identifier' and semicolon and semicolon.text == ';' then
+    return nameToken, semicolon, typeIndex + 2
+  end
+end
 local function stage(source, kind, spec)
   local tokens, lexError = lexer.lex(source)
   if not tokens then return nil, diagnostic(lexError.code, 'lexing failed', lexError, spec.path) end
@@ -189,21 +197,24 @@ local function stage(source, kind, spec)
           uniforms.nmRemapDataTexture = {type = 'sampler2D', count = 1, lowering = 'synth/remap data[275] rgba32f texture'}
           i = k
         elseif kind == 'pixel' and code[j] and code[j + 1] and code[j + 1].text == 'out' then
-          local typeToken, nameToken, semicolon = code[j + 2], code[j + 3], code[j + 4]
-          if typeToken and nameToken and semicolon and semicolon.text == ';' then
+          local nameToken, semicolon, endIndex = fragmentOutput(code, j + 1)
+          if nameToken then
             local location
             for k = i + 2, j - 1 do if code[k].text == 'location' and code[k + 1] and code[k + 1].text == '=' then location = tonumber(code[k + 2].text) end end
             outputs[#outputs + 1] = {name = nameToken.text, location = location or #outputs}
             add(edits, t.start, semicolon.stop, '', t.line)
             removed[#removed + 1] = {t.start, semicolon.stop}
-            i = j + 4
+            i = endIndex
           end
         end
-      elseif kind == 'pixel' and value == 'out' and code[i + 1] and code[i + 2] and code[i + 3] and code[i + 3].text == ';' then
-        outputs[#outputs + 1] = {name = code[i + 2].text, location = #outputs}
-        add(edits, t.start, code[i + 3].stop, '', t.line)
-        removed[#removed + 1] = {t.start, code[i + 3].stop}
-        i = i + 3
+      elseif kind == 'pixel' and value == 'out' then
+        local nameToken, semicolon, endIndex = fragmentOutput(code, i)
+        if nameToken then
+          outputs[#outputs + 1] = {name = nameToken.text, location = #outputs}
+          add(edits, t.start, semicolon.stop, '', t.line)
+          removed[#removed + 1] = {t.start, semicolon.stop}
+          i = endIndex
+        end
       elseif (kind == 'pixel' and value == 'in') or (kind == 'vertex' and value == 'out') then
         if code[i + 1] and code[i + 2] and code[i + 3] and code[i + 3].text == ';' then
           add(edits, t.start, t.stop, 'varying', t.line)
@@ -301,12 +312,33 @@ local function stage(source, kind, spec)
   if uniforms.nmRemapDataTexture then
     header = header .. 'uniform sampler2D nmRemapDataTexture;\nvec4 nmRemapData(int slot) { return texelFetch(nmRemapDataTexture, ivec2(slot, 0), 0); }\n'
   end
-  local macros = {}
-  for name in pairs(spec.defines or {}) do macros[name] = true end
+  local function integerMacro(value)
+    if type(value) == 'string' then
+      value = value:gsub('//.*$', ''):gsub('/%*.-%*/%s*$', '')
+      value = value:match('^%s*(%d+)%s*$') or value:match('^%s*%(%s*(%d+)%s*%)%s*$')
+    end
+    local number = tonumber(value)
+    return number and number >= 1 and number == math.floor(number) and number or true
+  end
+  local macros, seen, conditionalDepth = {}, {}, 0
+  for name, value in pairs(spec.defines or {}) do macros[name] = integerMacro(value); seen[name] = true end
   for _, token in ipairs(tokens) do
     if token.kind == 'directive' then
-      local name = token.text:match('^#%s*define%s+([%a_][%w_]*)')
-      if name then macros[name] = true end
+      local directive = token.text:match('^#%s*([%a_][%w_]*)')
+      if directive == 'if' or directive == 'ifdef' or directive == 'ifndef' then
+        conditionalDepth = conditionalDepth + 1
+      elseif directive == 'endif' then
+        conditionalDepth = math.max(0, conditionalDepth - 1)
+      elseif directive == 'define' then
+        local name, value = token.text:match('^#%s*define%s+([%a_][%w_]*)(.*)$')
+        if name then
+          macros[name] = seen[name] or conditionalDepth > 0 and true or integerMacro(value)
+          seen[name] = true
+        end
+      elseif directive == 'undef' then
+        local name = token.text:match('^#%s*undef%s+([%a_][%w_]*)')
+        if name then macros[name] = true; seen[name] = true end
+      end
     end
   end
   local helperName = uniqueName('nmArrayIndexValue')

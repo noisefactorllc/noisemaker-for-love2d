@@ -58,7 +58,17 @@ end
 
 function M.registerEffect(name, definition)
   if type(name)=='table' and definition==nil then definition=name; name=nil end
-  local errors=require('noisemaker.catalog.effect_validator').validateEffectDefinition(definition)
+  local validationDefinition=definition
+  if type(definition)=='table' and definition.starter~=nil then
+    if type(definition.starter)~='boolean' then
+      return nil,{{stage='registration',severity='error',code='ERR_PORTABLE_DEFINITION',message='"starter" must be a boolean'}}
+    end
+    validationDefinition={}
+    for key,value in pairs(definition) do
+      if key~='starter' then validationDefinition[key]=value end
+    end
+  end
+  local errors=require('noisemaker.catalog.effect_validator').validateEffectDefinition(validationDefinition)
   if #errors>0 then
     local diagnostics={}
     for _,message in ipairs(errors) do diagnostics[#diagnostics+1]={stage='registration',severity='error',code='ERR_PORTABLE_DEFINITION',message=message} end
@@ -66,8 +76,8 @@ function M.registerEffect(name, definition)
   end
   local namespace=definition.namespace or 'user'
   local func=definition.func
-  if type(func)~='string' or func=='' then
-    return nil,{{stage='registration',severity='error',code='ERR_PORTABLE_FUNCTION',message='Portable effect requires a non-empty func'}}
+  if type(func)~='string' or not func:match('^[A-Za-z_][A-Za-z0-9_]*$') then
+    return nil,{{stage='registration',severity='error',code='ERR_PORTABLE_FUNCTION',message='Portable effect func must be a DSL identifier'}}
   end
   for _,pass in ipairs(definition.passes or {}) do
     local shaders=definition.shaders and definition.shaders[pass.program]

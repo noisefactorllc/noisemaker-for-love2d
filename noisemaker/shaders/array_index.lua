@@ -120,7 +120,11 @@ function M.append(code,edits,macros,helperName)
      local size=nil
      if code[i+1] and code[i+1].text=='[' then
       local close=bracketClose(code,i+1)
-      if close==i+3 and code[i+2].kind=='number' then size=tonumber(code[i+2].text) end
+      if close==i+3 then
+       local sizeToken=code[i+2]
+       if sizeToken.kind=='number' then size=tonumber(sizeToken.text)
+       elseif sizeToken.kind=='identifier' and type(macros[sizeToken.text])=='number' then size=macros[sizeToken.text] end
+      end
      end
      local symbol={size=size,sampler=declaredType:find('sampler',1,true)~=nil,constant=declaration.constant}
      if #parens>0 and parens[#parens].signature then

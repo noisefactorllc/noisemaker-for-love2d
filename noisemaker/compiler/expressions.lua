@@ -174,9 +174,11 @@ local function property(base,key)
   if type(base)=='string' and key=='length' then return #base end
   if type(base)~='table' then return UNDEFINED end
   if type(key)=='number' and key>=0 and key%1==0 and (values.isArray(base) or #base>0) then
-    return base[key+1] or UNDEFINED
+    local value=base[key+1]
+    return value==nil and UNDEFINED or value
   end
-  return base[key] or UNDEFINED
+  local value=base[key]
+  return value==nil and UNDEFINED or value
 end
 local function jsEqual(a,b,strict)
   if a==UNDEFINED and b==NULL or a==NULL and b==UNDEFINED then return not strict end
@@ -211,7 +213,6 @@ local function evaluate(node,state)
   end
   if kind=='unary' then
     local op=node.op
-    if op=='typeof' and node.right.kind=='ident' and not state[node.right.name] then return 'undefined' end
     local v=evaluate(node.right,state)
     if op=='+' then return jsNumber(v) end
     if op=='-' then return -jsNumber(v) end

@@ -32,7 +32,7 @@ Modules:
 
 `nm.compile(source, options) -> graph | nil, diagnostics`; `nm.newRenderer(graph, options) -> renderer | nil, diagnostics`; `nm.registerEffect(definition) -> true | nil, diagnostics` registers a user-defined Portable effect (definition plus GLSL programs), validated as upstream `effect-validator.js` validates it. Renderer methods: `render(frame) -> Canvas | nil, diagnostics`, `setParameter(stepIndex, name, value)`, `setInput(binding, texture)`, `resize(width, height)`, `reset()`, `copyTo(destination)`, and `release()`.
 
-`options` includes integer pixel dimensions and optional `texturePooling` (false by default). `frame` carries explicit time, delta time, frame index, and host-fed audio/MIDI state. Output is borrowed until the next render, resize, replacement, or release; a caller needing longer retention supplies a destination Canvas for an explicit GPU copy. Calls run on the LÖVE graphics thread. No hidden draw loop, window, callback replacement, or per-frame readback belongs in the library.
+`options` includes integer pixel dimensions and optional `texturePooling` (false by default). `frame` carries explicit time, delta time, frame index, and host-fed audio/MIDI state. Output is borrowed until the next render, resize, replacement, reset, or release; a caller needing longer retention supplies a destination Canvas for an explicit GPU copy. Calls run on the LÖVE graphics thread. No hidden draw loop, window, callback replacement, or per-frame readback belongs in the library.
 
 ### 2.2 GPU execution
 

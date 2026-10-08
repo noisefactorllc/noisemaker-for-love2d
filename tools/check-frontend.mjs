@@ -42,6 +42,8 @@ const expressions = [
   ['time > 1 ? 1 : 0', {time: 2}], ['Math.floor(time)', {time: 1.75}],
   ['state.time', {time: 1.25}], ['time > 1 && frame < 10', {time: 2, frame: 8}],
   ['!b1', {b1: false}], ['typeof time', {time: 2}], ['void 0', {}],
+  ['state.b1 === false ? 7 : 2', {b1: false}], ['typeof b1', {b1: false}],
+  ['state.items[0] === false', {items: [false]}],
   ['time ** 2', {time: 2.5}], ['(time ?? frame) || seed', {time: null, frame: 0, seed: 5}],
   ['(-time) ** 2', {time: 3}], ['time /* block */ + 1', {time: 2}],
 ]

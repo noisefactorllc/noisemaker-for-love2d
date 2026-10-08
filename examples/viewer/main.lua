@@ -4,6 +4,7 @@ local viewer=require('examples.viewer.session')
 local session
 local program='search synth\nsolid(color: #ff9933).write(o0)\nrender(o0)'
 local status=''
+local droppedProgram=false
 local elapsed,paused,parameters,selected=0,false,{},1
 local registry=require('noisemaker.catalog.registry')
 local function listParameters()
@@ -20,7 +21,7 @@ local function listParameters()
 end
 
 local function reload()
-  local source=love.filesystem.read('program.dsl') or program
+  local source=droppedProgram and program or (love.filesystem.read('program.dsl') or program)
   local canvas,diagnostics=session:replace(source,{time=love.timer.getTime()})
   if canvas then listParameters() end
   status=canvas and 'F5 reload | Drop DSL | R reset | Space pause | [ ] parameter | +/- value' or (diagnostics and diagnostics[1] and diagnostics[1].message or 'Program failed')
@@ -36,7 +37,8 @@ function love.load()
 end
 
 function love.update(dt)
-  if not paused then elapsed=elapsed+dt end
+  if paused then return end
+  elapsed=elapsed+dt
   if session.renderer then
     local _,diagnostics=session:render({time=elapsed})
     if diagnostics then status=diagnostics[1].message end
@@ -84,5 +86,5 @@ function love.filedropped(file)
  local source,readError=file:read();file:close()
  if not source then status=tostring(readError);return end
  local canvas,diags=session:replace(source,{time=elapsed})
- if canvas then program=source;listParameters();status='Loaded '..file:getFilename() else status=diags[1].message end
+ if canvas then program=source;droppedProgram=true;listParameters();status='Loaded '..file:getFilename() else status=diags[1].message end
 end

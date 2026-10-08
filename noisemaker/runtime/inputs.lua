@@ -119,7 +119,8 @@ function Audio:getDeviceChannelState(selector)
   return pick(matches[1].channels,channel)
 end
 function M.new(options)
-  return setmetatable({options=options or {},external={midi=nil,audio=nil}},Input)
+  return setmetatable({options=options or {},external={midi=nil,audio=nil},
+    silentSpectrum=array(nil,128,0),silentWaveform=array(nil,128,0.5)},Input)
 end
 function Input:update(frame)
   frame=frame or {}
@@ -130,7 +131,11 @@ function Input:update(frame)
     self.external.audio=audio
     uniforms.audioWaveform=audio.waveform
     uniforms.audioSpectrum=audio.spectrum
-  else self.external.audio=nil end
+  else
+    self.external.audio=nil
+    uniforms.audioWaveform=self.silentWaveform
+    uniforms.audioSpectrum=self.silentSpectrum
+  end
   if frame.midi then
     local midi=midiState(frame.midi)
     self.external.midi=midi

@@ -41,6 +41,7 @@ local function toSurface(node)
 end
 
 local function starter(effect)
+  if effect.starter~=nil then return effect.starter end
   local passes = effect.passes or {}
   if #passes == 0 then return true end
   for _, pass in ipairs(passes) do

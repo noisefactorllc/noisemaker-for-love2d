@@ -76,7 +76,13 @@ function M.new(graph,options,hookOverrides)
  if not valid then return nil,diagnostics end
  local clamped,clampError=pcall(resourceLib.clampGraphVolumes,graph,love.graphics.getSystemLimits().texturesize)
  if not clamped then return nil,{{stage='graph',code='ERR_GRAPH',message=tostring(clampError)}} end
- local self=setmetatable({texturePooling=options.texturePooling==true,graph=graph,width=options.width,height=options.height,uniforms=gatherUniforms(graph),external={},externalSources={},owned={},programs={},meshes={},frameIndex=0,lastTime=0,released=false,provenance={},lastPassCount=0,uploads={},inputManager=inputlib.new({needsMidiNoteGrid=(function() for _,pass in ipairs(graph.passes) do if pass.inputs and pass.inputs.midiNoteGrid then return true end end;return false end)()})},Renderer)
+ local readSurfaces,writtenSurfaces,feedbackSurfaces={},{},{}
+ for _,pass in ipairs(graph.passes) do
+  for _,id in pairs(pass.inputs or {}) do local name=global(id);if name then readSurfaces[name]=true end end
+  for _,id in pairs(normalizedOutputs(pass)) do local name=global(id);if name then writtenSurfaces[name]=true end end
+ end
+ for name in pairs(readSurfaces) do if writtenSurfaces[name] then feedbackSurfaces[name]=true end end
+ local self=setmetatable({texturePooling=options.texturePooling==true,graph=graph,width=options.width,height=options.height,uniforms=gatherUniforms(graph),feedbackSurfaces=feedbackSurfaces,external={},externalSources={},owned={},programs={},meshes={},frameIndex=0,lastTime=0,released=false,provenance={},lastPassCount=0,uploads={},inputManager=inputlib.new({needsMidiNoteGrid=(function() for _,pass in ipairs(graph.passes) do if pass.inputs and pass.inputs.midiNoteGrid then return true end end;return false end)()})},Renderer)
  local result,errors=guard('prepare',function()
   for _,pass in ipairs(graph.passes) do
    local id=pass.program..':'..(pass.drawMode or 'fullscreen')
@@ -242,7 +248,7 @@ function Renderer:render(frame)
   resourceLib.generateMipmaps(self.graph,self.resources)
   local output=reads[self.graph.renderSurface or 'o0']
   if not output then fail('ERR_RENDER_SURFACE','Graph has no render surface') end
-  for name,s in pairs(self.resources.surfaces) do if stateSurface(name) then s.read,s.write=reads[name],writes[name] else s.read,s.write=s.write,s.read end end
+  for name,s in pairs(self.resources.surfaces) do if stateSurface(name) or self.feedbackSurfaces[name] then s.read,s.write=reads[name],writes[name] else s.read,s.write=s.write,s.read end end
   local presented=self.resources.textures.__present
   love.graphics.setCanvas(presented);love.graphics.setShader();love.graphics.setDepthMode();love.graphics.setMeshCullMode('none');love.graphics.setBlendMode('replace','premultiplied')
   love.graphics.draw(output,0,self.height,0,self.width/output:getWidth(),-self.height/output:getHeight())

@@ -21,6 +21,35 @@ local function run()
  contains(adapted.pixel,'values[1]')
  contains(adapted.pixel,'textures[2]')
  contains(adapted.pixel,'textures[i]')
+ local sizedByMacro=assert(adapter.adapt{pixel=[[
+  #define N 3
+  uniform int lookup;out vec4 fragColor;
+  void main(){float values[N];values[0]=0.125;values[1]=0.5;values[2]=0.875;fragColor=vec4(values[lookup]);}
+ ]]})
+ contains(sizedByMacro.pixel,'values[int(clamp(nmArrayIndexValue(lookup), 0.0, 2.0))]')
+ local sizedByComment=assert(adapter.adapt{pixel=[[
+  #define N 3 // size
+  uniform int lookup;out vec4 fragColor;
+  void main(){float values[N];values[0]=0.125;values[1]=0.5;values[2]=0.875;fragColor=vec4(values[lookup]);}
+ ]]})
+ contains(sizedByComment.pixel,'values[int(clamp(nmArrayIndexValue(lookup), 0.0, 2.0))]')
+ local sizedByParens=assert(adapter.adapt{pixel=[[
+  #define N (3)
+  uniform int lookup;out vec4 fragColor;
+  void main(){float values[N];values[0]=0.125;values[1]=0.5;values[2]=0.875;fragColor=vec4(values[lookup]);}
+ ]]})
+ contains(sizedByParens.pixel,'values[int(clamp(nmArrayIndexValue(lookup), 0.0, 2.0))]')
+ local externallySized=assert(adapter.adapt{pixel='uniform int lookup;out vec4 fragColor;void main(){float values[N];fragColor=vec4(values[lookup]);}',defines={N=3}})
+ contains(externallySized.pixel,'values[int(clamp(nmArrayIndexValue(lookup), 0.0, 2.0))]')
+ local conditionalSize=assert(adapter.adapt{pixel=[[
+  #if defined(USE_THREE)
+  #define N 3
+  #else
+  #define N 4
+  #endif
+  uniform int lookup;out vec4 fragColor;void main(){float values[N];fragColor=vec4(values[lookup]);}
+ ]]})
+ assert(not conditionalSize.pixel:find('values[int(clamp(',1,true),'Conditional macro size must not be guessed')
  local scopes=[[
   #define FIXED 1
   uniform int lookup;
@@ -133,9 +162,21 @@ local function run()
   assert(not accepted,'Invalid '..kind..' fixed-array index must retain GLSL compiler rejection')
  end
  local shader=g.newShader(result.pixel,result.vertex)
+ local macroSizedShader=g.newShader(sizedByMacro.pixel,sizedByMacro.vertex)
  local mesh=g.newMesh({{'VertexPosition','float',2},{'VertexTexCoord','float',2}},{{0,0,0,0},{16,0,2,0},{0,16,0,2}},'triangles','static')
  local canvas=g.newCanvas(8,8,{format='rgba8',dpiscale=1})
  g.push('all');g.origin();g.setBlendMode('replace','premultiplied');g.setColor(1,1,1,1)
+ g.setCanvas(canvas);g.clear(0,0,0,0);g.setShader(macroSizedShader);macroSizedShader:send('lookup',9);g.draw(mesh);g.setCanvas()
+ local macroPixels=canvas:newImageData();local macroRed=macroPixels:getPixel(4,4)
+ assert(math.abs(macroRed-.875)<.01,'Macro-sized fixed-array read must clamp to the final element')
+ macroPixels:release();macroSizedShader:release()
+ for _,program in ipairs({sizedByComment,sizedByParens}) do
+  local variant=g.newShader(program.pixel,program.vertex)
+  g.setCanvas(canvas);g.clear(0,0,0,0);g.setShader(variant);variant:send('lookup',9);g.draw(mesh);g.setCanvas()
+  local pixels=canvas:newImageData();local red=pixels:getPixel(4,4)
+  assert(math.abs(red-.875)<.01,'Commented or parenthesized macro-sized array must clamp to the final element')
+  pixels:release();variant:release()
+ end
  local collisionShader=g.newShader(colliding.pixel,colliding.vertex)
  local macroShader=g.newShader(macroCollision.pixel,macroCollision.vertex)
  g.setCanvas(canvas);g.clear(0,0,0,0);g.setShader(collisionShader);collisionShader:send('lookup',1);g.draw(mesh);g.setCanvas()
