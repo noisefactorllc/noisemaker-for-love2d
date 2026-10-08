@@ -2,7 +2,7 @@
 
 ## 1. Authority and import boundaries
 
-Use [the architecture](ARCHITECTURE.md) as the proposed contract. Read current upstream GLSL and WebGL2 execution together; translating a shader without its pass state is insufficient. Preserve original source bytes and hashes. Generate definitions from upstream JavaScript with a development tool; ship data in Lua, not a JavaScript evaluator. Portable effects are the exception: they arrive at run time as definition data plus GLSL, so the definition loader, validator and GLSL adapter all ship in the runtime.
+Use [the architecture](ARCHITECTURE.md) as the implementation contract. Read current upstream GLSL and WebGL2 execution together; translating a shader without its pass state is insufficient. Preserve original source bytes and hashes. Generate definitions from upstream JavaScript with a development tool; ship data in Lua, not a JavaScript evaluator. Portable effects are the exception: they arrive at run time as definition data plus GLSL, so the definition loader, validator and GLSL adapter all ship in the runtime.
 
 Every transformation must record input shader path/hash, adapter version, defines, generated hash, and source-line mapping. Regeneration must be deterministic and leave original shader inputs untouched. Do not copy the Qt statement that its GLSL is directly executable: LÖVE has its own shader entry points.
 
@@ -28,6 +28,8 @@ Match reference texture filtering and wrap modes per descriptor. Set host drawin
 
 Restore saved graphics state on success and failure. Verify using a host draw before and after Noisemaker under non-default transform, canvas, scissor, color, blend, shader, depth and cull state. Include nested renders and a shader failure. Restore the previous target before readback or cleanup.
 
+The implemented adapter uses native points when all point-size writes are zero or one common positive constant; the executor supplies that size through `love.graphics.setPointSize`. Variable sizes use instanced quads. Rewritten point-size state is shared with shader helper functions and macro bodies, and generated identifiers avoid source collisions. GPU regressions cover point-square coordinates, viewport boundaries, zero-size points, and helper/macro writes.
+
 MRT, points, billboards, mesh depth/culling, and Portable volume textures each require an isolated microfixture before effect-level tests. If the selected API cannot reproduce an operation, retain the failure in coverage and describe the capability gap; do not present a fullscreen approximation as support.
 
 ## 4. Lua compiler semantics
@@ -48,4 +50,4 @@ On resize, recompile, reset, and repeated load/release, verify feedback initiali
 
 ## 6. Acceptance accounting
 
-Follow architecture section 4: `scripts/test` without a GPU, `scripts/parity-summary` on the GPU host. A successfully loaded `.love` file, a passing compiler suite, or one good-looking image does not qualify the renderer. Full qualification requires independent rendered comparisons and a complete, explicit denominator on each claimed host. Capture actual LÖVE version, Lua runtime (`jit.version`), OS, graphics renderer, feature flags, formats, and limits with every GPU result.
+Follow architecture section 4: `scripts/test` includes native CPU checks and browser/LÖVE capture checks; `scripts/test-gpu` exercises the native GPU runtime; `scripts/parity-summary` performs full same-run pixel qualification on the GPU host. A successfully loaded `.love` file, a passing compiler suite, or one good-looking image does not qualify the renderer. Full qualification requires independent rendered comparisons and a complete, explicit denominator on each claimed host. Capture actual LÖVE version, Lua runtime (`jit.version`), OS, graphics renderer, feature flags, formats, and limits with every GPU result.

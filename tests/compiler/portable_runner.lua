@@ -1,0 +1,11 @@
+local json=require('noisemaker.json')
+local values=require('noisemaker.compiler.values')
+local validator=require('noisemaker.catalog.effect_validator')
+local inputPath=os.getenv('NM_PORTABLE_INPUT')
+local outputPath=os.getenv('NM_PORTABLE_OUTPUT')
+assert(inputPath and outputPath)
+local f=assert(io.open(inputPath,'rb')); local cases=json.decode(f:read('*a')); f:close()
+local output=values.array()
+for _,definition in ipairs(cases) do output[#output+1]=values.array(validator.validateEffectDefinition(definition)) end
+f=assert(io.open(outputPath,'wb')); f:write(json.encode(output)); f:close()
+print('Portable validator runner: '..#output..' cases')

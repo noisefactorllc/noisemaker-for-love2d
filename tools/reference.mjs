@@ -6,7 +6,7 @@ import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const DEFAULT_PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const SOURCE_PREFIXES = ['shaders/src/', 'shaders/effects/']
+const SOURCE_PREFIXES = ['shaders/src/', 'shaders/effects/', 'share/meshes/']
 const SOURCE_FILES = new Set(['shaders/manifest.json', 'package.json', 'LICENSE', 'share/palettes.json'])
 const archiveCache = new Map()
 
@@ -85,13 +85,14 @@ export async function resolveReference({ projectRoot = DEFAULT_PROJECT_ROOT, ref
       execFileSync('git', ['clone', '--quiet', '--bare', lock.repository, bare], { stdio: 'pipe' })
       const revision = git(bare, ['rev-parse', lock.commit])
       if (revision !== lock.commit) throw new Error(`Locked commit unavailable: ${lock.commit}`)
-      const archivePaths = ['LICENSE', 'package.json', 'shaders/src', 'shaders/effects', 'share/palettes.json']
+      const treePaths = git(bare, ['ls-tree', '-r', '--name-only', '-z', lock.commit]).split('\0').filter(Boolean)
+      const archivePaths = ['LICENSE', 'package.json', 'shaders/src', 'shaders/effects', 'share/palettes.json', 'share/meshes']
+        .filter(path => treePaths.some(file => file === path || file.startsWith(path + '/')))
       const treeEntries = git(bare, ['ls-tree', '-r', '-z', lock.commit, '--', ...archivePaths]).split('\0')
       if (treeEntries.some(entry => entry.startsWith('120000 '))) throw new Error('Locked source archive contains a symlink')
       const archive = execFileSync('git', [`--git-dir=${bare}`, 'archive', lock.commit, ...archivePaths], { maxBuffer: 128 * 1024 * 1024 })
       execFileSync('tar', ['-xf', '-', '-C', root], { input: archive, env: { ...process.env, LC_ALL: 'C' } })
-      const files = git(bare, ['ls-tree', '-r', '--name-only', '-z', lock.commit]).split('\0')
-        .filter(path => path && (SOURCE_PREFIXES.some(prefix => path.startsWith(prefix)) || SOURCE_FILES.has(path))).sort()
+      const files = treePaths.filter(path => SOURCE_PREFIXES.some(prefix => path.startsWith(prefix)) || SOURCE_FILES.has(path)).sort()
       const hashes = hashReferenceFiles(root, files)
       const digest = createHash('sha256')
       for (const path of files) digest.update(`${path}\0${hashes[path]}\n`)
@@ -104,6 +105,27 @@ export async function resolveReference({ projectRoot = DEFAULT_PROJECT_ROOT, ref
     }
   } else {
     sourceIdentity = assertLockedReference(root, lock)
+    const checkout = root
+    const cacheKey = `${checkout}\0${lock.repository}\0${lock.commit}`
+    const cached = archiveCache.get(cacheKey)
+    if (cached && existsSync(cached.root)) {
+      const hashes = hashReferenceFiles(cached.root, Object.keys(sourceIdentity.files))
+      if (JSON.stringify(hashes) !== JSON.stringify(sourceIdentity.files)) throw new Error('Cached reference source changed')
+      return {root:cached.root,lock,sourceIdentity}
+    }
+    const cache = mkdtempSync(join(tmpdir(), 'noisemaker-locked-reference-'))
+    root = join(cache, 'source')
+    try {
+      mkdirSync(root)
+      const archive = execFileSync('git', ['-C',checkout,'archive',lock.commit,...Object.keys(sourceIdentity.files)], {maxBuffer:128*1024*1024})
+      execFileSync('tar',['-xf','-','-C',root],{input:archive,env:{...process.env,LC_ALL:'C'}})
+      const hashes = hashReferenceFiles(root,Object.keys(sourceIdentity.files))
+      if (JSON.stringify(hashes)!==JSON.stringify(sourceIdentity.files)) throw new Error('Locked archive differs from clean source identity')
+      archiveCache.set(cacheKey,{cache,root,sourceIdentity})
+    } catch (error) {
+      rmSync(cache,{recursive:true,force:true})
+      throw error
+    }
   }
   return { root, lock, sourceIdentity }
 }

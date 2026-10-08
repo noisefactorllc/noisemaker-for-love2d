@@ -5,8 +5,43 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { encodePortable, resolveReference } from './reference.mjs'
 
-const NORMALIZER_VERSION = 1
+const NORMALIZER_VERSION = 2
 const DEFAULT_PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const FUNCTION_PROBE_STATES = [
+  { time: 0, frame: 0, deltaTime: 0, seed: 1, mouse: [0, 0], resolution: [64, 64], a: 0,
+    u1: 0, u2: 0.25, u3: 0.5, u4: 1, s1: -1, s2: 0, b1: false, b2: true, a1: 0.125, a2: 0.875,
+    audio: { low: 0, mid: 0, high: 0, vol: 0, fft: [0, 0, 0], spectrum: [0, 0, 0] },
+    midi: { key: 0, velocity: 0, gate: 0, clockCount: 0 }, audioLow: 0, midiKey: 0 },
+  { time: 0.125, frame: 1, deltaTime: 1 / 60, seed: 7, mouse: [0.25, 0.75], resolution: [257, 129], a: 0.2,
+    u1: 0.1, u2: 0.3, u3: 0.7, u4: 0.9, s1: -0.4, s2: 0.6, b1: true, b2: false, a1: 0.3, a2: 0.7,
+    audio: { low: 0.1, mid: 0.4, high: 0.8, vol: 0.5, fft: [0.1, 0.4, 0.8], spectrum: [0.2, 0.6, 0.9] },
+    midi: { key: 48, velocity: 64, gate: 1, clockCount: 12 }, audioLow: 0.1, midiKey: 48 },
+  { time: 2.5, frame: 17, deltaTime: 0.125, seed: 42, mouse: [0.9, 0.1], resolution: [512, 256], a: 0.75,
+    u1: 0.95, u2: 0.6, u3: 0.2, u4: 0.05, s1: 0.75, s2: -0.5, b1: false, b2: true, a1: 0.9, a2: 0.2,
+    audio: { low: 0.9, mid: 0.25, high: 0.05, vol: 0.7, fft: [0.9, 0.25, 0.05], spectrum: [0.95, 0.5, 0.1] },
+    midi: { key: 73, velocity: 112, gate: 1, clockCount: 97 }, audioLow: 0.9, midiKey: 73 },
+  { time: 9.75, frame: 120, deltaTime: 1 / 30, seed: 0, mouse: [0.5, 0.5], resolution: [1920, 1080], a: 1,
+    u1: 1, u2: 0.8, u3: 0.4, u4: 0, s1: 1, s2: -1, b1: true, b2: false, a1: 1, a2: 0,
+    audio: { low: 0.35, mid: 0.65, high: 0.95, vol: 0.85, fft: [0.35, 0.65, 0.95], spectrum: [0.4, 0.7, 1] },
+    midi: { key: 127, velocity: 127, gate: 0, clockCount: 384 }, audioLow: 0.35, midiKey: 127 }
+]
+
+function encodeStage(value) {
+  if (typeof value === 'function') return {
+    $type: 'functionProbe', source: String(value),
+    evaluations: FUNCTION_PROBE_STATES.map(state => {
+      try { return { status: 'returned', value: encodePortable(value(structuredClone(state))) } }
+      catch (error) { return { status: 'threw', error: String(error) } }
+    })
+  }
+  if (Array.isArray(value)) return value.map(encodeStage)
+  if (value instanceof Map) return { $type: 'map', entries: [...value].map(([key, item]) => [encodeStage(key), encodeStage(item)]) }
+  if (value instanceof Set) return { $type: 'set', values: [...value].map(encodeStage) }
+  if (value && typeof value === 'object' && (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null)) {
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, encodeStage(item)]))
+  }
+  return encodePortable(value)
+}
 
 function loadModule(root, path) {
   return import(pathToFileURL(join(root, path)).href)
@@ -97,7 +132,7 @@ async function exportCase(root, fixture, reference) {
     result.stages.parse = encodePortable(ast)
     stage = 'validate'
     const validated = reference.lang.validate(ast)
-    result.stages.validate = encodePortable(validated)
+    result.stages.validate = encodeStage(validated)
     if (validated.diagnostics?.some(item => item.severity === 'error')) {
       result.status = 'refused'
       result.refusal = { stage, diagnostics: encodePortable(validated.diagnostics) }
@@ -105,7 +140,7 @@ async function exportCase(root, fixture, reference) {
     }
     stage = 'expand'
     const expansion = reference.expander.expand(validated)
-    result.stages.expand = encodePortable(expansion)
+    result.stages.expand = encodeStage(expansion)
     if (expansion.errors?.length) {
       result.status = 'refused'
       result.refusal = { stage, errors: encodePortable(expansion.errors) }
@@ -116,7 +151,7 @@ async function exportCase(root, fixture, reference) {
     stage = 'graph'
     const graph = reference.compiler.compileGraph(fixture.source)
     const { compiledAt: _compiledAt, ...semanticGraph } = graph
-    result.stages.graph = encodePortable(semanticGraph)
+    result.stages.graph = encodeStage(semanticGraph)
     return result
   } catch (error) {
     if (stage === 'effect-loading' || !error?.diagnostic && !['ERR_COMPILATION_FAILED', 'ERR_EXPANSION_FAILED'].includes(error?.code) && !(error instanceof SyntaxError)) {
@@ -138,6 +173,7 @@ export async function exportReference({ projectRoot = DEFAULT_PROJECT_ROOT, refe
   return {
     schemaVersion: 1,
     normalizerVersion: NORMALIZER_VERSION,
+    functionProbeStates: FUNCTION_PROBE_STATES,
     authority: { repository: lock.repository, revision: sourceIdentity.revision, dirty: sourceIdentity.dirty, sourceSha256: sourceIdentity.sourceSha256 },
     sourceInventory: Object.entries(sourceIdentity.files).map(([path, sha256]) => ({ path, sha256 })),
     cases

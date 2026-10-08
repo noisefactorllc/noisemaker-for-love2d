@@ -1,0 +1,3450 @@
+{
+  "schema": 1,
+  "authority": {
+    "repository": "https://github.com/noisefactorllc/noisemaker",
+    "commit": "8e5835932a7297d360b943200b42953224eea0a4"
+  },
+  "sourceCount": 317,
+  "programCount": 309,
+  "programs": {
+    "classicNoisedeck/bitEffects/bitEffects": {
+      "effect": "classicNoisedeck/bitEffects",
+      "program": "bitEffects",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/bitEffects/glsl/bitEffects.glsl",
+          "sha256": "1066c6794400f025288147568179b2913b3f6464201e21fa470f3f5a1f6ca06b",
+          "bytes": 12748
+        }
+      }
+    },
+    "classicNoisedeck/caustic/caustic": {
+      "effect": "classicNoisedeck/caustic",
+      "program": "caustic",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/caustic/glsl/caustic.glsl",
+          "sha256": "161cb6114f312a223d88a5c60a3ecb694a4c8766fca91b3fc47ae92078f2a00d",
+          "bytes": 15645
+        }
+      }
+    },
+    "classicNoisedeck/cellNoise/cellNoise": {
+      "effect": "classicNoisedeck/cellNoise",
+      "program": "cellNoise",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/cellNoise/glsl/cellNoise.glsl",
+          "sha256": "9fd76306b377ef501a5dd340263179f04e3e890cc05d5e82f524f7bdf793d3b8",
+          "bytes": 9643
+        }
+      }
+    },
+    "classicNoisedeck/cellRefract/cellRefract": {
+      "effect": "classicNoisedeck/cellRefract",
+      "program": "cellRefract",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/cellRefract/glsl/cellRefract.glsl",
+          "sha256": "aa93167faa07ee22ff0be9c653b5602ac88b1b962e405548cafab43b9e867a70",
+          "bytes": 13719
+        }
+      }
+    },
+    "classicNoisedeck/coalesce/coalesce": {
+      "effect": "classicNoisedeck/coalesce",
+      "program": "coalesce",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/coalesce/glsl/coalesce.glsl",
+          "sha256": "a0f96df68ce058e5e2154c78880b5a611eaf5ab9adcd64242368978c813b6b58",
+          "bytes": 9962
+        }
+      }
+    },
+    "classicNoisedeck/colorLab/colorLab": {
+      "effect": "classicNoisedeck/colorLab",
+      "program": "colorLab",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/colorLab/glsl/colorLab.glsl",
+          "sha256": "4bf9ea925634ee684e01917ea3b690d332b37905d21c8aa7377bf88625570945",
+          "bytes": 9276
+        }
+      }
+    },
+    "classicNoisedeck/composite/composite": {
+      "effect": "classicNoisedeck/composite",
+      "program": "composite",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/composite/glsl/composite.glsl",
+          "sha256": "ae3f29a129016653a5705647cb61c5c6448504e44ad321539fb4ce2e120d9123",
+          "bytes": 6120
+        }
+      }
+    },
+    "classicNoisedeck/effects/effects": {
+      "effect": "classicNoisedeck/effects",
+      "program": "effects",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/effects/glsl/effects.glsl",
+          "sha256": "c837f01ab747d2363bd1bd9ffb9950e0ececcfae40a9768a3dce90fb01d83457",
+          "bytes": 21279
+        }
+      }
+    },
+    "classicNoisedeck/fractal/fractal": {
+      "effect": "classicNoisedeck/fractal",
+      "program": "fractal",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/fractal/glsl/fractal.glsl",
+          "sha256": "a73c8044185be58e3ae1b0f14b954dbaa7bb8852290b821dba44167fee5e037b",
+          "bytes": 10067
+        }
+      }
+    },
+    "classicNoisedeck/glitch/glitch": {
+      "effect": "classicNoisedeck/glitch",
+      "program": "glitch",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/glitch/glsl/glitch.glsl",
+          "sha256": "9ed4cce15c5d4358f191d8beeaae93624520530f1c4181dd7a5895e47821cc0e",
+          "bytes": 8195
+        }
+      }
+    },
+    "classicNoisedeck/kaleido/kaleido": {
+      "effect": "classicNoisedeck/kaleido",
+      "program": "kaleido",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/kaleido/glsl/kaleido.glsl",
+          "sha256": "18a201e5189430578a2cd1d03cea911957a08f3bd7f3e74e78b97eb9f946ed52",
+          "bytes": 27570
+        }
+      }
+    },
+    "classicNoisedeck/lensDistortion/lensDistortion": {
+      "effect": "classicNoisedeck/lensDistortion",
+      "program": "lensDistortion",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/lensDistortion/glsl/lensDistortion.glsl",
+          "sha256": "f4e6453fe233692fa67c5fdbb3eb8f7a512d21bc722e63af6fc23166a62dd444",
+          "bytes": 8269
+        }
+      }
+    },
+    "classicNoisedeck/moodscape/moodscape": {
+      "effect": "classicNoisedeck/moodscape",
+      "program": "moodscape",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/moodscape/glsl/moodscape.glsl",
+          "sha256": "a2580a36096208dd7a63965d2b277be9356f29a8d3af634d1736df9142db1a44",
+          "bytes": 19559
+        }
+      }
+    },
+    "classicNoisedeck/noise/noise": {
+      "effect": "classicNoisedeck/noise",
+      "program": "noise",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/noise/glsl/noise.glsl",
+          "sha256": "e8eeb7d9134b7c08901df12f041767151b26b23ee534d038d1b71b6e47f69586",
+          "bytes": 31461
+        }
+      }
+    },
+    "classicNoisedeck/noise3d/noise3d": {
+      "effect": "classicNoisedeck/noise3d",
+      "program": "noise3d",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/noise3d/glsl/noise3d.glsl",
+          "sha256": "f359a11d4a3799686a554ee4dbaca725235ef38781a7b91e37628537cebb220f",
+          "bytes": 19654
+        }
+      }
+    },
+    "classicNoisedeck/refract/refract": {
+      "effect": "classicNoisedeck/refract",
+      "program": "refract",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/refract/glsl/refract.glsl",
+          "sha256": "d9675b5de9c329aa619f4ef68129611faac8cbe515b6e80aa8528c593a49cfa2",
+          "bytes": 7973
+        }
+      }
+    },
+    "classicNoisedeck/shapeMixer/shapeMixer": {
+      "effect": "classicNoisedeck/shapeMixer",
+      "program": "shapeMixer",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/shapeMixer/glsl/shapeMixer.glsl",
+          "sha256": "51bee071387b3498bd9e8abad5ca3b93b3e38100b9a56b8f4abcb177ea9d675b",
+          "bytes": 21721
+        }
+      }
+    },
+    "classicNoisedeck/shapes/shapes": {
+      "effect": "classicNoisedeck/shapes",
+      "program": "shapes",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/shapes/glsl/shapes.glsl",
+          "sha256": "28775b3e960c9051a320d48c7974792fbef33eaab80e5ca9aed5af43e8645d5e",
+          "bytes": 21292
+        }
+      }
+    },
+    "classicNoisedeck/shapes3d/shapes3d": {
+      "effect": "classicNoisedeck/shapes3d",
+      "program": "shapes3d",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/shapes3d/glsl/shapes3d.glsl",
+          "sha256": "818badfbadcf295d1863d208c0d0582a1349ff64f44dbf43f905a92fcfd4c5ad",
+          "bytes": 16152
+        }
+      }
+    },
+    "classicNoisedeck/splat/splat": {
+      "effect": "classicNoisedeck/splat",
+      "program": "splat",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/classicNoisedeck/splat/glsl/splat.glsl",
+          "sha256": "cfdcc4edcc5097043ad72602feb62a40622c14ba1bee66fb1ac2e414d1b3cced",
+          "bytes": 5069
+        }
+      }
+    },
+    "filter/_shared/overlayBlend": {
+      "effect": "filter/_shared",
+      "program": "overlayBlend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/_shared/glsl/overlayBlend.glsl",
+          "sha256": "c893036096e4b3f6bfd133e5921466c7d81e2b387b26615c26e54f2f8a826a1e",
+          "bytes": 499
+        }
+      }
+    },
+    "filter/adjust/adjust": {
+      "effect": "filter/adjust",
+      "program": "adjust",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/adjust/glsl/adjust.glsl",
+          "sha256": "dafbae039de5463cb5a94bb5e3046fd65b3212240e15a14996186e3d4d88b71d",
+          "bytes": 3955
+        }
+      }
+    },
+    "filter/bloom/brightPass": {
+      "effect": "filter/bloom",
+      "program": "brightPass",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/bloom/glsl/brightPass.glsl",
+          "sha256": "db9bb2dbe897ee03435cae86aa88a766b7d8e6bc58e61103fa5e66c3c3dbc880",
+          "bytes": 1360
+        }
+      }
+    },
+    "filter/bloom/composite": {
+      "effect": "filter/bloom",
+      "program": "composite",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/bloom/glsl/composite.glsl",
+          "sha256": "28e480fad84b7254e9392b8d4d85bc398b62a0e57f94dffac94db655132abbef",
+          "bytes": 843
+        }
+      }
+    },
+    "filter/bloom/ntapGather": {
+      "effect": "filter/bloom",
+      "program": "ntapGather",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/bloom/glsl/ntapGather.glsl",
+          "sha256": "f11c983976cb8450d611e8d888bd151a4c2cfdda8d9d772f906608dedb99d237",
+          "bytes": 2196
+        }
+      }
+    },
+    "filter/blur/blurH": {
+      "effect": "filter/blur",
+      "program": "blurH",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/blur/glsl/blurH.glsl",
+          "sha256": "c4283e820b2ade9148358ad4582d350bc7f4a5ccb5fc60f2e1b76bcda58deecc",
+          "bytes": 1120
+        }
+      }
+    },
+    "filter/blur/blurV": {
+      "effect": "filter/blur",
+      "program": "blurV",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/blur/glsl/blurV.glsl",
+          "sha256": "cc33343032b34e1ede6eed15fbdcb9229ad64484a092b2914065b09fa957fb9b",
+          "bytes": 1118
+        }
+      }
+    },
+    "filter/bulge/bulge": {
+      "effect": "filter/bulge",
+      "program": "bulge",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/bulge/glsl/bulge.glsl",
+          "sha256": "87f26ffa13ffe946d94d92a00bd45ca3a9787b9ee402dfe04ebc3d4a911eb170",
+          "bytes": 2352
+        }
+      }
+    },
+    "filter/celShading/celShadingBlend": {
+      "effect": "filter/celShading",
+      "program": "celShadingBlend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/celShading/glsl/celShadingBlend.glsl",
+          "sha256": "182d5b48d026e923aa2c412c659c633541859ffc3e9bc03315d5c5e18385f69f",
+          "bytes": 905
+        }
+      }
+    },
+    "filter/celShading/celShadingColor": {
+      "effect": "filter/celShading",
+      "program": "celShadingColor",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/celShading/glsl/celShadingColor.glsl",
+          "sha256": "90fa87484d3549bdaa2ddca4836a7ca8602ad4f1f30aa87a72841d4e013521f4",
+          "bytes": 2780
+        }
+      }
+    },
+    "filter/celShading/celShadingEdges": {
+      "effect": "filter/celShading",
+      "program": "celShadingEdges",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/celShading/glsl/celShadingEdges.glsl",
+          "sha256": "9c2848c92bd0f3e2de76fd065ac8fc55086cb7d209ce09ac4ba6488acda4630e",
+          "bytes": 2010
+        }
+      }
+    },
+    "filter/channel/channel": {
+      "effect": "filter/channel",
+      "program": "channel",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/channel/glsl/channel.glsl",
+          "sha256": "b237868c688bcfe51deb56155b0fbfe66a3fcf0db5cba93177ec2198ae48e9e7",
+          "bytes": 676
+        }
+      }
+    },
+    "filter/chroma/chroma": {
+      "effect": "filter/chroma",
+      "program": "chroma",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/chroma/glsl/chroma.glsl",
+          "sha256": "520627b0a7461e42baad13d20851ff4c0a2cb1a7d050776f3592ade9f800dcfb",
+          "bytes": 1453
+        }
+      }
+    },
+    "filter/chromaticAberration/chromaticAberration": {
+      "effect": "filter/chromaticAberration",
+      "program": "chromaticAberration",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/chromaticAberration/glsl/chromaticAberration.glsl",
+          "sha256": "bd8fafacdad36703c280204fb007cb6e260ecb4455fcb754a756ae04d51562b6",
+          "bytes": 1885
+        }
+      }
+    },
+    "filter/chrome/chBlurH": {
+      "effect": "filter/chrome",
+      "program": "chBlurH",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/chrome/glsl/chBlurH.glsl",
+          "sha256": "cd2cfbb3d6abefd90dd3777704060c28a8fadfa25b43f6447a6eef81f0eff43a",
+          "bytes": 1178
+        }
+      }
+    },
+    "filter/chrome/chBlurV": {
+      "effect": "filter/chrome",
+      "program": "chBlurV",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/chrome/glsl/chBlurV.glsl",
+          "sha256": "b6e49ae5eeb8528e57266a50f7ebba7b937712f01db40c69f819ca790ffc3b9b",
+          "bytes": 984
+        }
+      }
+    },
+    "filter/chrome/chMap": {
+      "effect": "filter/chrome",
+      "program": "chMap",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/chrome/glsl/chMap.glsl",
+          "sha256": "4329fdfb95fc912608b3f5ce0f1efd282d5965e9c2f8326bc2d845cfe4aa9dae",
+          "bytes": 5009
+        }
+      }
+    },
+    "filter/clouds/clouds": {
+      "effect": "filter/clouds",
+      "program": "clouds",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/clouds/glsl/clouds.glsl",
+          "sha256": "fe73bfd7ea5daec2f31d588dc147d8231f127680929dd90d679c4e0a2c9f299d",
+          "bytes": 4564
+        }
+      }
+    },
+    "filter/colorReplace/colorReplace": {
+      "effect": "filter/colorReplace",
+      "program": "colorReplace",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/colorReplace/glsl/colorReplace.glsl",
+          "sha256": "e85d80a109a48d551d60ff6136efedb4a131e0b973ad9637b82df9b46449f5fb",
+          "bytes": 1221
+        }
+      }
+    },
+    "filter/convolutionFeedback/cfBlend": {
+      "effect": "filter/convolutionFeedback",
+      "program": "cfBlend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/convolutionFeedback/glsl/cfBlend.glsl",
+          "sha256": "147bed82561a7c57d3b7a50c017eea826ebe24e54940a4fa032265d79c3be4a0",
+          "bytes": 818
+        }
+      }
+    },
+    "filter/convolutionFeedback/cfBlur": {
+      "effect": "filter/convolutionFeedback",
+      "program": "cfBlur",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/convolutionFeedback/glsl/cfBlur.glsl",
+          "sha256": "ab116ed830bb31a9103dfd30c8bd809ab8d9b478d860c0a2a76e45458020f88a",
+          "bytes": 1573
+        }
+      }
+    },
+    "filter/convolutionFeedback/cfSharpen": {
+      "effect": "filter/convolutionFeedback",
+      "program": "cfSharpen",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/convolutionFeedback/glsl/cfSharpen.glsl",
+          "sha256": "97d8e84b9ae47100cc2ea384a953e719675c61aee274c6739f1eb9f32caf0baa",
+          "bytes": 1642
+        }
+      }
+    },
+    "filter/corrupt/corrupt": {
+      "effect": "filter/corrupt",
+      "program": "corrupt",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/corrupt/glsl/corrupt.glsl",
+          "sha256": "b81642d2e63294f9f51656eb2441cdaf479c495c5e4acb0d3a4907a13b070d02",
+          "bytes": 7421
+        }
+      }
+    },
+    "filter/craquelure/craquelure": {
+      "effect": "filter/craquelure",
+      "program": "craquelure",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/craquelure/glsl/craquelure.glsl",
+          "sha256": "a21be5c20bec6d75d648c0a2debcc69843193e676f5195efff7b643bb0cc9e2b",
+          "bytes": 9516
+        }
+      }
+    },
+    "filter/crt/crt": {
+      "effect": "filter/crt",
+      "program": "crt",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/crt/glsl/crt.glsl",
+          "sha256": "62d915eda8e20a458b1df91198cee3e85f0f0b9676cd4d0777264e9cd8b99b7c",
+          "bytes": 19560
+        }
+      }
+    },
+    "filter/degauss/degauss": {
+      "effect": "filter/degauss",
+      "program": "degauss",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/degauss/glsl/degauss.glsl",
+          "sha256": "cfefff702ef78db421c088a3b679da2c576b7f4484c777f1d414c66aef0c1a1a",
+          "bytes": 11490
+        }
+      }
+    },
+    "filter/deriv/deriv": {
+      "effect": "filter/deriv",
+      "program": "deriv",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/deriv/glsl/deriv.glsl",
+          "sha256": "e1283736b0b1aeacf1bb795eda742871f0b6027bdf98659a3c7fa4a68d91f3ce",
+          "bytes": 1137
+        }
+      }
+    },
+    "filter/directionalBlur/directionalBlur": {
+      "effect": "filter/directionalBlur",
+      "program": "directionalBlur",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/directionalBlur/glsl/directionalBlur.glsl",
+          "sha256": "1e4a9d6371683b75a1dbefa968e1536e0017e921fe02f80e600e8f1482e8691c",
+          "bytes": 1153
+        }
+      }
+    },
+    "filter/dither/dither": {
+      "effect": "filter/dither",
+      "program": "dither",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/dither/glsl/dither.glsl",
+          "sha256": "a966f1746213c8206c5cb57a88cafd8033eb8f8cb08b207209eb31479a11abdb",
+          "bytes": 19391
+        }
+      }
+    },
+    "filter/edge/edge": {
+      "effect": "filter/edge",
+      "program": "edge",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/edge/glsl/edge.glsl",
+          "sha256": "841f9f547d06aace8444953f401009abd02758f9dff271097b2799424c1db5d0",
+          "bytes": 6530
+        }
+      }
+    },
+    "filter/emboss/emboss": {
+      "effect": "filter/emboss",
+      "program": "emboss",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/emboss/glsl/emboss.glsl",
+          "sha256": "872eff00bdfe411a0dceb66e8b203b5ea1c03015e3eea041d821966354713191",
+          "bytes": 5160
+        }
+      }
+    },
+    "filter/extrude/extrude": {
+      "effect": "filter/extrude",
+      "program": "extrude",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/extrude/glsl/extrude.glsl",
+          "sha256": "3be128643867dc78184bd209306cbe524538fd8d6d53a21817fb87f746100e29",
+          "bytes": 16945
+        }
+      }
+    },
+    "filter/feedback/copy": {
+      "effect": "filter/feedback",
+      "program": "copy",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/feedback/glsl/copy.glsl",
+          "sha256": "629a13aaba037b2eb01219741ea98b3e2161fda3f2c38b8533fe4bbebab3563e",
+          "bytes": 351
+        }
+      }
+    },
+    "filter/feedback/feedback": {
+      "effect": "filter/feedback",
+      "program": "feedback",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/feedback/glsl/feedback.glsl",
+          "sha256": "d0048fb91c30eafbb4532b2f02ed416e3dff61b14ce5861ce3565db81a743ca2",
+          "bytes": 10931
+        }
+      }
+    },
+    "filter/fibers/fibersBlend": {
+      "effect": "filter/fibers",
+      "program": "fibersBlend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/fibers/glsl/fibersBlend.glsl",
+          "sha256": "3c541fbfa45fa98cbfd67c2c7c8a91e4167867a3935681163260733c19cb7575",
+          "bytes": 430
+        }
+      }
+    },
+    "filter/flipMirror/flipMirror": {
+      "effect": "filter/flipMirror",
+      "program": "flipMirror",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/flipMirror/glsl/flipMirror.glsl",
+          "sha256": "696263e373913b7ab71430189fb7626ca966780ff645384b89509cf9d1a3fa7e",
+          "bytes": 2497
+        }
+      }
+    },
+    "filter/fxaa/fxaa": {
+      "effect": "filter/fxaa",
+      "program": "fxaa",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/fxaa/glsl/fxaa.glsl",
+          "sha256": "088449aa1fd5855489d3ce0c6ed2986b9b128fa93ace5817dbeafeff92a7bdf0",
+          "bytes": 4938
+        }
+      }
+    },
+    "filter/glowingEdge/glowingEdge": {
+      "effect": "filter/glowingEdge",
+      "program": "glowingEdge",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/glowingEdge/glsl/glowingEdge.glsl",
+          "sha256": "e5df47ffdea81d4f7403d4a3133acd42f2955da8870fd62e6052c2dbeef1d3fd",
+          "bytes": 2965
+        }
+      }
+    },
+    "filter/glyphMap/glyphMap": {
+      "effect": "filter/glyphMap",
+      "program": "glyphMap",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/glyphMap/glsl/glyphMap.glsl",
+          "sha256": "853c3c15f300cf56ba3c11d5613cb91bfcb14b8b2f1be6bb5193e71397fdcea1",
+          "bytes": 7838
+        }
+      }
+    },
+    "filter/grade/creative": {
+      "effect": "filter/grade",
+      "program": "creative",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/grade/glsl/creative.glsl",
+          "sha256": "b043aa43d17e098ffb736f16e6c81a5ca422ecdd6fc37fef03c39b01cc939bd3",
+          "bytes": 4230
+        }
+      }
+    },
+    "filter/grade/hslSecondary": {
+      "effect": "filter/grade",
+      "program": "hslSecondary",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/grade/glsl/hslSecondary.glsl",
+          "sha256": "2f2c54a6d977ccc0ba8657c02f1fc2fecfb576ad85f6d03ea16468fc9cbd095a",
+          "bytes": 4975
+        }
+      }
+    },
+    "filter/grade/lut": {
+      "effect": "filter/grade",
+      "program": "lut",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/grade/glsl/lut.glsl",
+          "sha256": "0a8a3ae4d2a14142ae7d53373bfac6ac87a0b175dff132d71cd80e6226f9ec40",
+          "bytes": 13745
+        }
+      }
+    },
+    "filter/grade/primary": {
+      "effect": "filter/grade",
+      "program": "primary",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/grade/glsl/primary.glsl",
+          "sha256": "97a3a6497e3bc03716e875b75b7efab058d9848c915f806b68239154e313e71d",
+          "bytes": 6013
+        }
+      }
+    },
+    "filter/grade/vignette": {
+      "effect": "filter/grade",
+      "program": "vignette",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/grade/glsl/vignette.glsl",
+          "sha256": "50dbb470cec43a2f7db7e1caf319c3dd2465bf85e09f0250e7a13eadaf975522",
+          "bytes": 4172
+        }
+      }
+    },
+    "filter/grade/wheels": {
+      "effect": "filter/grade",
+      "program": "wheels",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/grade/glsl/wheels.glsl",
+          "sha256": "fa9c411096816263985e8d5ef82ade976667a6cadecf8929ecd185edbc71f479",
+          "bytes": 3529
+        }
+      }
+    },
+    "filter/grain/grain": {
+      "effect": "filter/grain",
+      "program": "grain",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/grain/glsl/grain.glsl",
+          "sha256": "6edf8deec35e2fa3a32fc150c2be8cb6d71a9356c1c7a3cff5bd3c6c7df764f0",
+          "bytes": 8796
+        }
+      }
+    },
+    "filter/grime/grime": {
+      "effect": "filter/grime",
+      "program": "grime",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/grime/glsl/grime.glsl",
+          "sha256": "15a88fff0e951bf7fa01f4c982532cf79d835663cb2a81c2076c5fecbd9c351f",
+          "bytes": 5776
+        }
+      }
+    },
+    "filter/halftone/halftone": {
+      "effect": "filter/halftone",
+      "program": "halftone",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/halftone/glsl/halftone.glsl",
+          "sha256": "063ddb13f5fffc6f957d4be0a60b0408ff706d6111fd4e3ba52582f7507c7ad7",
+          "bytes": 8440
+        }
+      }
+    },
+    "filter/hatch/hatch": {
+      "effect": "filter/hatch",
+      "program": "hatch",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/hatch/glsl/hatch.glsl",
+          "sha256": "510c07e58308c1b0ffb16aafdd90362decc92f818fe25da676bb6c348b120106",
+          "bytes": 9577
+        }
+      }
+    },
+    "filter/highPass/hpBlurH": {
+      "effect": "filter/highPass",
+      "program": "hpBlurH",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/highPass/glsl/hpBlurH.glsl",
+          "sha256": "d2254ef3ad99291669d5e705529350f9fe383995760f83654af3d1de9f8195b9",
+          "bytes": 960
+        }
+      }
+    },
+    "filter/highPass/hpBlurV": {
+      "effect": "filter/highPass",
+      "program": "hpBlurV",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/highPass/glsl/hpBlurV.glsl",
+          "sha256": "8d4f5b6f17480c441fbf0bc26f05c42409472344b5dd410fa5663b7337cddd3c",
+          "bytes": 958
+        }
+      }
+    },
+    "filter/highPass/hpCombine": {
+      "effect": "filter/highPass",
+      "program": "hpCombine",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/highPass/glsl/hpCombine.glsl",
+          "sha256": "1dc649d0010cee700cdd56b0e35f4867bbadee7426cb04cad49a126ad1e95284",
+          "bytes": 603
+        }
+      }
+    },
+    "filter/historicPalette/historicPalette": {
+      "effect": "filter/historicPalette",
+      "program": "historicPalette",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/historicPalette/glsl/historicPalette.glsl",
+          "sha256": "cc0feb09e2f90505766a0b8b0d61ca0cf83a1121ec7b104eea5ff806c9ce0c33",
+          "bytes": 12528
+        }
+      }
+    },
+    "filter/invert/inv": {
+      "effect": "filter/invert",
+      "program": "inv",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/invert/glsl/inv.glsl",
+          "sha256": "a18fa342ca8507983495ff5eeaaa7704f227b58d476cf413476b230cbd5d6de4",
+          "bytes": 736
+        }
+      }
+    },
+    "filter/lens/lens": {
+      "effect": "filter/lens",
+      "program": "lens",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/lens/glsl/lens.glsl",
+          "sha256": "6633d8c7b1ab23600cb25bb87f3f67c5d1d148b0626169f24de520fbce9e64a5",
+          "bytes": 2909
+        }
+      }
+    },
+    "filter/lensFlare/lensFlare": {
+      "effect": "filter/lensFlare",
+      "program": "lensFlare",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/lensFlare/glsl/lensFlare.glsl",
+          "sha256": "46ba9da4e66a3978f92b18810bcb5db9d0f2f01fb4a80843c2091381f2001244",
+          "bytes": 10007
+        }
+      }
+    },
+    "filter/lensWarp/lensWarp": {
+      "effect": "filter/lensWarp",
+      "program": "lensWarp",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/lensWarp/glsl/lensWarp.glsl",
+          "sha256": "543b53a26b14dfdcf979e2601eaad32d6ec683c41427301b851173334a670480",
+          "bytes": 4033
+        }
+      }
+    },
+    "filter/lighting/lighting": {
+      "effect": "filter/lighting",
+      "program": "lighting",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/lighting/glsl/lighting.glsl",
+          "sha256": "a0601f7012f385c14c1bdb9f462e5dcb303fe05cfbb4645484d5d1bd629e1a4f",
+          "bytes": 6049
+        }
+      }
+    },
+    "filter/lightLeak/lightLeak": {
+      "effect": "filter/lightLeak",
+      "program": "lightLeak",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/lightLeak/glsl/lightLeak.glsl",
+          "sha256": "61bcb2989992c109dcf73ac5b34bb4dfa7f6603b54c111a84e69b6f73a9501bb",
+          "bytes": 5047
+        }
+      }
+    },
+    "filter/lowPoly/lowPoly": {
+      "effect": "filter/lowPoly",
+      "program": "lowPoly",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/lowPoly/glsl/lowPoly.glsl",
+          "sha256": "2f6a184ef4d372ebf811eaa59420bbce66fa25702e23a278557521679ce7b2f5",
+          "bytes": 8719
+        }
+      }
+    },
+    "filter/median/median": {
+      "effect": "filter/median",
+      "program": "median",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/median/glsl/median.glsl",
+          "sha256": "95e869c02fe2645f4a1b5af5a7446b3f2bacb888f2c965bc272ba56b10666e5d",
+          "bytes": 3846
+        }
+      }
+    },
+    "filter/morphology/morphA": {
+      "effect": "filter/morphology",
+      "program": "morphA",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/morphology/glsl/morphA.glsl",
+          "sha256": "9c9b20313b5a112d7684d34ee3f62cb49d04c34aa75f0c846dc9443c6380ba70",
+          "bytes": 2126
+        }
+      }
+    },
+    "filter/morphology/morphB": {
+      "effect": "filter/morphology",
+      "program": "morphB",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/morphology/glsl/morphB.glsl",
+          "sha256": "68818a6c62f0b9960aacd671a8dce1622c6860df44b3c1381abf47447a6504b5",
+          "bytes": 1255
+        }
+      }
+    },
+    "filter/mosaicTiles/mosaicTiles": {
+      "effect": "filter/mosaicTiles",
+      "program": "mosaicTiles",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/mosaicTiles/glsl/mosaicTiles.glsl",
+          "sha256": "1495023febe8ffccc57fa8738c6dc027b57d98e77fc88108ae639a8590c2fd47",
+          "bytes": 11349
+        }
+      }
+    },
+    "filter/motionBlur/copy": {
+      "effect": "filter/motionBlur",
+      "program": "copy",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/motionBlur/glsl/copy.glsl",
+          "sha256": "629a13aaba037b2eb01219741ea98b3e2161fda3f2c38b8533fe4bbebab3563e",
+          "bytes": 351
+        }
+      }
+    },
+    "filter/motionBlur/motionBlur": {
+      "effect": "filter/motionBlur",
+      "program": "motionBlur",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/motionBlur/glsl/motionBlur.glsl",
+          "sha256": "fea5905d92b575b94c500f674a9cc1449f379f8c31ec13e1f71439e75e09df4f",
+          "bytes": 954
+        }
+      }
+    },
+    "filter/normalize/apply": {
+      "effect": "filter/normalize",
+      "program": "apply",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/normalize/glsl/apply.glsl",
+          "sha256": "c59c0bad843a38c823bd2fc6396d0b9bca1cac7f1fe074aaf5dbc9622522e855",
+          "bytes": 738
+        }
+      }
+    },
+    "filter/normalize/reduce": {
+      "effect": "filter/normalize",
+      "program": "reduce",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/normalize/glsl/reduce.glsl",
+          "sha256": "f32243e29192b79cb5da701de42b62858108ee71a9a1c01220fd93a87beac2b3",
+          "bytes": 1435
+        }
+      }
+    },
+    "filter/normalize/reduceMinmax": {
+      "effect": "filter/normalize",
+      "program": "reduceMinmax",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/normalize/glsl/reduceMinmax.glsl",
+          "sha256": "4d68eff794b58f3f87b1c9aeaabd153cec3d4fd1110acb9b6e7e85c25f480905",
+          "bytes": 1236
+        }
+      }
+    },
+    "filter/normalize/statsFinal": {
+      "effect": "filter/normalize",
+      "program": "statsFinal",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/normalize/glsl/statsFinal.glsl",
+          "sha256": "0b8daf6d5a38dc34bbd98800fdd46f9cdfa0b97f00196382023456a0b6eb1dfa",
+          "bytes": 959
+        }
+      }
+    },
+    "filter/normalMap/normalMap": {
+      "effect": "filter/normalMap",
+      "program": "normalMap",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/normalMap/glsl/normalMap.glsl",
+          "sha256": "384312e50972f75dbebd4080cd76d1c2554a439eb36746f2e351d63a03a271cb",
+          "bytes": 4017
+        }
+      }
+    },
+    "filter/octaveWarp/octaveWarp": {
+      "effect": "filter/octaveWarp",
+      "program": "octaveWarp",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/octaveWarp/glsl/octaveWarp.glsl",
+          "sha256": "193ed3406281cde12a460560438c9ce839f07e9f7a96f11aac50c23d3a31039f",
+          "bytes": 4889
+        }
+      }
+    },
+    "filter/oilPaint/oilFlatten": {
+      "effect": "filter/oilPaint",
+      "program": "oilFlatten",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/oilPaint/glsl/oilFlatten.glsl",
+          "sha256": "f2f512b35b846d8a15362739a843c162199b7c53d95251918576726b1b094690",
+          "bytes": 7321
+        }
+      }
+    },
+    "filter/oilPaint/oilPost": {
+      "effect": "filter/oilPaint",
+      "program": "oilPost",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/oilPaint/glsl/oilPost.glsl",
+          "sha256": "0275b2a69a9d884ab1d2f6bb230229252e77dd702f1113769dc94ec572dfc84e",
+          "bytes": 5533
+        }
+      }
+    },
+    "filter/osd/osd": {
+      "effect": "filter/osd",
+      "program": "osd",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/osd/glsl/osd.glsl",
+          "sha256": "c45adaf30ecef6fb7f83a4f3995e671df0caaa47bfeceba8bb9bfe2c07427443",
+          "bytes": 6164
+        }
+      }
+    },
+    "filter/outline/outlineBlend": {
+      "effect": "filter/outline",
+      "program": "outlineBlend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/outline/glsl/outlineBlend.glsl",
+          "sha256": "5cf1613b00702bda4ccd5a03c1beee0aa779c1a947dc77d2adb78c854dad1a0d",
+          "bytes": 1003
+        }
+      }
+    },
+    "filter/outline/outlineSobel": {
+      "effect": "filter/outline",
+      "program": "outlineSobel",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/outline/glsl/outlineSobel.glsl",
+          "sha256": "cfe848d1605f1ad693fd3ce9e518a4adf4e0f34e3fff6c6ae1ebcaec49949f5d",
+          "bytes": 2380
+        }
+      }
+    },
+    "filter/outline/outlineValueMap": {
+      "effect": "filter/outline",
+      "program": "outlineValueMap",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/outline/glsl/outlineValueMap.glsl",
+          "sha256": "8d6504a8464a44cb4d1e86d2596c0d7a60d4924d18bd2114dc1f5ce5d49434cb",
+          "bytes": 1770
+        }
+      }
+    },
+    "filter/palette/palette": {
+      "effect": "filter/palette",
+      "program": "palette",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/palette/glsl/palette.glsl",
+          "sha256": "03ab3914862807288f7d5f6d2cbe8907cfa66fd1bb80b02df509880292967c09",
+          "bytes": 15189
+        }
+      }
+    },
+    "filter/parallax/parallax": {
+      "effect": "filter/parallax",
+      "program": "parallax",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/parallax/glsl/parallax.glsl",
+          "sha256": "5ce5dce2ec8e8d7ebd3024c6a5bd5dcb068d0cf322bfd105c4fb3546e1b97642",
+          "bytes": 2430
+        }
+      }
+    },
+    "filter/patchwork/patchwork": {
+      "effect": "filter/patchwork",
+      "program": "patchwork",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/patchwork/glsl/patchwork.glsl",
+          "sha256": "39e866a841c98d5c716ab853b23bc9dea919585f135e5010d264d2bb3a04b53e",
+          "bytes": 10534
+        }
+      }
+    },
+    "filter/photocopy/pcBlurH": {
+      "effect": "filter/photocopy",
+      "program": "pcBlurH",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/photocopy/glsl/pcBlurH.glsl",
+          "sha256": "4c4ca404f015f0112dc81cf8161b2f15743287baf3720a9590d3cc3fe061aa68",
+          "bytes": 1152
+        }
+      }
+    },
+    "filter/photocopy/pcBlurV": {
+      "effect": "filter/photocopy",
+      "program": "pcBlurV",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/photocopy/glsl/pcBlurV.glsl",
+          "sha256": "a718a4793dc36d8008cd8c67378b6bc65d84f57b6f7507245859ebd32d44ab15",
+          "bytes": 920
+        }
+      }
+    },
+    "filter/photocopy/pcCombine": {
+      "effect": "filter/photocopy",
+      "program": "pcCombine",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/photocopy/glsl/pcCombine.glsl",
+          "sha256": "67f0d9c44fe0142c326691427ffa6bb819a9e04bd8bd8c7aa0f639c659aeba03",
+          "bytes": 2985
+        }
+      }
+    },
+    "filter/pinch/pinch": {
+      "effect": "filter/pinch",
+      "program": "pinch",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/pinch/glsl/pinch.glsl",
+          "sha256": "031405e087822fd10b07d972e53f2f6d2da95f67d9c56605cbc104e0b955d71c",
+          "bytes": 2296
+        }
+      }
+    },
+    "filter/pixels/pixels": {
+      "effect": "filter/pixels",
+      "program": "pixels",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/pixels/glsl/pixels.glsl",
+          "sha256": "06919a5f0cb829fdae9c04ae878aa4d7a12072e176ce3c98fb1ccf2623661e6e",
+          "bytes": 1094
+        }
+      }
+    },
+    "filter/pixelSort/computeRank": {
+      "effect": "filter/pixelSort",
+      "program": "computeRank",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/pixelSort/glsl/computeRank.glsl",
+          "sha256": "6ce61bb5cb69bb22ac51f48603d5b40755b1e3f700acad1bc685a1e8a4dea6a4",
+          "bytes": 1417
+        }
+      }
+    },
+    "filter/pixelSort/finalize": {
+      "effect": "filter/pixelSort",
+      "program": "finalize",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/pixelSort/glsl/finalize.glsl",
+          "sha256": "99a84b4b2f5196788c227915b500a44542d74e5cc7cb41bbf637361ae327ad87",
+          "bytes": 1824
+        }
+      }
+    },
+    "filter/pixelSort/findBrightest": {
+      "effect": "filter/pixelSort",
+      "program": "findBrightest",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/pixelSort/glsl/findBrightest.glsl",
+          "sha256": "c94b2ccb8882c7713b66f78b0e14d1bdaaa6786a6814cf60ef6daa4a244782ae",
+          "bytes": 1045
+        }
+      }
+    },
+    "filter/pixelSort/gatherSorted": {
+      "effect": "filter/pixelSort",
+      "program": "gatherSorted",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/pixelSort/glsl/gatherSorted.glsl",
+          "sha256": "a45eb039bae3e7b0a5f804de68c441092b6b7826b594c4aa5221c22a6c7b1386",
+          "bytes": 1896
+        }
+      }
+    },
+    "filter/pixelSort/luminance": {
+      "effect": "filter/pixelSort",
+      "program": "luminance",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/pixelSort/glsl/luminance.glsl",
+          "sha256": "da27454ff4cc3fcc40b296c8ea8bd8913a00165b2c001aef3cd9e6bd05db0298",
+          "bytes": 1280
+        }
+      }
+    },
+    "filter/pixelSort/prepare": {
+      "effect": "filter/pixelSort",
+      "program": "prepare",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/pixelSort/glsl/prepare.glsl",
+          "sha256": "2418f2a2bb05e85a88c7b38d7a8fdf5b797d6181e829997123373d8b258ddeb2",
+          "bytes": 1242
+        }
+      }
+    },
+    "filter/plasticWrap/pwBlurH": {
+      "effect": "filter/plasticWrap",
+      "program": "pwBlurH",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/plasticWrap/glsl/pwBlurH.glsl",
+          "sha256": "6c0c36d1f9c5b658d87c5cd4abe30da3c9969aafd14d12893a8a103a9a17fe93",
+          "bytes": 1253
+        }
+      }
+    },
+    "filter/plasticWrap/pwBlurV": {
+      "effect": "filter/plasticWrap",
+      "program": "pwBlurV",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/plasticWrap/glsl/pwBlurV.glsl",
+          "sha256": "cc214498ee40dcfeaf3b411a4becde7b336d8e238495e27ffc996ea3f3576cea",
+          "bytes": 939
+        }
+      }
+    },
+    "filter/plasticWrap/pwSpec": {
+      "effect": "filter/plasticWrap",
+      "program": "pwSpec",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/plasticWrap/glsl/pwSpec.glsl",
+          "sha256": "a26cbadc9c0aec753494f3e2a95964f35358eb8bf283107c2d7c624055c87767",
+          "bytes": 4131
+        }
+      }
+    },
+    "filter/polar/polar": {
+      "effect": "filter/polar",
+      "program": "polar",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/polar/glsl/polar.glsl",
+          "sha256": "391b82e45bc2ea9799de1a200afbd735af96ad15627695d46cfc8caa1298a36d",
+          "bytes": 2027
+        }
+      }
+    },
+    "filter/pondRipples/pondRipples": {
+      "effect": "filter/pondRipples",
+      "program": "pondRipples",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/pondRipples/glsl/pondRipples.glsl",
+          "sha256": "2958de77f0cdf2a21a00d1505ea75f26df5b66dd7f2cb98431e27178d3386c3d",
+          "bytes": 5187
+        }
+      }
+    },
+    "filter/posterize/posterize": {
+      "effect": "filter/posterize",
+      "program": "posterize",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/posterize/glsl/posterize.glsl",
+          "sha256": "460910a8d1103eca5cc0b4df82f39fd91fbc447b9a815250ae7d34dfab8ee5b2",
+          "bytes": 2630
+        }
+      }
+    },
+    "filter/prismaticAberration/prismaticAberration": {
+      "effect": "filter/prismaticAberration",
+      "program": "prismaticAberration",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/prismaticAberration/glsl/prismaticAberration.glsl",
+          "sha256": "513eac95fdf7f67a6839ee5d96e5bbfd76b6cfa62d3254df6fed23d8effe380e",
+          "bytes": 4247
+        }
+      }
+    },
+    "filter/reindex/nmReindexApply": {
+      "effect": "filter/reindex",
+      "program": "nmReindexApply",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/reindex/glsl/nmReindexApply.glsl",
+          "sha256": "651bb6930d3fe51629fc3a17c88bfa7c7831e78fa18be0ea16d0f3f9d3c5154d",
+          "bytes": 2616
+        }
+      }
+    },
+    "filter/reindex/nmReindexReduce": {
+      "effect": "filter/reindex",
+      "program": "nmReindexReduce",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/reindex/glsl/nmReindexReduce.glsl",
+          "sha256": "5e9701125522aaa1f838858a7892ac1312f1161608a5f94b494ae64c7db8b7ff",
+          "bytes": 1331
+        }
+      }
+    },
+    "filter/reindex/nmReindexStats": {
+      "effect": "filter/reindex",
+      "program": "nmReindexStats",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/reindex/glsl/nmReindexStats.glsl",
+          "sha256": "06525e054fc4910e7bc53345ad656071d2fcb33fc897f4aa35e8fc59b6f0b951",
+          "bytes": 2395
+        }
+      }
+    },
+    "filter/relief/rlBlurH": {
+      "effect": "filter/relief",
+      "program": "rlBlurH",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/relief/glsl/rlBlurH.glsl",
+          "sha256": "bc2fba2fc1a766f59890289bea39e4001b0403983b7c81e47be5259a5e2bb260",
+          "bytes": 1411
+        }
+      }
+    },
+    "filter/relief/rlBlurV": {
+      "effect": "filter/relief",
+      "program": "rlBlurV",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/relief/glsl/rlBlurV.glsl",
+          "sha256": "da3ea200f6e5296fa03af42a1ec9f01dd3f9edfc0965534813b1f0c8ec481ec8",
+          "bytes": 984
+        }
+      }
+    },
+    "filter/relief/rlShade": {
+      "effect": "filter/relief",
+      "program": "rlShade",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/relief/glsl/rlShade.glsl",
+          "sha256": "dda1113e9cca57b25fa93c0843cd19fa76880724059fe1b56c5e5735f671ea90",
+          "bytes": 5873
+        }
+      }
+    },
+    "filter/repeat/repeat": {
+      "effect": "filter/repeat",
+      "program": "repeat",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/repeat/glsl/repeat.glsl",
+          "sha256": "6fe9a919129c3424f66c145aca77b4a4101c7edc46828c2d85bff40d4f67ebbc",
+          "bytes": 1366
+        }
+      }
+    },
+    "filter/reverb/reverb": {
+      "effect": "filter/reverb",
+      "program": "reverb",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/reverb/glsl/reverb.glsl",
+          "sha256": "4dde4b901aded65365d0d46145a7d50dcd2b8d279e32c3d1e7bf02cfc7f78bcb",
+          "bytes": 1816
+        }
+      }
+    },
+    "filter/ridge/ridge": {
+      "effect": "filter/ridge",
+      "program": "ridge",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/ridge/glsl/ridge.glsl",
+          "sha256": "0e3cc0289ff2057145afd5bb8ceeef71bfbbee0aee149eb0f609937f0571694c",
+          "bytes": 818
+        }
+      }
+    },
+    "filter/rotate/rot": {
+      "effect": "filter/rotate",
+      "program": "rot",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/rotate/glsl/rot.glsl",
+          "sha256": "c23e8462e8240f25a715fa3eb05e567269c8d410d27943ba346ebccdd0de1f8f",
+          "bytes": 1197
+        }
+      }
+    },
+    "filter/scale/scale": {
+      "effect": "filter/scale",
+      "program": "scale",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/scale/glsl/scale.glsl",
+          "sha256": "e0902531c605af1fefd15fe7f1df7e53d892647531df8df58b3c707637b70d27",
+          "bytes": 1120
+        }
+      }
+    },
+    "filter/scanlineError/scanlineError": {
+      "effect": "filter/scanlineError",
+      "program": "scanlineError",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/scanlineError/glsl/scanlineError.glsl",
+          "sha256": "66556b29659b479edd397f8e0c87c176cafa7560c426eab8211b6939a08f2198",
+          "bytes": 13302
+        }
+      }
+    },
+    "filter/scatter/scatterJitter": {
+      "effect": "filter/scatter",
+      "program": "scatterJitter",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/scatter/glsl/scatterJitter.glsl",
+          "sha256": "e68ff4dc90236e866895d4720d58e81b9151a67d9cc62b43085efbf634fa4e71",
+          "bytes": 4475
+        }
+      }
+    },
+    "filter/scatter/scatterSmooth": {
+      "effect": "filter/scatter",
+      "program": "scatterSmooth",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/scatter/glsl/scatterSmooth.glsl",
+          "sha256": "124931637680f4f1fd9eed63bd0b63bf961204c5667236c9a67ce1b24ab0e602",
+          "bytes": 1138
+        }
+      }
+    },
+    "filter/scratches/scratchesBlend": {
+      "effect": "filter/scratches",
+      "program": "scratchesBlend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/scratches/glsl/scratchesBlend.glsl",
+          "sha256": "db76fc1b477acfa7e9a2d22ca532a9d29ed4034ec695d4f4b75ed8741ce63c63",
+          "bytes": 504
+        }
+      }
+    },
+    "filter/scroll/scroll": {
+      "effect": "filter/scroll",
+      "program": "scroll",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/scroll/glsl/scroll.glsl",
+          "sha256": "ce2117916b0d9513890942332835c6cfd1753a39d9d773626c66c6107050d457",
+          "bytes": 1124
+        }
+      }
+    },
+    "filter/seamless/seamless": {
+      "effect": "filter/seamless",
+      "program": "seamless",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/seamless/glsl/seamless.glsl",
+          "sha256": "d54569f8e394430d771ecb51edc9258ecde17483674843fab8a9f6efb733dabf",
+          "bytes": 1513
+        }
+      }
+    },
+    "filter/sharpen/sharpen": {
+      "effect": "filter/sharpen",
+      "program": "sharpen",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/sharpen/glsl/sharpen.glsl",
+          "sha256": "c9a9b196e61a2904b37ad89c7fc46bee1b40b6bba81293dde3d7cd37527773e7",
+          "bytes": 1625
+        }
+      }
+    },
+    "filter/simpleAberration/chromaticAberration": {
+      "effect": "filter/simpleAberration",
+      "program": "chromaticAberration",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/simpleAberration/glsl/chromaticAberration.glsl",
+          "sha256": "c6d3f57f92c9cc0e7e1a1a8e1381699cc0ddb95d83b9d8b1c1a3da19d782f245",
+          "bytes": 1171
+        }
+      }
+    },
+    "filter/sine/sine": {
+      "effect": "filter/sine",
+      "program": "sine",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/sine/glsl/sine.glsl",
+          "sha256": "569f2d820d99a6d9ac2b310b6fd646cd961c70a6d9eec2bcfd5d8f3686553f07",
+          "bytes": 1043
+        }
+      }
+    },
+    "filter/skew/skew": {
+      "effect": "filter/skew",
+      "program": "skew",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/skew/glsl/skew.glsl",
+          "sha256": "4eb375b32775efa3fc34a07a539350b41576932c344c3b082c2fabcd51f56480",
+          "bytes": 1728
+        }
+      }
+    },
+    "filter/smooth/smoothBlend": {
+      "effect": "filter/smooth",
+      "program": "smoothBlend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/smooth/glsl/smoothBlend.glsl",
+          "sha256": "c317194f9bbdba9d95c5dcae47e2354221cf0cdb05ffcf14e335a94a4ef3729c",
+          "bytes": 6858
+        }
+      }
+    },
+    "filter/smooth/smoothEdge": {
+      "effect": "filter/smooth",
+      "program": "smoothEdge",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/smooth/glsl/smoothEdge.glsl",
+          "sha256": "b18be207f35a2bf3bcbdb19eb87018fac241856359d6094362f468fa048b5265",
+          "bytes": 1554
+        }
+      }
+    },
+    "filter/smoothstep/smoothstep": {
+      "effect": "filter/smoothstep",
+      "program": "smoothstep",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/smoothstep/glsl/smoothstep.glsl",
+          "sha256": "505b938cf202f02760d527a127e3c234e5fe527ba1c31e7df25fea70dce59c83",
+          "bytes": 562
+        }
+      }
+    },
+    "filter/snow/snow": {
+      "effect": "filter/snow",
+      "program": "snow",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/snow/glsl/snow.glsl",
+          "sha256": "ae057787cc101755743c17b4cdf46b51d70ed8b9896fed9535a058c8b252f48a",
+          "bytes": 2982
+        }
+      }
+    },
+    "filter/sobel/sobel": {
+      "effect": "filter/sobel",
+      "program": "sobel",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/sobel/glsl/sobel.glsl",
+          "sha256": "ef459738b931929a65422df36f852da4e7cbe4e90387690bea747a34a2e52f84",
+          "bytes": 2136
+        }
+      }
+    },
+    "filter/spatter/spatter": {
+      "effect": "filter/spatter",
+      "program": "spatter",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/spatter/glsl/spatter.glsl",
+          "sha256": "9d8cb56f43761cdb52a36935a7c3b66d758189d82db0c52ad93b5090206579af",
+          "bytes": 8034
+        }
+      }
+    },
+    "filter/spinBlur/spinBlur": {
+      "effect": "filter/spinBlur",
+      "program": "spinBlur",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/spinBlur/glsl/spinBlur.glsl",
+          "sha256": "a5ee242e189066b55d4d5c3140e957418bdff582b367d1f6d4cdfee4c333b405",
+          "bytes": 3077
+        }
+      }
+    },
+    "filter/spiral/spiral": {
+      "effect": "filter/spiral",
+      "program": "spiral",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/spiral/glsl/spiral.glsl",
+          "sha256": "3d609c5028c859d82c060af21b0675dd0dd0ec6f720dbc9e3b3b21a65893ef4a",
+          "bytes": 2869
+        }
+      }
+    },
+    "filter/spookyTicker/spookyTicker": {
+      "effect": "filter/spookyTicker",
+      "program": "spookyTicker",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/spookyTicker/glsl/spookyTicker.glsl",
+          "sha256": "d50ca880cd6c6c03dd01a7ae683316d42ed93baddaadce9f3b918be1c816d50f",
+          "bytes": 4276
+        }
+      }
+    },
+    "filter/stamp/stBlurH": {
+      "effect": "filter/stamp",
+      "program": "stBlurH",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/stamp/glsl/stBlurH.glsl",
+          "sha256": "2177384617ed22ade9338585025b881166adbe2a1c1d31b3cae6f194e232e2ad",
+          "bytes": 1180
+        }
+      }
+    },
+    "filter/stamp/stBlurV": {
+      "effect": "filter/stamp",
+      "program": "stBlurV",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/stamp/glsl/stBlurV.glsl",
+          "sha256": "cbcd8aba19f19c99653416b1b9b6ffff27f40e7f6b9ca7330936d2645a84bd7f",
+          "bytes": 921
+        }
+      }
+    },
+    "filter/stamp/stThreshold": {
+      "effect": "filter/stamp",
+      "program": "stThreshold",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/stamp/glsl/stThreshold.glsl",
+          "sha256": "d93168982b13907e32e1264c021c39f9d434ae122efd7d11898733293ee5da94",
+          "bytes": 3467
+        }
+      }
+    },
+    "filter/step/step": {
+      "effect": "filter/step",
+      "program": "step",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/step/glsl/step.glsl",
+          "sha256": "4f5680a9b25a2c12cecdcef3cc1ba106c2ee7a8390790544a3425890153cb7bf",
+          "bytes": 709
+        }
+      }
+    },
+    "filter/stipple/stipple": {
+      "effect": "filter/stipple",
+      "program": "stipple",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/stipple/glsl/stipple.glsl",
+          "sha256": "69d75b6fab4281fe0a0997eaf6b7b81e5ab30f0da5dfec9255c9dbb6e914c609",
+          "bytes": 8490
+        }
+      }
+    },
+    "filter/strayHair/strayHairBlend": {
+      "effect": "filter/strayHair",
+      "program": "strayHairBlend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/strayHair/glsl/strayHairBlend.glsl",
+          "sha256": "bacff9ec121ac6e28d377702145eb14cdd8dfa2cbfc4ec9ba89765f658b1345c",
+          "bytes": 682
+        }
+      }
+    },
+    "filter/strokes/stkPost": {
+      "effect": "filter/strokes",
+      "program": "stkPost",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/strokes/glsl/stkPost.glsl",
+          "sha256": "b911bd1b40452044205ee2e7bb8ae90f54cc56faaa0225430d5baa67e5ec949f",
+          "bytes": 1375
+        }
+      }
+    },
+    "filter/strokes/stkSmear": {
+      "effect": "filter/strokes",
+      "program": "stkSmear",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/strokes/glsl/stkSmear.glsl",
+          "sha256": "dac057232a650f3c9eb56829aa12507b639d8632f6fc132cbd067a28996fa4db",
+          "bytes": 14787
+        }
+      }
+    },
+    "filter/temporalAberration/delayShift": {
+      "effect": "filter/temporalAberration",
+      "program": "delayShift",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/temporalAberration/glsl/delayShift.glsl",
+          "sha256": "ad1376bf6f09e0f778f1ecf00bae7b2dc16d14b110e404fee1637b9b72f9fa8f",
+          "bytes": 677
+        }
+      }
+    },
+    "filter/temporalAberration/temporalAberration": {
+      "effect": "filter/temporalAberration",
+      "program": "temporalAberration",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/temporalAberration/glsl/temporalAberration.glsl",
+          "sha256": "d5d298c95e663f89972292ac78767f35c8eba4c3ed08eb24381ac95b97bbc190",
+          "bytes": 2291
+        }
+      }
+    },
+    "filter/tetraColorArray/tetraColorArray": {
+      "effect": "filter/tetraColorArray",
+      "program": "tetraColorArray",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/tetraColorArray/glsl/tetraColorArray.glsl",
+          "sha256": "68c7cabce311a0a05ba116ce8d34bd5e70e0c09bfb8eab06c93f4f9e01fa5438",
+          "bytes": 9754
+        }
+      }
+    },
+    "filter/tetraCosine/tetraCosine": {
+      "effect": "filter/tetraCosine",
+      "program": "tetraCosine",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/tetraCosine/glsl/tetraCosine.glsl",
+          "sha256": "538f13b472519cc521b5d30dbd72a799c7fa46a820691ab88117aff4d93f0ffd",
+          "bytes": 5314
+        }
+      }
+    },
+    "filter/text/text": {
+      "effect": "filter/text",
+      "program": "text",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/text/glsl/text.glsl",
+          "sha256": "7a492aea1422528421c352187d108ea32a1d5bf48991ef74f099f8dafbe5ccea",
+          "bytes": 1978
+        }
+      }
+    },
+    "filter/texture/texture": {
+      "effect": "filter/texture",
+      "program": "texture",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/texture/glsl/texture.glsl",
+          "sha256": "8e95251ef9a7789b1de4e51718ab3bebd9fc6d20db8acd0969191e288ec7454c",
+          "bytes": 14344
+        }
+      }
+    },
+    "filter/threshold/thresh": {
+      "effect": "filter/threshold",
+      "program": "thresh",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/threshold/glsl/thresh.glsl",
+          "sha256": "cef36d6704f2c2070f7b02ce88c9789a2c667db699d41c2e21a872836918561e",
+          "bytes": 552
+        }
+      }
+    },
+    "filter/tile/tile": {
+      "effect": "filter/tile",
+      "program": "tile",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/tile/glsl/tile.glsl",
+          "sha256": "ff85419a24f0cdcc7f12334885cb87bca74a51cf6617ab549d3ebdc6d34e03a7",
+          "bytes": 3517
+        }
+      }
+    },
+    "filter/tint/colorize": {
+      "effect": "filter/tint",
+      "program": "colorize",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/tint/glsl/colorize.glsl",
+          "sha256": "d10c38ae0a90c8dbd4b0998362b199af71c549ff743a9479a23decc5f7c3037d",
+          "bytes": 2045
+        }
+      }
+    },
+    "filter/translate/translate": {
+      "effect": "filter/translate",
+      "program": "translate",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/translate/glsl/translate.glsl",
+          "sha256": "70f5c44a2d8275f3dd51a9c11fa997dbb0ffc829c5b3565d651ebbfa246db987",
+          "bytes": 760
+        }
+      }
+    },
+    "filter/tunnel/tunnel": {
+      "effect": "filter/tunnel",
+      "program": "tunnel",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/tunnel/glsl/tunnel.glsl",
+          "sha256": "c0ebe43eead7a1c040dd4a37162d634fe4b1a93ea0b8704bac502fbc5a978193",
+          "bytes": 3062
+        }
+      }
+    },
+    "filter/unsharpMask/usmBlurH": {
+      "effect": "filter/unsharpMask",
+      "program": "usmBlurH",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/unsharpMask/glsl/usmBlurH.glsl",
+          "sha256": "86ee319a6cc22695b679507e569e9b4338083a0100ecb4afeee3cd8e9217917c",
+          "bytes": 748
+        }
+      }
+    },
+    "filter/unsharpMask/usmBlurV": {
+      "effect": "filter/unsharpMask",
+      "program": "usmBlurV",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/unsharpMask/glsl/usmBlurV.glsl",
+          "sha256": "43528782e9f3cc69d8a6aefd9a213bd120088653ad76d2503c578deece812e7a",
+          "bytes": 746
+        }
+      }
+    },
+    "filter/unsharpMask/usmCombine": {
+      "effect": "filter/unsharpMask",
+      "program": "usmCombine",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/unsharpMask/glsl/usmCombine.glsl",
+          "sha256": "d5bc1d96fd7f241579d705688045ef2ba4975c382c99e1aec3f1f69bf0b3c03c",
+          "bytes": 866
+        }
+      }
+    },
+    "filter/vaseline/upsample": {
+      "effect": "filter/vaseline",
+      "program": "upsample",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/vaseline/glsl/upsample.glsl",
+          "sha256": "39055a214903d09a9b2dd8db9ec5b2023a920c22707ec424ae90d5fb90ebf461",
+          "bytes": 2524
+        }
+      }
+    },
+    "filter/vignette/vignette": {
+      "effect": "filter/vignette",
+      "program": "vignette",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/vignette/glsl/vignette.glsl",
+          "sha256": "0b7f632bb4c11cd61ff340ab9ef4ca82186a848ea70fe24e69aad5a0dfb63b6d",
+          "bytes": 1427
+        }
+      }
+    },
+    "filter/warp/warp": {
+      "effect": "filter/warp",
+      "program": "warp",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/warp/glsl/warp.glsl",
+          "sha256": "f3034ac02a2926b819ff874d2d1d0d3dacebf2b7a409c983237d6a71865942ee",
+          "bytes": 3095
+        }
+      }
+    },
+    "filter/watercolor/wcComposite": {
+      "effect": "filter/watercolor",
+      "program": "wcComposite",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/watercolor/glsl/wcComposite.glsl",
+          "sha256": "b3f03b27f84a4a9629c1eb2808edaaf63a3c696fa385e871d853cacce21dcaa6",
+          "bytes": 3785
+        }
+      }
+    },
+    "filter/watercolor/wcSeed": {
+      "effect": "filter/watercolor",
+      "program": "wcSeed",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/watercolor/glsl/wcSeed.glsl",
+          "sha256": "e3158e856ebb45df82222fcf26708c83d5bdba7b9af2f017e18f4fde696633da",
+          "bytes": 368
+        }
+      }
+    },
+    "filter/watercolor/wcSimplify": {
+      "effect": "filter/watercolor",
+      "program": "wcSimplify",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/watercolor/glsl/wcSimplify.glsl",
+          "sha256": "81e668d554920b70353a2cccaaa414f1ad4eebd83bd1d7100ca05f44a11f8b5c",
+          "bytes": 2233
+        }
+      }
+    },
+    "filter/waves/waves": {
+      "effect": "filter/waves",
+      "program": "waves",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/waves/glsl/waves.glsl",
+          "sha256": "f4cddf1b3a6c9c68aa677b6743af313e1cdb2bf0a857ce9a1c13edc80f54e3aa",
+          "bytes": 2622
+        }
+      }
+    },
+    "filter/wind/wind": {
+      "effect": "filter/wind",
+      "program": "wind",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/wind/glsl/wind.glsl",
+          "sha256": "68eb0f4deca51ab5352307fa06509b153cf19a29cea4820d054adafa42655f22",
+          "bytes": 3520
+        }
+      }
+    },
+    "filter/wobble/wobble": {
+      "effect": "filter/wobble",
+      "program": "wobble",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/wobble/glsl/wobble.glsl",
+          "sha256": "1bdd1e3bed9111743dfeb7e3418e14c42aa8d93ed4636167a99d17cb143a38cc",
+          "bytes": 3105
+        }
+      }
+    },
+    "filter/wormhole/blend": {
+      "effect": "filter/wormhole",
+      "program": "blend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/wormhole/glsl/blend.glsl",
+          "sha256": "dee5cfdc0f16be116355c951be3d4f185d49d64c85578bef71001253c1920377",
+          "bytes": 1635
+        }
+      }
+    },
+    "filter/wormhole/clear": {
+      "effect": "filter/wormhole",
+      "program": "clear",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/wormhole/glsl/clear.glsl",
+          "sha256": "4d3b8edd70ff43d7291b965861622ce0303e7b4c1f4de61c7a3b74e9aa1c171f",
+          "bytes": 104
+        }
+      }
+    },
+    "filter/wormhole/deposit": {
+      "effect": "filter/wormhole",
+      "program": "deposit",
+      "files": {
+        "frag": {
+          "path": "noisemaker/shaders/source/filter/wormhole/glsl/deposit.frag",
+          "sha256": "156401729b935381b38732d8e84ebdbbe185734e642972fa45533c5ce51a083d",
+          "bytes": 117
+        },
+        "vert": {
+          "path": "noisemaker/shaders/source/filter/wormhole/glsl/deposit.vert",
+          "sha256": "a4238c9a89bdafd9f65fcc90432eabdff7c884e657784dd1d2c5c75a60e731d3",
+          "bytes": 2649
+        }
+      }
+    },
+    "filter/zoomBlur/zoomBlur": {
+      "effect": "filter/zoomBlur",
+      "program": "zoomBlur",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter/zoomBlur/glsl/zoomBlur.glsl",
+          "sha256": "3b24e68c6aec2161bbac73f5cac3d21e658531fff6a365ae78a4982179a707bd",
+          "bytes": 1496
+        }
+      }
+    },
+    "filter3d/flow3d/agent": {
+      "effect": "filter3d/flow3d",
+      "program": "agent",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter3d/flow3d/glsl/agent.glsl",
+          "sha256": "f4e3622f4def27221de0bd0b93ed1152f56f835957361e0fcffea8b84d3ce356",
+          "bytes": 9859
+        }
+      }
+    },
+    "filter3d/flow3d/blend": {
+      "effect": "filter3d/flow3d",
+      "program": "blend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter3d/flow3d/glsl/blend.glsl",
+          "sha256": "22c4ad697b9d365ab53cb5703f9aa76326cf2d47393bc41c27347ef48c6312c6",
+          "bytes": 1154
+        }
+      }
+    },
+    "filter3d/flow3d/copy": {
+      "effect": "filter3d/flow3d",
+      "program": "copy",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter3d/flow3d/glsl/copy.glsl",
+          "sha256": "6fae73fc5c59a210d64610e35060076370ebf853264f47cde01247d5296813db",
+          "bytes": 466
+        }
+      }
+    },
+    "filter3d/flow3d/deposit": {
+      "effect": "filter3d/flow3d",
+      "program": "deposit",
+      "files": {
+        "frag": {
+          "path": "noisemaker/shaders/source/filter3d/flow3d/glsl/deposit.frag",
+          "sha256": "3df54b20e8dd1716c63156758097d1935c04082caac806a60c54611fc15df823",
+          "bytes": 191
+        },
+        "vert": {
+          "path": "noisemaker/shaders/source/filter3d/flow3d/glsl/deposit.vert",
+          "sha256": "80405bdeb0be908b8da353e4e70e30aeb3701063047d7e9cad45adca189c03bc",
+          "bytes": 2321
+        }
+      }
+    },
+    "filter3d/flow3d/diffuse": {
+      "effect": "filter3d/flow3d",
+      "program": "diffuse",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter3d/flow3d/glsl/diffuse.glsl",
+          "sha256": "6730670173a744b12d7a8e837ca917779fe7a9bc28b78078d6e975f079480711",
+          "bytes": 725
+        }
+      }
+    },
+    "filter3d/palette3d/palette3d": {
+      "effect": "filter3d/palette3d",
+      "program": "palette3d",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/filter3d/palette3d/glsl/palette3d.glsl",
+          "sha256": "6425d323befb35d590b818a2bdb269e7bd6fb11aebf148a0c040b3eff0655015",
+          "bytes": 15170
+        }
+      }
+    },
+    "mixer/alphaMask/alphaMask": {
+      "effect": "mixer/alphaMask",
+      "program": "alphaMask",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/alphaMask/glsl/alphaMask.glsl",
+          "sha256": "eb9575c06da965149deab73905b19fcb68a7a4c74530f98732812e490bbddc12",
+          "bytes": 1475
+        }
+      }
+    },
+    "mixer/applyMode/applyMode": {
+      "effect": "mixer/applyMode",
+      "program": "applyMode",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/applyMode/glsl/applyMode.glsl",
+          "sha256": "636174ce4937e5e3da07b757117caf98c760c70ff85e1eb822049fafe2c45670",
+          "bytes": 2032
+        }
+      }
+    },
+    "mixer/blendMode/blendMode": {
+      "effect": "mixer/blendMode",
+      "program": "blendMode",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/blendMode/glsl/blendMode.glsl",
+          "sha256": "02a68bb4aa158a0aeb4ed6ba4aa7026b2ed81b0a505658ed9d4087adb31f2d2d",
+          "bytes": 4279
+        }
+      }
+    },
+    "mixer/cellSplit/cellSplit": {
+      "effect": "mixer/cellSplit",
+      "program": "cellSplit",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/cellSplit/glsl/cellSplit.glsl",
+          "sha256": "c6de84cdf428b367ac95d345cf6d72f3438ddeeb728136ea34e8937af72ceff9",
+          "bytes": 4058
+        }
+      }
+    },
+    "mixer/centerMask/centerMask": {
+      "effect": "mixer/centerMask",
+      "program": "centerMask",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/centerMask/glsl/centerMask.glsl",
+          "sha256": "55d708d50af0c0d0a6caf8a32ca3621f8137ff0d489aeb8d5f579e20984599e2",
+          "bytes": 4859
+        }
+      }
+    },
+    "mixer/channelCombine/channelCombine": {
+      "effect": "mixer/channelCombine",
+      "program": "channelCombine",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/channelCombine/glsl/channelCombine.glsl",
+          "sha256": "6332e5524f694f9fd85a70d15d462019b530c5d2eb99d80daceb7da16db4c735",
+          "bytes": 820
+        }
+      }
+    },
+    "mixer/distortion/distortion": {
+      "effect": "mixer/distortion",
+      "program": "distortion",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/distortion/glsl/distortion.glsl",
+          "sha256": "569fbab57b57baad275a60facfd70b913afe76d69a724b682e821883d40dcae8",
+          "bytes": 8117
+        }
+      }
+    },
+    "mixer/focusBlur/focusBlur": {
+      "effect": "mixer/focusBlur",
+      "program": "focusBlur",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/focusBlur/glsl/focusBlur.glsl",
+          "sha256": "dff787c7de67122abe60ac14f0fc8995e8087fc4549626e6fe678d8f86b3d7d1",
+          "bytes": 2268
+        }
+      }
+    },
+    "mixer/mashup/mashup": {
+      "effect": "mixer/mashup",
+      "program": "mashup",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/mashup/glsl/mashup.glsl",
+          "sha256": "defacb16704d2e7ca69c85959fad97d09587523caa731252f263004cc1e01fe6",
+          "bytes": 3196
+        }
+      }
+    },
+    "mixer/patternMix/patternMix": {
+      "effect": "mixer/patternMix",
+      "program": "patternMix",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/patternMix/glsl/patternMix.glsl",
+          "sha256": "b7fab7bc3646f4936fa2f730a07df9ffb9fd36b21250410fc5d0f4718a06d21d",
+          "bytes": 5579
+        }
+      }
+    },
+    "mixer/shadow/shadow": {
+      "effect": "mixer/shadow",
+      "program": "shadow",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/shadow/glsl/shadow.glsl",
+          "sha256": "6a321002481cd9dcbf92b11abb37089e7a6a2995494bf8a5befa2145fb1066aa",
+          "bytes": 4121
+        }
+      }
+    },
+    "mixer/shapeMask/shapeMask": {
+      "effect": "mixer/shapeMask",
+      "program": "shapeMask",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/shapeMask/glsl/shapeMask.glsl",
+          "sha256": "2503c37ae4bb9f81b5d77931445b69743067b7e43370a50779d5a09d86bf0374",
+          "bytes": 3775
+        }
+      }
+    },
+    "mixer/split/split": {
+      "effect": "mixer/split",
+      "program": "split",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/split/glsl/split.glsl",
+          "sha256": "5e6aa68831e8e5749d76f8cc9721d2dadca6149f06f79991bdf671106f04c0b8",
+          "bytes": 2079
+        }
+      }
+    },
+    "mixer/thresholdMix/thresholdMix": {
+      "effect": "mixer/thresholdMix",
+      "program": "thresholdMix",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/thresholdMix/glsl/thresholdMix.glsl",
+          "sha256": "66a51769ab16f2b2575101d5c347860a19fc0a7618af6dd7d06c561af22d1a87",
+          "bytes": 3022
+        }
+      }
+    },
+    "mixer/uvRemap/uvRemap": {
+      "effect": "mixer/uvRemap",
+      "program": "uvRemap",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/mixer/uvRemap/glsl/uvRemap.glsl",
+          "sha256": "ec2514ab283fa6cd67687c3cbf717d4d8596d3bdc075a7ea3d7c7dab800694e5",
+          "bytes": 1500
+        }
+      }
+    },
+    "points/attractor/agent": {
+      "effect": "points/attractor",
+      "program": "agent",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/attractor/glsl/agent.glsl",
+          "sha256": "5ec5c8c92dc026ca123c37cb735386c4bca9df0e2b2ebbd9831d3fbc32ac127e",
+          "bytes": 4936
+        }
+      }
+    },
+    "points/attractor/passthrough": {
+      "effect": "points/attractor",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/attractor/glsl/passthrough.glsl",
+          "sha256": "1c1145ed8c73427276030c0d975c994718b43c9cea1efe97f4f0fc83a3ab775e",
+          "bytes": 214
+        }
+      }
+    },
+    "points/buddhabrot/agent": {
+      "effect": "points/buddhabrot",
+      "program": "agent",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/buddhabrot/glsl/agent.glsl",
+          "sha256": "0e2e9336878287c4c856c6f6a4e7d2a19219d29025f33d0ead8c5f17fc19cc5c",
+          "bytes": 4826
+        }
+      }
+    },
+    "points/buddhabrot/passthrough": {
+      "effect": "points/buddhabrot",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/buddhabrot/glsl/passthrough.glsl",
+          "sha256": "1c1145ed8c73427276030c0d975c994718b43c9cea1efe97f4f0fc83a3ab775e",
+          "bytes": 214
+        }
+      }
+    },
+    "points/buddhabrot/zWrite": {
+      "effect": "points/buddhabrot",
+      "program": "zWrite",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/buddhabrot/glsl/zWrite.glsl",
+          "sha256": "e6fefa1486d7be6895efef7153d599497234386f83b21b042248b824018d655d",
+          "bytes": 874
+        }
+      }
+    },
+    "points/dla/agent": {
+      "effect": "points/dla",
+      "program": "agent",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/dla/glsl/agent.glsl",
+          "sha256": "5f11d2d5096ac4f54b243a2e9de1d7526960be76c460314f8ec7142c21c9995a",
+          "bytes": 5928
+        }
+      }
+    },
+    "points/dla/copyGrid": {
+      "effect": "points/dla",
+      "program": "copyGrid",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/dla/glsl/copyGrid.glsl",
+          "sha256": "21e17a96f09141870bb930c7707d1fc8b2ba5e97f699fdd5c7b8246720974d58",
+          "bytes": 274
+        }
+      }
+    },
+    "points/dla/depositGrid": {
+      "effect": "points/dla",
+      "program": "depositGrid",
+      "files": {
+        "frag": {
+          "path": "noisemaker/shaders/source/points/dla/glsl/depositGrid.frag",
+          "sha256": "bbafff4c1dcd4883c8c7ab243161074fb74313b744476a7f6f229a0165722439",
+          "bytes": 471
+        },
+        "vert": {
+          "path": "noisemaker/shaders/source/points/dla/glsl/depositGrid.vert",
+          "sha256": "20faeb921941c5ee4a9537e13fa23db4dd21e15749bd7a3c4f2daa2e3c984c93",
+          "bytes": 1390
+        }
+      }
+    },
+    "points/dla/initGrid": {
+      "effect": "points/dla",
+      "program": "initGrid",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/dla/glsl/initGrid.glsl",
+          "sha256": "bcc9ca92c223dc0aadf5f74b40d54c49de8da7928e36c381e011c1fef6830242",
+          "bytes": 1811
+        }
+      }
+    },
+    "points/dla/passthrough": {
+      "effect": "points/dla",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/dla/glsl/passthrough.glsl",
+          "sha256": "d422ca4f58ab159fb5fe78892c9611d485c6848631b09afa526f5afb70c02046",
+          "bytes": 860
+        }
+      }
+    },
+    "points/flock/agent": {
+      "effect": "points/flock",
+      "program": "agent",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/flock/glsl/agent.glsl",
+          "sha256": "4c664f7443b1085a37896730b5077ed6399ce345a7b5a25101a7a91e00b18363",
+          "bytes": 9726
+        }
+      }
+    },
+    "points/flock/passthrough": {
+      "effect": "points/flock",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/flock/glsl/passthrough.glsl",
+          "sha256": "1c1145ed8c73427276030c0d975c994718b43c9cea1efe97f4f0fc83a3ab775e",
+          "bytes": 214
+        }
+      }
+    },
+    "points/flow/agent": {
+      "effect": "points/flow",
+      "program": "agent",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/flow/glsl/agent.glsl",
+          "sha256": "0584139db3b2e14af99788458a48094a0d650a03ae540a0468309bf2f097bb6b",
+          "bytes": 5848
+        }
+      }
+    },
+    "points/flow/passthrough": {
+      "effect": "points/flow",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/flow/glsl/passthrough.glsl",
+          "sha256": "1c1145ed8c73427276030c0d975c994718b43c9cea1efe97f4f0fc83a3ab775e",
+          "bytes": 214
+        }
+      }
+    },
+    "points/heightGrid/agent": {
+      "effect": "points/heightGrid",
+      "program": "agent",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/heightGrid/glsl/agent.glsl",
+          "sha256": "40edcf1e02d2ee47a25404c5f4f0e809a5243c5b639bb301b823217b9fda1e77",
+          "bytes": 1037
+        }
+      }
+    },
+    "points/heightGrid/passthrough": {
+      "effect": "points/heightGrid",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/heightGrid/glsl/passthrough.glsl",
+          "sha256": "1c1145ed8c73427276030c0d975c994718b43c9cea1efe97f4f0fc83a3ab775e",
+          "bytes": 214
+        }
+      }
+    },
+    "points/hydraulic/agent": {
+      "effect": "points/hydraulic",
+      "program": "agent",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/hydraulic/glsl/agent.glsl",
+          "sha256": "988fe48308354bc7cd8eaa1cb768bccf9ac37b3ce8ebb4256f567eb8419f1001",
+          "bytes": 6329
+        }
+      }
+    },
+    "points/hydraulic/passthrough": {
+      "effect": "points/hydraulic",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/hydraulic/glsl/passthrough.glsl",
+          "sha256": "1c1145ed8c73427276030c0d975c994718b43c9cea1efe97f4f0fc83a3ab775e",
+          "bytes": 214
+        }
+      }
+    },
+    "points/lenia/agentField": {
+      "effect": "points/lenia",
+      "program": "agentField",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/lenia/glsl/agentField.glsl",
+          "sha256": "dc6f5ea902d32e0fb7da530b93c2269ae095f99ac3a76d403a887d4078ef3237",
+          "bytes": 3542
+        }
+      }
+    },
+    "points/lenia/clear": {
+      "effect": "points/lenia",
+      "program": "clear",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/lenia/glsl/clear.glsl",
+          "sha256": "d7f2308a63b5598e06004de9ceed4ff215dac41c07478c7670767c94c5f5854d",
+          "bytes": 157
+        }
+      }
+    },
+    "points/lenia/convolve": {
+      "effect": "points/lenia",
+      "program": "convolve",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/lenia/glsl/convolve.glsl",
+          "sha256": "911443464a21bac3436a3d8a9505859b1f6eda97aa0e24ce633aa312970dbc44",
+          "bytes": 2019
+        }
+      }
+    },
+    "points/lenia/deposit": {
+      "effect": "points/lenia",
+      "program": "deposit",
+      "files": {
+        "frag": {
+          "path": "noisemaker/shaders/source/points/lenia/glsl/deposit.frag",
+          "sha256": "7e1d94a931b0c5b5c2cc63bcc22c1f8dd9772c0a1df67224a67c73ad9d348f91",
+          "bytes": 271
+        },
+        "vert": {
+          "path": "noisemaker/shaders/source/points/lenia/glsl/deposit.vert",
+          "sha256": "5b65bfe3b491e7791915a58f9de5f48fc3389429b7a9f476e3435725d2b52afa",
+          "bytes": 749
+        }
+      }
+    },
+    "points/lenia/passthrough": {
+      "effect": "points/lenia",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/lenia/glsl/passthrough.glsl",
+          "sha256": "9831abb1e757196018520d2c7b33139ec265ca87e1c6ab71ab956db6bda771d6",
+          "bytes": 266
+        }
+      }
+    },
+    "points/life/agent": {
+      "effect": "points/life",
+      "program": "agent",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/life/glsl/agent.glsl",
+          "sha256": "78513907f1480250cef2e603e91a012aa4972c2e9e4bd66fc5aefa089a9a4775",
+          "bytes": 9544
+        }
+      }
+    },
+    "points/life/matrix": {
+      "effect": "points/life",
+      "program": "matrix",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/life/glsl/matrix.glsl",
+          "sha256": "405376b51b550714253aff0f818a4fd56d50618bc792558826195b901c5fa073",
+          "bytes": 1889
+        }
+      }
+    },
+    "points/life/passthrough": {
+      "effect": "points/life",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/life/glsl/passthrough.glsl",
+          "sha256": "9831abb1e757196018520d2c7b33139ec265ca87e1c6ab71ab956db6bda771d6",
+          "bytes": 266
+        }
+      }
+    },
+    "points/physarum/agent": {
+      "effect": "points/physarum",
+      "program": "agent",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/physarum/glsl/agent.glsl",
+          "sha256": "d39a5afa26f97da83f61099e712b40d7a901978ce5b2a0070c2d87eef0c03c44",
+          "bytes": 4817
+        }
+      }
+    },
+    "points/physarum/deposit": {
+      "effect": "points/physarum",
+      "program": "deposit",
+      "files": {
+        "frag": {
+          "path": "noisemaker/shaders/source/points/physarum/glsl/deposit.frag",
+          "sha256": "340def672386279e0407bb56630bd37b78e6bdacd348d942737dfc268de6b72f",
+          "bytes": 175
+        },
+        "vert": {
+          "path": "noisemaker/shaders/source/points/physarum/glsl/deposit.vert",
+          "sha256": "6020b690bc6b9bc3a584ab8f0c348a1c09a0bc3e8174c4c05f1651f3c27f366d",
+          "bytes": 1372
+        }
+      }
+    },
+    "points/physarum/diffuse": {
+      "effect": "points/physarum",
+      "program": "diffuse",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/physarum/glsl/diffuse.glsl",
+          "sha256": "c1b316f77d7ae5a5880dc8d667b05afb0e7dd2c3d346397ebee609953ffeb6f8",
+          "bytes": 708
+        }
+      }
+    },
+    "points/physarum/passthrough": {
+      "effect": "points/physarum",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/physarum/glsl/passthrough.glsl",
+          "sha256": "9831abb1e757196018520d2c7b33139ec265ca87e1c6ab71ab956db6bda771d6",
+          "bytes": 266
+        }
+      }
+    },
+    "points/physical/agent": {
+      "effect": "points/physical",
+      "program": "agent",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/physical/glsl/agent.glsl",
+          "sha256": "a144cacbadeca15a78a83dac987bfd25164bd7904a2e9f0ea22e8b1bf22e3614",
+          "bytes": 4136
+        }
+      }
+    },
+    "points/physical/passthrough": {
+      "effect": "points/physical",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/points/physical/glsl/passthrough.glsl",
+          "sha256": "1c1145ed8c73427276030c0d975c994718b43c9cea1efe97f4f0fc83a3ab775e",
+          "bytes": 214
+        }
+      }
+    },
+    "render/loopBegin/loopBegin": {
+      "effect": "render/loopBegin",
+      "program": "loopBegin",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/loopBegin/glsl/loopBegin.glsl",
+          "sha256": "5ddaa003e23b516d8f17dde75e09f106fea0f0b938898b1f3880d025167c2168",
+          "bytes": 1064
+        }
+      }
+    },
+    "render/loopEnd/copy": {
+      "effect": "render/loopEnd",
+      "program": "copy",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/loopEnd/glsl/copy.glsl",
+          "sha256": "629a13aaba037b2eb01219741ea98b3e2161fda3f2c38b8533fe4bbebab3563e",
+          "bytes": 351
+        }
+      }
+    },
+    "render/meshLoader/preview": {
+      "effect": "render/meshLoader",
+      "program": "preview",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/meshLoader/glsl/preview.glsl",
+          "sha256": "ab3377a09a9dc38c652d4e9636a89ad9f0e8842971a5ed86bcae0ee8a16493aa",
+          "bytes": 1455
+        }
+      }
+    },
+    "render/meshRender/clear": {
+      "effect": "render/meshRender",
+      "program": "clear",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/meshRender/glsl/clear.glsl",
+          "sha256": "baa677b16c7d4be78f20274420f7e3220bc54101db555290688d056104060f7c",
+          "bytes": 239
+        }
+      }
+    },
+    "render/meshRender/render": {
+      "effect": "render/meshRender",
+      "program": "render",
+      "files": {
+        "frag": {
+          "path": "noisemaker/shaders/source/render/meshRender/glsl/render.frag",
+          "sha256": "b39386c2cb0877e2381fd04c8fc9cb6e51f7126801f91faac11fb75e54d6c873",
+          "bytes": 2047
+        },
+        "vert": {
+          "path": "noisemaker/shaders/source/render/meshRender/glsl/render.vert",
+          "sha256": "a4baf8432c78f411ba28782c3f1276aa08c7448a4e748ce864a1c9178d34ddb9",
+          "bytes": 2998
+        }
+      }
+    },
+    "render/pointsBillboardRender/blend": {
+      "effect": "render/pointsBillboardRender",
+      "program": "blend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/blend.glsl",
+          "sha256": "c057535d715351b5f725248f7d16982cd30398fbf4f2cce2d6230e5d057aa527",
+          "bytes": 1302
+        }
+      }
+    },
+    "render/pointsBillboardRender/clearDefocus": {
+      "effect": "render/pointsBillboardRender",
+      "program": "clearDefocus",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/clearDefocus.glsl",
+          "sha256": "f3fa4eba0fd6ab99bcc0f2f5dd4eea264639278b3a8fc5aa77965f61c8d05a34",
+          "bytes": 135
+        }
+      }
+    },
+    "render/pointsBillboardRender/copy": {
+      "effect": "render/pointsBillboardRender",
+      "program": "copy",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/copy.glsl",
+          "sha256": "b4fae08087b09cf8fb049e60ed07d7c80ac12401e49f44fb3f3022388b3dc889",
+          "bytes": 286
+        }
+      }
+    },
+    "render/pointsBillboardRender/deposit": {
+      "effect": "render/pointsBillboardRender",
+      "program": "deposit",
+      "files": {
+        "frag": {
+          "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/deposit.frag",
+          "sha256": "c6981a708d7d9771eacd8e945c4d18b9f811795a4203fb91618b105719221ff1",
+          "bytes": 4271
+        },
+        "vert": {
+          "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/deposit.vert",
+          "sha256": "b16dde6e0e89d1fea3bc2278c35f2a96583cbd815373ea9f127ad8973cda5ba4",
+          "bytes": 8537
+        }
+      }
+    },
+    "render/pointsBillboardRender/depthKeys": {
+      "effect": "render/pointsBillboardRender",
+      "program": "depthKeys",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/depthKeys.glsl",
+          "sha256": "e8c0dbd5acf0aa5a695b07f091d653165d50b5a35ba51b49e60ae34cee906e89",
+          "bytes": 1134
+        }
+      }
+    },
+    "render/pointsBillboardRender/depthMerge": {
+      "effect": "render/pointsBillboardRender",
+      "program": "depthMerge",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/depthMerge.glsl",
+          "sha256": "e023d00bddd8dc5b94ce8eafe76b668f0dca06254f6db56fb1513f08bc8bbd6e",
+          "bytes": 1570
+        }
+      }
+    },
+    "render/pointsBillboardRender/diffuse": {
+      "effect": "render/pointsBillboardRender",
+      "program": "diffuse",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/diffuse.glsl",
+          "sha256": "3e4b3866bf3249e999f9e8d7b361391af9c4e31f969001b913e782bc095cf6a1",
+          "bytes": 1358
+        }
+      }
+    },
+    "render/pointsBillboardRender/spriteMean": {
+      "effect": "render/pointsBillboardRender",
+      "program": "spriteMean",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/spriteMean.glsl",
+          "sha256": "6a3bd5af6a673b4499c2ba0e8e1066a15ab5fdb7513e875fafe8a5a0f581964e",
+          "bytes": 1203
+        }
+      }
+    },
+    "render/pointsBillboardRender/spriteMeanTiles": {
+      "effect": "render/pointsBillboardRender",
+      "program": "spriteMeanTiles",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/spriteMeanTiles.glsl",
+          "sha256": "e81c8f169c10a4168acd07489bafa55ecd349540c35bb1607df1fbba65261cc7",
+          "bytes": 1125
+        }
+      }
+    },
+    "render/pointsEmit/init": {
+      "effect": "render/pointsEmit",
+      "program": "init",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsEmit/glsl/init.glsl",
+          "sha256": "cd266c795b298b372f077e6aeb6f862c75a0970999fba2f87c4462b322592402",
+          "bytes": 5236
+        }
+      }
+    },
+    "render/pointsEmit/passthrough": {
+      "effect": "render/pointsEmit",
+      "program": "passthrough",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsEmit/glsl/passthrough.glsl",
+          "sha256": "1c1145ed8c73427276030c0d975c994718b43c9cea1efe97f4f0fc83a3ab775e",
+          "bytes": 214
+        }
+      }
+    },
+    "render/pointsRender/blend": {
+      "effect": "render/pointsRender",
+      "program": "blend",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsRender/glsl/blend.glsl",
+          "sha256": "22c07cd12838f88611ae2bba729c59dd8dee2cf54d2caf1a69a22ebc4e28fa0d",
+          "bytes": 1055
+        }
+      }
+    },
+    "render/pointsRender/copy": {
+      "effect": "render/pointsRender",
+      "program": "copy",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsRender/glsl/copy.glsl",
+          "sha256": "b4fae08087b09cf8fb049e60ed07d7c80ac12401e49f44fb3f3022388b3dc889",
+          "bytes": 286
+        }
+      }
+    },
+    "render/pointsRender/deposit": {
+      "effect": "render/pointsRender",
+      "program": "deposit",
+      "files": {
+        "frag": {
+          "path": "noisemaker/shaders/source/render/pointsRender/glsl/deposit.frag",
+          "sha256": "340def672386279e0407bb56630bd37b78e6bdacd348d942737dfc268de6b72f",
+          "bytes": 175
+        },
+        "vert": {
+          "path": "noisemaker/shaders/source/render/pointsRender/glsl/deposit.vert",
+          "sha256": "ab122602e94199971cc41d028a9bbd12c07e50e1e34476575d3a86bf79a1fe19",
+          "bytes": 4227
+        }
+      }
+    },
+    "render/pointsRender/diffuse": {
+      "effect": "render/pointsRender",
+      "program": "diffuse",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/pointsRender/glsl/diffuse.glsl",
+          "sha256": "e34a1a875649930e3eff5d22e394c97afb088d325562d78368e463a8dda59afb",
+          "bytes": 620
+        }
+      }
+    },
+    "render/render3d/render3d": {
+      "effect": "render/render3d",
+      "program": "render3d",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/render3d/glsl/render3d.glsl",
+          "sha256": "5ff6fc621924c7c53425c2f18202e549ace6a4ff8a96f9e908ad26bba6e0c7e2",
+          "bytes": 14169
+        }
+      }
+    },
+    "render/renderCubemap3d/renderCubemap3d": {
+      "effect": "render/renderCubemap3d",
+      "program": "renderCubemap3d",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/renderCubemap3d/glsl/renderCubemap3d.glsl",
+          "sha256": "bcebff481c2d945e140870b50ce3e32e12bc3f198f75a53dc6d2450d5777db26",
+          "bytes": 14026
+        }
+      }
+    },
+    "render/renderCubemapSurface/renderCubemapSurface": {
+      "effect": "render/renderCubemapSurface",
+      "program": "renderCubemapSurface",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/renderCubemapSurface/glsl/renderCubemapSurface.glsl",
+          "sha256": "ce467e742120b8a2ec9c34898a2fd1e2f56a85cbe5d27774bcbb1b7f204511fc",
+          "bytes": 4410
+        }
+      }
+    },
+    "render/renderLandscape3d/landscape": {
+      "effect": "render/renderLandscape3d",
+      "program": "landscape",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/renderLandscape3d/glsl/landscape.glsl",
+          "sha256": "c9e9ab5c4d7226e774f8d1b9f8aff9d54fd4d6cd97e07c2d3c907df1d7b07ff8",
+          "bytes": 13406
+        }
+      }
+    },
+    "render/renderLit3d/renderLit3d": {
+      "effect": "render/renderLit3d",
+      "program": "renderLit3d",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/render/renderLit3d/glsl/renderLit3d.glsl",
+          "sha256": "77460fb4a9e53f7776d7a3d73cb3fcc1840dce577c6f0989354eeb540011529f",
+          "bytes": 12143
+        }
+      }
+    },
+    "synth/bitwise/bitwise": {
+      "effect": "synth/bitwise",
+      "program": "bitwise",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/bitwise/glsl/bitwise.glsl",
+          "sha256": "1beb9d4b4fff3466587b9c942af3b1a46c0f35a1bf41874c7461c18dcf2f923f",
+          "bytes": 3095
+        }
+      }
+    },
+    "synth/cell/cell": {
+      "effect": "synth/cell",
+      "program": "cell",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/cell/glsl/cell.glsl",
+          "sha256": "b2cae5ecdfd315194d4b3b04d2c5b39d1b48c56a9bd1a10396827e3b8d413a18",
+          "bytes": 3813
+        }
+      }
+    },
+    "synth/cellularAutomata/ca": {
+      "effect": "synth/cellularAutomata",
+      "program": "ca",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/cellularAutomata/glsl/ca.glsl",
+          "sha256": "147eb021eb138adc47149edf9440b94e8c1128d2a35dfb236a9a76f091397e15",
+          "bytes": 11253
+        }
+      }
+    },
+    "synth/cellularAutomata/caFb": {
+      "effect": "synth/cellularAutomata",
+      "program": "caFb",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/cellularAutomata/glsl/caFb.glsl",
+          "sha256": "1668346247db9567e6880d69290cef113c50edc0ba576cf2d29cf497227fef89",
+          "bytes": 7949
+        }
+      }
+    },
+    "synth/curl/curl": {
+      "effect": "synth/curl",
+      "program": "curl",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/curl/glsl/curl.glsl",
+          "sha256": "33d1f2bd0215d6439b51a0aa8d50b5c3637abc0b5cade8f3e451b8d258d0afce",
+          "bytes": 7290
+        }
+      }
+    },
+    "synth/gabor/gabor": {
+      "effect": "synth/gabor",
+      "program": "gabor",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/gabor/glsl/gabor.glsl",
+          "sha256": "91665da2d584d6d88b38e8ba314dfc0b546dd49d29aa161f5d66aecf6bf67bf5",
+          "bytes": 3870
+        }
+      }
+    },
+    "synth/gradient/gradient": {
+      "effect": "synth/gradient",
+      "program": "gradient",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/gradient/glsl/gradient.glsl",
+          "sha256": "308537be8f376750a2239be89a07e558e54ee1661a0ea360c6a3e48b8c6e7a75",
+          "bytes": 5439
+        }
+      }
+    },
+    "synth/julia/julia": {
+      "effect": "synth/julia",
+      "program": "julia",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/julia/glsl/julia.glsl",
+          "sha256": "825e175c22fea086ad2860e16bcf0a79d797574a9dfad937a23baaadaffdeef0",
+          "bytes": 12407
+        }
+      }
+    },
+    "synth/mandala/mandala": {
+      "effect": "synth/mandala",
+      "program": "mandala",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/mandala/glsl/mandala.glsl",
+          "sha256": "ef97349f9f3003d356bf73ecea6292bbe8ad41c6c2605eff4a8468a44215dea2",
+          "bytes": 5124
+        }
+      }
+    },
+    "synth/mandelbrot/mandelbrot": {
+      "effect": "synth/mandelbrot",
+      "program": "mandelbrot",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/mandelbrot/glsl/mandelbrot.glsl",
+          "sha256": "6e6f740356f7ced1cbd40b3a991dd0ef654e39ecaeec8c52e091a08f68e3b3bd",
+          "bytes": 14931
+        }
+      }
+    },
+    "synth/media/mediaInput": {
+      "effect": "synth/media",
+      "program": "mediaInput",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/media/glsl/mediaInput.glsl",
+          "sha256": "3f26aa8aa6d813e0825f7ccbe1c0ab6d9e91445283d27d6d87d72eeb0b7b0c9c",
+          "bytes": 6598
+        }
+      }
+    },
+    "synth/mnca/mnca": {
+      "effect": "synth/mnca",
+      "program": "mnca",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/mnca/glsl/mnca.glsl",
+          "sha256": "725c245f6f52a1629f7427b98a211b527c546fd3e0dcecbb9c5b65ecf3ee239a",
+          "bytes": 11142
+        }
+      }
+    },
+    "synth/mnca/mncaFb": {
+      "effect": "synth/mnca",
+      "program": "mncaFb",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/mnca/glsl/mncaFb.glsl",
+          "sha256": "4a1b1bbb1e52f66871808d878068f1ff6b379d2b68ca0dd8053f89659c8bf9d6",
+          "bytes": 5044
+        }
+      }
+    },
+    "synth/modPattern/modPattern": {
+      "effect": "synth/modPattern",
+      "program": "modPattern",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/modPattern/glsl/modPattern.glsl",
+          "sha256": "5bf4fc9ed8fdf68fa58e9c66f79e1f42624234500f89fb1ee63da64839d3dc2e",
+          "bytes": 3818
+        }
+      }
+    },
+    "synth/navierStokes/ns": {
+      "effect": "synth/navierStokes",
+      "program": "ns",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/navierStokes/glsl/ns.glsl",
+          "sha256": "f2c930b585558c5b90b1e502fc71ffef4ea28c6b5c0d75c0c9d20cccf727a36f",
+          "bytes": 1719
+        }
+      }
+    },
+    "synth/navierStokes/nsAdvect": {
+      "effect": "synth/navierStokes",
+      "program": "nsAdvect",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/navierStokes/glsl/nsAdvect.glsl",
+          "sha256": "fda5781baa1fffca8fcae28ef599652580135c1dba57307db4692eecc7df64f8",
+          "bytes": 1954
+        }
+      }
+    },
+    "synth/navierStokes/nsDivergence": {
+      "effect": "synth/navierStokes",
+      "program": "nsDivergence",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/navierStokes/glsl/nsDivergence.glsl",
+          "sha256": "7cf59c745b982c23bcd6eb67ab23cdc723416cdeda835ec36579d71fa18c708e",
+          "bytes": 1168
+        }
+      }
+    },
+    "synth/navierStokes/nsGradient": {
+      "effect": "synth/navierStokes",
+      "program": "nsGradient",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/navierStokes/glsl/nsGradient.glsl",
+          "sha256": "b247c640a0ac51e14b30b894c2427b994b3c545d9be2b19bd186bd7b57a40a9b",
+          "bytes": 991
+        }
+      }
+    },
+    "synth/navierStokes/nsPressure": {
+      "effect": "synth/navierStokes",
+      "program": "nsPressure",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/navierStokes/glsl/nsPressure.glsl",
+          "sha256": "3f2dd662ebc4e141a40959456739f09fd075655917197da3492ab99611482251",
+          "bytes": 932
+        }
+      }
+    },
+    "synth/navierStokes/nsSmooth": {
+      "effect": "synth/navierStokes",
+      "program": "nsSmooth",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/navierStokes/glsl/nsSmooth.glsl",
+          "sha256": "964147d68d182e7afe016e5fee82ad010e047946121fa407873386cc1c4b4453",
+          "bytes": 5301
+        }
+      }
+    },
+    "synth/navierStokes/nsSplat": {
+      "effect": "synth/navierStokes",
+      "program": "nsSplat",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/navierStokes/glsl/nsSplat.glsl",
+          "sha256": "c3e88bac9c8afa8ed31baec34756db36ad30dd0e73588b35ffc320cba36d3f37",
+          "bytes": 3251
+        }
+      }
+    },
+    "synth/newton/newton": {
+      "effect": "synth/newton",
+      "program": "newton",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/newton/glsl/newton.glsl",
+          "sha256": "603090e299ccb08fd4db4bf54a2aa6668ed81be971a84a8b679c7f560e5c27ac",
+          "bytes": 10325
+        }
+      }
+    },
+    "synth/noise/noise": {
+      "effect": "synth/noise",
+      "program": "noise",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/noise/glsl/noise.glsl",
+          "sha256": "410a98f0d4ec80acde225cb5366a3bbaf752e5743f99bcd651a2c3cbb6cc3274",
+          "bytes": 18131
+        }
+      }
+    },
+    "synth/osc2d/osc2d": {
+      "effect": "synth/osc2d",
+      "program": "osc2d",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/osc2d/glsl/osc2d.glsl",
+          "sha256": "e25335112291f2b3f7e9e7f5803948b602a44058bb10c20f835c461f0b6a3512",
+          "bytes": 4562
+        }
+      }
+    },
+    "synth/pattern/pattern": {
+      "effect": "synth/pattern",
+      "program": "pattern",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/pattern/glsl/pattern.glsl",
+          "sha256": "d3ce98d432c1548553fac6446a040d2dab8f0fbb7f852457aa4fc4f139d44c5c",
+          "bytes": 8370
+        }
+      }
+    },
+    "synth/perlin/perlin": {
+      "effect": "synth/perlin",
+      "program": "perlin",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/perlin/glsl/perlin.glsl",
+          "sha256": "9580baa0f637b8b4f2488e6e26288d885fe748973a121f52281b63c16d530318",
+          "bytes": 10882
+        }
+      }
+    },
+    "synth/polygon/shape": {
+      "effect": "synth/polygon",
+      "program": "shape",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/polygon/glsl/shape.glsl",
+          "sha256": "e43087ee8ade2e59ff1a2098c1e6ceb4357a3eb9ee63755a3f8a3879824115e6",
+          "bytes": 1707
+        }
+      }
+    },
+    "synth/reactionDiffusion/rd": {
+      "effect": "synth/reactionDiffusion",
+      "program": "rd",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/reactionDiffusion/glsl/rd.glsl",
+          "sha256": "2c7c242db938ea81fa738b4f5a4fff9f067afca63802e39689aec49d4955f53c",
+          "bytes": 12782
+        }
+      }
+    },
+    "synth/reactionDiffusion/rdFb": {
+      "effect": "synth/reactionDiffusion",
+      "program": "rdFb",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/reactionDiffusion/glsl/rdFb.glsl",
+          "sha256": "1b0a2ce5b7594005e778b0487a14c1c83c081b7ce3d0db50f81809ac931be976",
+          "bytes": 5763
+        }
+      }
+    },
+    "synth/remap/remap": {
+      "effect": "synth/remap",
+      "program": "remap",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/remap/glsl/remap.glsl",
+          "sha256": "500f761ac9b0a58aedc7574f974994abfdaf4d41cb9947a11b4cdd18b0482b9b",
+          "bytes": 7225
+        }
+      }
+    },
+    "synth/roll/copy": {
+      "effect": "synth/roll",
+      "program": "copy",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/roll/glsl/copy.glsl",
+          "sha256": "629a13aaba037b2eb01219741ea98b3e2161fda3f2c38b8533fe4bbebab3563e",
+          "bytes": 351
+        }
+      }
+    },
+    "synth/roll/roll": {
+      "effect": "synth/roll",
+      "program": "roll",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/roll/glsl/roll.glsl",
+          "sha256": "92b426fa60df51c3db057b8f93ce3c6525cf087fd2398c6e038046f9ede1d8c9",
+          "bytes": 2305
+        }
+      }
+    },
+    "synth/sacredGeometry/sacredGeometry": {
+      "effect": "synth/sacredGeometry",
+      "program": "sacredGeometry",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/sacredGeometry/glsl/sacredGeometry.glsl",
+          "sha256": "24e5bc642f5a1f368d4514fd33590ef7d479f56c1c862144576f7bde321f53de",
+          "bytes": 9710
+        }
+      }
+    },
+    "synth/scope/scope": {
+      "effect": "synth/scope",
+      "program": "scope",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/scope/glsl/scope.glsl",
+          "sha256": "e5e4d09db8e884a41f1cc2ce908f438dc4cff9f2f22741c30877e3f9aae91b90",
+          "bytes": 1124
+        }
+      }
+    },
+    "synth/shape/shape": {
+      "effect": "synth/shape",
+      "program": "shape",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/shape/glsl/shape.glsl",
+          "sha256": "d917d2027c873f05bc4183277a2b1dffe158c13cfd1281461580a31e0cd7d67f",
+          "bytes": 15986
+        }
+      }
+    },
+    "synth/solid/solid": {
+      "effect": "synth/solid",
+      "program": "solid",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/solid/glsl/solid.glsl",
+          "sha256": "82afae3ccf523d1938cd02eadc6bfae5e4440a9b22a4f5629688d1d05856287c",
+          "bytes": 273
+        }
+      }
+    },
+    "synth/spectrum/spectrum": {
+      "effect": "synth/spectrum",
+      "program": "spectrum",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/spectrum/glsl/spectrum.glsl",
+          "sha256": "552157fb5fad42e56c767a38468e0b04095f5d93e1c6ede55044d5da76cb78fb",
+          "bytes": 1104
+        }
+      }
+    },
+    "synth/subdivide/subdivide": {
+      "effect": "synth/subdivide",
+      "program": "subdivide",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/subdivide/glsl/subdivide.glsl",
+          "sha256": "65e57d82c8982040240528c4410328453bc39de4f4d9519da2497266b1b500bd",
+          "bytes": 9154
+        }
+      }
+    },
+    "synth/testPattern/testPattern": {
+      "effect": "synth/testPattern",
+      "program": "testPattern",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth/testPattern/glsl/testPattern.glsl",
+          "sha256": "f913300a1312c6630d56fa1cc2faf2cb17fe0643d832473fdec7b66dd373cb20",
+          "bytes": 5919
+        }
+      }
+    },
+    "synth3d/cell3d/precompute": {
+      "effect": "synth3d/cell3d",
+      "program": "precompute",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth3d/cell3d/glsl/precompute.glsl",
+          "sha256": "83ef13ab1e5997c76e64280d11e0bdb0eaedd6f41a504d2b1e79761cd1dd1755",
+          "bytes": 5081
+        }
+      }
+    },
+    "synth3d/cellularAutomata3d/simulate": {
+      "effect": "synth3d/cellularAutomata3d",
+      "program": "simulate",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth3d/cellularAutomata3d/glsl/simulate.glsl",
+          "sha256": "e29a5b033304463b8610c86823f46c16751270a3cbaa37f1204df968c6c5394a",
+          "bytes": 8843
+        }
+      }
+    },
+    "synth3d/flythrough3d/precompute": {
+      "effect": "synth3d/flythrough3d",
+      "program": "precompute",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth3d/flythrough3d/glsl/precompute.glsl",
+          "sha256": "e4288dfc3384f76e63eda968ad4ce3219a9b96989d8e6ff38755dbcf44f788f3",
+          "bytes": 11404
+        }
+      }
+    },
+    "synth3d/fractal3d/precompute": {
+      "effect": "synth3d/fractal3d",
+      "program": "precompute",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth3d/fractal3d/glsl/precompute.glsl",
+          "sha256": "8ab3dfe63e16d4406deee719c1f822d405c712bae21bd1348ae5b75b79a14d41",
+          "bytes": 6912
+        }
+      }
+    },
+    "synth3d/heightmap3d/precompute": {
+      "effect": "synth3d/heightmap3d",
+      "program": "precompute",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth3d/heightmap3d/glsl/precompute.glsl",
+          "sha256": "2a634fd3355925d3590f5857523acf185f7d77e0d32a5488c6546a5ea51e1427",
+          "bytes": 1985
+        }
+      }
+    },
+    "synth3d/noise3d/precompute": {
+      "effect": "synth3d/noise3d",
+      "program": "precompute",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth3d/noise3d/glsl/precompute.glsl",
+          "sha256": "60ce97d188bf78bc84176c063943f29c25371e4325f13cedbb4eec889c905727",
+          "bytes": 7667
+        }
+      }
+    },
+    "synth3d/reactionDiffusion3d/simulate": {
+      "effect": "synth3d/reactionDiffusion3d",
+      "program": "simulate",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth3d/reactionDiffusion3d/glsl/simulate.glsl",
+          "sha256": "23a23fcf7cfda986215efc76e21f79faf237bef0c362881d801b040407766b17",
+          "bytes": 6257
+        }
+      }
+    },
+    "synth3d/shape3d/precompute": {
+      "effect": "synth3d/shape3d",
+      "program": "precompute",
+      "files": {
+        "glsl": {
+          "path": "noisemaker/shaders/source/synth3d/shape3d/glsl/precompute.glsl",
+          "sha256": "53b240191c2f0d2e61b5dacecb532ecd3b8aad3973bbf8e38d8712073d50d14f",
+          "bytes": 6508
+        }
+      }
+    }
+  }
+}

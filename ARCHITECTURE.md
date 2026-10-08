@@ -2,9 +2,9 @@
 
 ## 1. Purpose and status
 
-This is a planned, independent GPU port of Noisemaker's shader engine and Polymorphic DSL. The intended deliverable is an embeddable library with a native compiler, GPU render-graph executor, effect catalog, example host, and source-bound parity harness. It is not a port of the classic CPU renderer.
+This is an independent GPU port of Noisemaker's shader engine and Polymorphic DSL. The implementation is an embeddable library with a native compiler, GPU render-graph executor, effect catalog, example host, and source-bound parity harness. It is not a port of the classic CPU renderer.
 
-Status: reference-export tooling, generated catalog data, and native capability probes are implemented. The render-graph executor and native compiler remain unimplemented; there is no package, measured performance, or qualified platform. The embedding API and later runtime modules below remain proposed contracts. Capability evidence alone does not qualify any effect or platform.
+Status: the native compiler, render-graph executor, generated catalog, shader adapter, embedding API, viewer, package builder, and parity harness are implemented. Compiler, runtime, and extracted-package checks pass on the macOS development host. Full source-bound pixel qualification passes on macOS 14.8.3 arm64 with Apple M2, LÖVE 11.5, and Firefox 153.0 WebGL2: all 3,466 cases executed, all 210 effects evidenced, and zero near, deferred, skipped, failed, or missing cases at authority `8e5835932a7297d360b943200b42953224eea0a4`. The 79 uninformative cases remain excluded from effect credit. Windows and Linux remain unqualified. Capability evidence alone does not qualify any effect or platform.
 
 The scope is the current upstream shader engine: compiler stages, effect definitions, shader programs, resource allocation, runtime state, host inputs, user-defined Portable effects, and output textures. Full catalog parity is the destination; incremental milestones do not reduce that destination. Derive the denominator from the upstream commit in the authority lock (section 4) at each qualification run, never from a count written into a document.
 
@@ -14,7 +14,7 @@ Select a native Lua frontend and LÖVE GPU backend. Reuse upstream GLSL as immut
 
 A precompiled-graph-only loader is useful for renderer bring-up but is insufficient as the finished port: applications need native DSL compilation and live parameters. Embedding the browser renderer or binding the C++ CPU port would avoid the requested Lua/GPU implementation and is outside this design.
 
-Proposed modules:
+Modules:
 
 | Module | Responsibility |
 |---|---|
@@ -26,13 +26,13 @@ Proposed modules:
 | `tools/` | Development-only upstream export and catalog/shader generation |
 | `scripts/test`, `scripts/parity-summary` | Family check entrypoints (section 4) |
 | `tests/` and `parity/` | Native tests, shared corpus, golden minting, GPU runner and grading |
-| `examples/viewer/` | Minimal real LÖVE host, added after runtime bring-up |
+| `examples/viewer/` | Minimal real LÖVE host with reload and live parameter controls |
 
-### 2.1 Proposed embedding API
+### 2.1 Embedding API
 
-`nm.compile(source, options) -> graph | nil, diagnostics`; `nm.newRenderer(graph, options) -> renderer | nil, diagnostics`; `nm.registerEffect(definition) -> true | nil, diagnostics` registers a user-defined Portable effect (definition plus GLSL programs), validated as upstream `effect-validator.js` validates it. Renderer methods: `render(frame) -> Canvas | nil, diagnostics`, `setParameter(stepIndex, name, value)`, `setInput(binding, texture)`, `resize(width, height)`, `reset()`, and `release()`.
+`nm.compile(source, options) -> graph | nil, diagnostics`; `nm.newRenderer(graph, options) -> renderer | nil, diagnostics`; `nm.registerEffect(definition) -> true | nil, diagnostics` registers a user-defined Portable effect (definition plus GLSL programs), validated as upstream `effect-validator.js` validates it. Renderer methods: `render(frame) -> Canvas | nil, diagnostics`, `setParameter(stepIndex, name, value)`, `setInput(binding, texture)`, `resize(width, height)`, `reset()`, `copyTo(destination)`, and `release()`.
 
-`options` includes integer pixel dimensions and catalog identity. `frame` carries explicit time, delta time, frame index, and host-fed audio/MIDI state. Output is borrowed until the next render, resize, replacement, or release; a caller needing longer retention supplies a destination Canvas for an explicit GPU copy. Calls run on the LÖVE graphics thread. No hidden draw loop, window, callback replacement, or per-frame readback belongs in the library.
+`options` includes integer pixel dimensions and optional `texturePooling` (false by default). `frame` carries explicit time, delta time, frame index, and host-fed audio/MIDI state. Output is borrowed until the next render, resize, replacement, or release; a caller needing longer retention supplies a destination Canvas for an explicit GPU copy. Calls run on the LÖVE graphics thread. No hidden draw loop, window, callback replacement, or per-frame readback belongs in the library.
 
 ### 2.2 GPU execution
 
@@ -52,7 +52,7 @@ The GLSL authority needs no compute shaders or storage buffers, because WebGL2 h
 
 ## 3. Compiler and graph contract
 
-The implementation seam is upstream `shaders/src/runtime/compiler.js::compileGraph`: DSL → lexer → parser → validator → expander → resource allocation → render graph → GPU execution. A development-only JavaScript exporter supplies golden graphs before the native compiler exists. The shipping library must compile DSL without Node.js, a browser, a subprocess, or a remote service.
+The implementation seam is upstream `shaders/src/runtime/compiler.js::compileGraph`: DSL → lexer → parser → validator → expander → resource allocation → render graph → GPU execution. A development-only JavaScript exporter supplies independent golden graphs for the native compiler checks. The shipping library must compile DSL without Node.js, a browser, a subprocess, or a remote service.
 
 Preserve graph `id`, `source`, ordered `passes`, `programs`, `allocations`, `textures`, `renderSurface`, and `mediaSteps`. Maps need an explicit portable encoding. Normalize only specified representation differences and `compiledAt`; never discard semantically relevant fields to obtain equality. Record the normalizer version. The Qt normalized graph schema is a starting reference, not a substitute for inspecting current upstream fields.
 
@@ -68,19 +68,23 @@ The authority is the upstream Noisemaker commit pinned in `parity/reference.json
 
 The oracle and candidate must not both consume a stale candidate-generated catalog. Export the oracle directly from the locked commit, regenerate the candidate catalog independently, and compare inventories and definitions before comparing output. Source changes invalidate affected evidence. The lock must not hide drift from current upstream or route around a failing product gate.
 
-Use the family entrypoints. `scripts/test` runs every check that needs no GPU against the locked authority: catalog and corpus freshness, compiler stage parity, Portable registration and the harness unit tests. `scripts/parity-summary` runs the sweep fresh (goldens minted by the reference engine in the same run, candidates rendered from DSL by this port's own compiler, every case graded) and prints one `PARITY-SUMMARY` JSON line with `expected`, `executed`, `exact`, `strict`, `near`, `defer`, `skip`, `fail`, `missing`, `uninformative`, `effects` and `effects_evidenced`. It exits 0 only when no case is near, failing, skipped or missing and every catalog effect has informative exact or strict evidence of its own. Automated gap closure reads this line, so do not substitute a differently shaped report. [Reference definition](../noisemaker-for-rust-gpu/scripts/parity-summary).
+Use the family entrypoints. `scripts/test` checks catalog and corpus freshness, compiler stages and graphs, Portable registration, automation, inputs, and harness behavior against the locked authority. Its capture and overlay comparisons also require real browser and LÖVE GPU contexts. `scripts/test-gpu` runs the isolated native shader, runtime, and consumer regressions. `scripts/parity-summary` runs the sweep fresh (goldens minted by the reference engine in the same run, candidates rendered from DSL by this port's own compiler, every case graded) and prints one `PARITY-SUMMARY` JSON line with `expected`, `executed`, `exact`, `strict`, `near`, `defer`, `skip`, `fail`, `missing`, `uninformative`, `effects` and `effects_evidenced`. It exits 0 only when no case is near, failing, skipped or missing and every catalog effect has informative exact or strict evidence of its own. Automated gap closure reads this line, so do not substitute a differently shaped report. [Reference definition](../noisemaker-for-rust-gpu/scripts/parity-summary).
 
-Mint goldens on the upstream WebGL2 backend, as the Qt port does (`parity/batch-golden.mjs --backend webgl2`). Assert the active backend inside the page before each capture: a Shade `BrowserSession` renders WebGL2 until `setBackend()` changes it, so the backend a tool was asked for is not proof of the backend it ran. Grade presented output.
+Mint goldens on the upstream WebGL2 backend, as the Qt port does (`parity/batch-golden.mjs --backend webgl2`). Assert the active backend inside the page before each capture: a Shade `BrowserSession` renders WebGL2 until `setBackend()` changes it, so the backend a tool was asked for is not proof of the backend it ran. Capture the authored surface when the fixture specifies one; otherwise grade presented output. Record the selected surface and orientation.
 
 Start from the corpus the sibling ports share rather than a new fixture set: the shared fixture programs (`parity/programs`), the generated coverage corpus of every effect with its defaults, each value of each choice parameter and each flipped boolean (`parity/coverage`), user Portable effects (`parity/portable`), the timed tier for every effect that evolves across frames (`parity/timed`), and the sibling ports' curated programs (`parity/curated`). Include upstream's per-effect `parity-case.json` programs. Port-specific microfixtures (markers, state restoration, MRT, vertex stages) sit beside the shared corpus, not in place of it.
 
-Each case fixes DSL, effect parameters and defines, seed, dimensions, time, delta time, frame count, reset state, input assets and hashes, and capture orientation/color conversion. Stateful effects require sequential frame traces and declared warm-up/sample frames; a single attractive still is insufficient. Use asymmetric corner markers and odd dimensions to detect orientation and row-stride errors. Use raw float samples for internal texture checks and lossless PNGs for comparable final output.
+Each case fixes DSL, effect parameters and defines, seed, dimensions, time, delta time, frame count, reset state, input assets and hashes, and capture orientation/color conversion. Stateful effects require sequential frame traces and declared warm-up/sample frames; a single attractive still is insufficient. Use asymmetric corner markers and odd dimensions to detect orientation and row-stride errors. Use raw float samples for internal texture checks and binary RGBA8 captures for comparable final output.
+
+The parity harness probes each renderer's texture-size limit before rendering, then uses their common minimum for capability-dependent volume atlas sizes. Both runners record every requested-to-effective size change and the grader requires those changes to agree. This normalizes the comparison environment; it does not reduce the native library's supported texture limit.
+
+Effect evidence requires a verified readback of the named effect's changed RGB output and a path to the captured surface. Failed or incomplete framebuffer readbacks cannot earn credit. Stateful identity transfers additionally require observed state writes and reads plus a matched active/control capture with a visible RGB difference in both renderers. Structureless or already-settled cases remain visible but cannot supply effect evidence.
 
 Each case lands in exactly one family bucket. Exact means identical pixels. Strict means maximum absolute channel difference ≤ 2.001 in 8-bit units and global SSIM ≥ 0.98, with matching dimensions and alpha. A pass on a golden with no structure (one colour over more than 99% of the pixels, or luminance standard deviation below one 8-bit level) is uninformative and never parity evidence. Unsupported cases, unavailable runners, both engines refusing a claimed-supported case, and skipped cases never count as passes or shrink the denominator. Keep near and other relaxed categories out of full-parity totals; never widen tolerances to make a port pass. Compiler equivalence, native shader compilation, finite output, package integrity, rendered parity, and platform qualification are separate results.
 
 The fixture matrix covers every effect and declared mode, parameter boundaries, compile-time variants, chains, external inputs, resize, repeat, feedback, MRT, points/billboards, mesh/depth, Portable effects including volume textures, deterministic automation, and errors. Where upstream WebGPU disagrees with WebGL2, the divergence is an upstream WebGPU defect; it does not change this port's golden.
 
-GPU qualification uses actual compatible hardware and the actual target runtime. CPU-only CI may validate syntax, catalog generation, graph equivalence, and reports; it cannot qualify rendering. Scheduled graphics work must use a capability-matched host broker. A job container's missing graphics device is not evidence that fleet GPU access is absent. No fleet jobs, intake recipes, or scheduling are created by this planning task.
+GPU qualification uses actual compatible hardware and the actual target runtime. CPU-only CI may validate syntax, catalog generation, graph equivalence, and reports; it cannot qualify rendering. Scheduled graphics work must use a capability-matched host broker. A job container's missing graphics device is not evidence that fleet GPU access is absent. This port does not create fleet jobs, intake recipes, or scheduling.
 
 ## 5. Qualification sequence and risks
 
@@ -96,7 +100,18 @@ LÖVE mobile builds, editor UI, new effects, network services, export-site integ
 
 ## 6. Performance and distribution
 
-Benchmark 256×256, 512×512, 1920×1080, and an odd-sized target on identified GPUs. Measure shader warm-up separately from steady-state CPU submission, frame throughput, GPU timing where available, allocation growth, and readback costs. Include simple generators, multipass filters, and stateful/geometry workloads. No frame-rate target is a measured result until this runs.
+Benchmark 256×256, 512×512, 1920×1080, and an odd-sized target on identified GPUs. Measure shader warm-up separately from steady-state CPU submission, frame throughput, GPU timing where available, allocation growth, and readback costs. Include simple generators, multipass filters, and stateful/geometry workloads. Keep measured throughput separate from presentation cadence and supported-device claims.
+
+The 2026-10-07 benchmark ran on the qualified Apple M2 host with 8 warm-up frames and 32 measured frames per workload and size. Each table entry is measured frames/second for the submission batch plus its final synchronous readback:
+
+| Workload | 256×256 | 512×512 | 1920×1080 | 257×129 |
+|---|---:|---:|---:|---:|
+| Noise generator | 3141.7 | 1400.3 | 350.9 | 5536.9 |
+| Blur chain | 2869.5 | 1054.9 | 279.3 | 3359.4 |
+| Cellular automata | 3820.6 | 2935.0 | 707.4 | 3096.1 |
+| Point attractor | 603.2 | 604.5 | 139.2 | 821.7 |
+
+This is one batch per configuration on a shared development host, without clearing driver caches. It measures throughput, not presentation cadence or an isolated GPU duration. LÖVE's public API provides no GPU timer used by this harness. The JSON result separately records preparation, warm-up, CPU submission, completion/readback, idle readback, Lua memory, and texture memory. All 16 samples retained identical texture usage between warm-up and batch end; after release and a neutral host draw, texture memory returned to baseline. The next host draw matters because LÖVE can retain its last bound texture. At 1080p, active texture usage was 63.28 MiB for noise, 87.01 MiB for blur, 63.31 MiB for cellular automata, and 223.66 MiB for the attractor. Source hashes remained unchanged during measurement.
 
 Distribute a Lua module and its catalog/shader assets, with a small `.love` example and parity runner as separate tools. Ship no Node/browser dependency in the runtime. A clean consumer must load from an extracted package without sibling repositories, source-tree-relative paths, or runtime network fetches. Preserve upstream licensing and document compiler/tooling notices before packaging.
 

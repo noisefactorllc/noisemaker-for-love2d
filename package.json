@@ -1,0 +1,12 @@
+{
+  "name": "noisemaker-for-love2d-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "scripts/test",
+    "parity": "scripts/parity-summary"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+"""Build a self-contained source package and test it after clean extraction."""
+
+import argparse
+import hashlib
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import tempfile
+from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
+
+
+ROOT = Path(__file__).resolve().parent.parent
+INCLUDE = ("noisemaker", "examples/viewer", "tests/consumer", "parity/portable")
+SUFFIXES = {".lua", ".glsl", ".frag", ".vert", ".json", ".dsl"}
+ROOT_FILES = ("LICENSE", "TRADEMARK.md", "README.md", "ARCHITECTURE.md", "PORTING-GUIDE.md", "docs/IMPLEMENTATION-PLAN.md")
+
+
+def files():
+    for name in ROOT_FILES:
+        path = ROOT / name
+        if not path.is_file() or path.is_symlink():
+            raise RuntimeError(f"Missing package metadata file: {name}")
+        yield Path(name), path
+    for prefix in INCLUDE:
+        directory = ROOT / prefix
+        if not directory.is_dir():
+            raise RuntimeError(f"Missing package directory: {prefix}")
+        for path in sorted(directory.rglob("*")):
+            if path.is_symlink():
+                raise RuntimeError(f"Package cannot include symlink: {path}")
+            if path.is_file() and path.suffix in SUFFIXES:
+                yield path.relative_to(ROOT), path
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=Path, default=ROOT / "dist/noisemaker-love2d.zip")
+    args = parser.parse_args()
+    love = os.environ.get("LOVE_BIN") or shutil.which("love")
+    if not love or not Path(love).is_file():
+        raise RuntimeError("LÖVE is required for extracted CPU and GPU tests; set LOVE_BIN")
+    output = args.output.resolve()
+    manifest = list(files())
+    if not manifest:
+        raise RuntimeError("Package has no files")
+    assert {Path(name) for name in ROOT_FILES}.issubset({relative for relative, _ in manifest})
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with ZipFile(output, "w", compression=ZIP_DEFLATED, compresslevel=9) as archive:
+        for relative, source in manifest:
+            item = ZipInfo(relative.as_posix(), date_time=(2026, 1, 1, 0, 0, 0))
+            item.compress_type = ZIP_DEFLATED
+            item.external_attr = 0o644 << 16
+            archive.writestr(item, source.read_bytes())
+    demo = output.with_suffix('.love')
+    with ZipFile(demo, "w", compression=ZIP_DEFLATED, compresslevel=9) as archive:
+        for relative, source in manifest:
+            if relative.parts[0] == 'tests' or relative.parts[0] == 'parity':
+                continue
+            name = relative.as_posix()
+            if name in ('examples/viewer/main.lua', 'examples/viewer/conf.lua', 'examples/viewer/program.dsl'):
+                name = relative.name
+            item = ZipInfo(name, date_time=(2026, 1, 1, 0, 0, 0))
+            item.compress_type = ZIP_DEFLATED
+            item.external_attr = 0o644 << 16
+            archive.writestr(item, source.read_bytes())
+    subprocess.run([love, str(demo)], cwd=output.parent, env={**os.environ, 'NM_VIEWER_SMOKE':'1'}, check=True)
+    with tempfile.TemporaryDirectory(prefix="noisemaker-love2d-package-") as staging:
+        destination = Path(staging)
+        with ZipFile(output) as archive:
+            if archive.testzip() is not None:
+                raise RuntimeError("Package checksum failed")
+            archive.extractall(destination)
+        for relative, source in manifest:
+            copied = destination / relative
+            if hashlib.sha256(copied.read_bytes()).digest() != hashlib.sha256(source.read_bytes()).digest():
+                raise RuntimeError(f"Extracted file differs: {relative}")
+        for suite in ("cpu", "gpu"):
+            subprocess.run([love, str(destination / "tests/consumer" / suite)], cwd=destination, check=True)
+    print(f"Package passed extracted CPU and GPU tests: {output} ({len(manifest)} files), demo {demo}")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (RuntimeError, subprocess.CalledProcessError) as error:
+        print(f"scripts/package: {error}", file=sys.stderr)
+        sys.exit(1)

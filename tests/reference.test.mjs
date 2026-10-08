@@ -125,6 +125,8 @@ test('reference export is deterministic and includes independent compiler stages
   assert.deepEqual(first, second)
   assert.equal(first.authority.revision, lock.commit)
   assert.equal(first.cases.length, manifest.cases.length)
+  assert.equal(first.normalizerVersion, 2)
+  assert.equal(first.functionProbeStates.length, 4)
   const solid = first.cases.find(item => item.id === 'solid-red')
   assert.equal(solid.status, 'compiled')
   assert.equal(solid.stages.lex[0].type, 'SEARCH')
@@ -143,6 +145,12 @@ test('reference export is deterministic and includes independent compiler stages
   const unicode = first.cases.find(item => item.id === 'utf16-source')
   assert.equal(unicode.status, 'compiled')
   assert.equal(unicode.stages.lex.find(token => token.type === 'SEARCH').position.start, 6)
+  const functionCase = first.cases.find(item => item.id === 'function-behavior')
+  const octaveProbe = functionCase.stages.validate.plans[0].chain[0].args.octaves.fn
+  assert.equal(octaveProbe.$type, 'functionProbe')
+  assert.match(octaveProbe.source, /Math\.sin\(time\)/)
+  assert.deepEqual(octaveProbe.evaluations.map(item => item.status), ['returned', 'returned', 'returned', 'returned'])
+  assert.notEqual(octaveProbe.evaluations[0].value, octaveProbe.evaluations[1].value)
 })
 
 test('missing locked effect is an exporter failure, not a DSL refusal', async () => {
@@ -160,3 +168,18 @@ test('CLI rejects unknown arguments instead of silently exporting', () => {
     stdio: 'pipe'
   }), /Usage: node tools\/export-reference\.mjs/)
 })
+
+
+test('explicit clean source is snapshotted before later checkout changes', () => fixtureRepository(async (root, commit) => {
+  const project=mkdtempSync(join(tmpdir(),'love-reference-lock-'))
+  try {
+    mkdirSync(join(project,'parity'))
+    writeFileSync(join(project,'parity/reference.json'),JSON.stringify({repository:'https://github.com/example/reference',commit}))
+    const snapshot=await resolveReference({projectRoot:project,referenceRoot:root})
+    assert.notEqual(snapshot.root,root)
+    const before=readFileSync(join(snapshot.root,'shaders/src/compiler.js'),'utf8')
+    writeFileSync(join(root,'shaders/src/compiler.js'),'changed while a render runs')
+    assert.equal(readFileSync(join(snapshot.root,'shaders/src/compiler.js'),'utf8'),before)
+    await assert.rejects(resolveReference({projectRoot:project,referenceRoot:root}),/dirty/)
+  } finally {rmSync(project,{recursive:true,force:true})}
+}))

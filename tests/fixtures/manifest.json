@@ -20,6 +20,18 @@
       "capture": null
     },
     {
+      "id": "inline-surface-argument",
+      "effects": ["synth/testPattern", "synth/solid", "mixer/alphaMask", "filter/adjust"],
+      "source": "search synth, mixer, filter\n\ntestPattern(pattern: colorBars).alphaMask(tex: solid(color: #808080), maskMode: true).adjust(brightness: 1.2, contrast: 0.35, saturation: 0.8).write(o0)\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "function-behavior",
+      "effects": ["synth/noise"],
+      "source": "search synth\nnoise(octaves: () => Math.sin(time) * 4 + 5, seed: () => seed + 1).write(o0)\nrender(o0)",
+      "capture": null
+    },
+    {
       "id": "unknown-effect",
       "effects": [],
       "source": "search synth\nmissing().write(o0)\nrender(o0)",

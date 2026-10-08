@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$ROOT"
+LOVE=${LOVE_BIN:-love}
+for suite in tests/shaders/* tests/runtime/* tests/consumer/gpu; do
+  if [ -f "$suite/main.lua" ]; then
+    "$LOVE" "$suite"
+  fi
+done

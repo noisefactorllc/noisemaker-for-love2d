@@ -4,17 +4,27 @@ ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$ROOT"
 node --test tests/*.test.mjs
 node tools/import-catalog.mjs --check
-if [ -n "${LUAJIT_BIN:-}" ]; then
-  "$LUAJIT_BIN" tests/capabilities.lua
-  "$LUAJIT_BIN" tests/catalog.lua
-elif command -v luajit >/dev/null 2>&1; then
-  luajit tests/capabilities.lua
-  luajit tests/catalog.lua
-elif [ -n "${LOVE_BIN:-}" ]; then
-  "$LOVE_BIN" tests/unit
+node tools/import-palettes.mjs --check
+node tools/import-shaders.mjs --check
+node tools/import-corpus.mjs --check
+if [ -n "${LOVE_BIN:-}" ]; then
+  LOVE="$LOVE_BIN"
 elif command -v love >/dev/null 2>&1; then
-  love tests/unit
+  LOVE=$(command -v love)
 else
-  echo 'scripts/test: LuaJIT or LÖVE is required for CPU Lua tests; set LUAJIT_BIN or LOVE_BIN.' >&2
+  echo 'scripts/test: LÖVE is required for native CPU checks; set LOVE_BIN.' >&2
   exit 1
 fi
+"$LOVE" tests/unit
+"$LOVE" tests/compiler
+"$LOVE" tests/shaders
+for tool in check-frontend check-portable check-automation check-inputs check-hooks; do
+  LOVE_BIN="$LOVE" node "tools/$tool.mjs"
+done
+LOVE_BIN="$LOVE" node tools/check-graph.mjs
+LOVE_BIN="$LOVE" node tools/check-graph.mjs --upstream
+LOVE_BIN="$LOVE" node tools/check-graph.mjs --corpus
+LOVE_BIN="$LOVE" node tools/check-graph.mjs --coverage
+LOVE_BIN="$LOVE" node tools/check-graph.mjs --variants
+LOVE_BIN="$LOVE" node tools/check-capture.mjs
+LOVE_BIN="$LOVE" node tools/check-hooks-raster.mjs

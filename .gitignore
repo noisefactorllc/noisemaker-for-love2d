@@ -1,4 +1,7 @@
 /parity/out/
 /parity/.cache/
 *.love
+/dist/
 .DS_Store
+
+node_modules/
