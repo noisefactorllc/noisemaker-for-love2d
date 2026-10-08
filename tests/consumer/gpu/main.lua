@@ -177,18 +177,20 @@ local function check()
   end
   local audioGraph={
     passes={{id='audio',program='audio',inputs={},outputs={color='global_o0'},uniforms={}}},
-    programs={audio={glsl='uniform float audioSpectrum[128]; out vec4 fragColor; void main(){fragColor=vec4(audioSpectrum[0],0,0,1);}'}},
+    programs={audio={glsl='uniform float audioSpectrum[128]; uniform float audioWaveform[128]; out vec4 fragColor; void main(){fragColor=vec4(audioSpectrum[0],audioWaveform[0],0,1);}'}},
     textures={},renderSurface='o0',
   }
   local audioRenderer=assert(nm.newRenderer(audioGraph,{width=4,height=4}))
-  local function audioRed(frame)
+  local function audioChannels(frame)
     local pixels=assert(audioRenderer:render(frame)):newImageData()
-    local red=pixels:getPixel(0,0)
+    local red,green=pixels:getPixel(0,0)
     pixels:release()
-    return red
+    return red,green
   end
-  assert(math.abs(audioRed({audio={spectrum={.75}}})-.75)<.02)
-  assert(audioRed({})<.02,'Omitted audio retained prior GPU uniform')
+  local liveSpectrum,liveWaveform=audioChannels({audio={spectrum={.75},waveform={.75}}})
+  assert(math.abs(liveSpectrum-.75)<.02 and math.abs(liveWaveform-.75)<.02)
+  local silentSpectrum,silentWaveform=audioChannels({})
+  assert(silentSpectrum<.02 and silentWaveform<.02,'Omitted audio retained prior GPU uniform')
   audioRenderer:release()
   local memoryGraph={
     passes={
@@ -230,6 +232,28 @@ local function check()
   assert(storageRenderer:setParameter(0,'enabled',1))
   assert(math.abs(storageRed()-.5)<.02,'Storage output feedback lost state after a skipped writer')
   storageRenderer:release()
+  local scratchGraph={
+    passes={
+      {id='clear',program='clear',inputs={},outputs={color='global_scratch'},uniforms={}},
+      {id='deposit',program='deposit',inputs={},outputs={color='global_scratch'},uniforms={},blend=true},
+      {id='show',program='show',inputs={src='global_scratch'},outputs={color='global_o0'},uniforms={}},
+    },
+    programs={
+      clear={glsl='out vec4 fragColor; void main(){fragColor=vec4(0.0);} '},
+      deposit={glsl='out vec4 fragColor; void main(){fragColor=vec4(0.25,0.0,0.0,0.0);} '},
+      show={glsl='uniform sampler2D src; out vec4 fragColor; void main(){fragColor=texture(src,vec2(0.5));}'},
+    },
+    textures={global_scratch={width='screen',height='screen',format='rgba16f'}},
+    renderSurface='o0',
+  }
+  local scratchRenderer=assert(nm.newRenderer(scratchGraph,{width=4,height=4}))
+  for frame=1,2 do
+    local pixels=assert(scratchRenderer:render({})):newImageData()
+    local red=pixels:getPixel(0,0)
+    pixels:release()
+    assert(math.abs(red-.25)<.02,'Frame '..frame..' accumulated stale within-frame scratch')
+  end
+  scratchRenderer:release()
   local originalNew=viewer.new
   local capturedSession
   viewer.new=function(...)

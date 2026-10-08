@@ -120,7 +120,7 @@ function Audio:getDeviceChannelState(selector)
 end
 function M.new(options)
   return setmetatable({options=options or {},external={midi=nil,audio=nil},
-    silentSpectrum=array(nil,128,0),silentWaveform=array(nil,128,0.5)},Input)
+    silentSpectrum=array(nil,128,0),silentWaveform=array(nil,128,0)},Input)
 end
 function Input:update(frame)
   frame=frame or {}

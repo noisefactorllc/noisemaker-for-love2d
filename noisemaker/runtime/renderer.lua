@@ -76,12 +76,18 @@ function M.new(graph,options,hookOverrides)
  if not valid then return nil,diagnostics end
  local clamped,clampError=pcall(resourceLib.clampGraphVolumes,graph,love.graphics.getSystemLimits().texturesize)
  if not clamped then return nil,{{stage='graph',code='ERR_GRAPH',message=tostring(clampError)}} end
- local readSurfaces,writtenSurfaces,feedbackSurfaces={},{},{}
+ local firstTouch,writtenSurfaces,feedbackSurfaces={},{},{}
  for _,pass in ipairs(graph.passes) do
-  for _,id in pairs(pass.inputs or {}) do local name=global(id);if name then readSurfaces[name]=true end end
-  for _,id in pairs(normalizedOutputs(pass)) do local name=global(id);if name then writtenSurfaces[name]=true end end
+  for _,id in pairs(pass.inputs or {}) do local name=global(id);if name and not firstTouch[name] then firstTouch[name]='read' end end
+  for _,id in pairs(normalizedOutputs(pass)) do
+   local name=global(id)
+   if name then
+    if not firstTouch[name] then firstTouch[name]='write' end
+    writtenSurfaces[name]=true
+   end
+  end
  end
- for name in pairs(readSurfaces) do if writtenSurfaces[name] then feedbackSurfaces[name]=true end end
+ for name,touch in pairs(firstTouch) do if touch=='read' and writtenSurfaces[name] then feedbackSurfaces[name]=true end end
  local self=setmetatable({texturePooling=options.texturePooling==true,graph=graph,width=options.width,height=options.height,uniforms=gatherUniforms(graph),feedbackSurfaces=feedbackSurfaces,external={},externalSources={},owned={},programs={},meshes={},frameIndex=0,lastTime=0,released=false,provenance={},lastPassCount=0,uploads={},inputManager=inputlib.new({needsMidiNoteGrid=(function() for _,pass in ipairs(graph.passes) do if pass.inputs and pass.inputs.midiNoteGrid then return true end end;return false end)()})},Renderer)
  local result,errors=guard('prepare',function()
   for _,pass in ipairs(graph.passes) do
