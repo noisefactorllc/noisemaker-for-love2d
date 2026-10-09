@@ -191,6 +191,9 @@ local function check()
   assert(math.abs(liveSpectrum-.75)<.02 and math.abs(liveWaveform-.75)<.02)
   local silentSpectrum,silentWaveform=audioChannels({})
   assert(silentSpectrum<.02 and silentWaveform<.02,'Omitted audio retained prior GPU uniform')
+  local emptySpectrum,emptyWaveform=audioChannels({audio={}})
+  assert(emptySpectrum<.02 and math.abs(emptyWaveform-.5)<.02,
+    'Explicit empty audio snapshot did not use the waveform midpoint')
   audioRenderer:release()
   local memoryGraph={
     passes={
@@ -232,6 +235,53 @@ local function check()
   assert(storageRenderer:setParameter(0,'enabled',1))
   assert(math.abs(storageRed()-.5)<.02,'Storage output feedback lost state after a skipped writer')
   storageRenderer:release()
+  memoryGraph.passes[1].inputs={}
+  memoryGraph.passes[1].storageTextures=nil
+  memoryGraph.passes[1].outputs={color='global_memory'}
+  memoryGraph.programs.update.glsl='out vec4 fragColor; void main(){fragColor=vec4(0.25,0.0,0.0,1.0);}'
+  local writeOnlyRenderer=assert(nm.newRenderer(memoryGraph,{width=4,height=4}))
+  local function writeOnlyRed()
+    local pixels=assert(writeOnlyRenderer:render({})):newImageData()
+    local red=pixels:getPixel(0,0)
+    pixels:release()
+    return red
+  end
+  assert(math.abs(writeOnlyRed()-.25)<.02)
+  assert(writeOnlyRenderer:setParameter(0,'enabled',0))
+  for _=1,3 do
+    assert(math.abs(writeOnlyRed()-.25)<.02,'Write-first persistent surface lost state during skipped updates')
+  end
+  writeOnlyRenderer:release()
+  assert(nm.registerEffect({
+    name='Memory check',namespace='user',func='memoryCheck',
+    globals={enabled={type='int',default=1,uniform='enabled'}},
+    textures={global_memory={width='screen',height='screen',format='rgba16f',persistent=true}},
+    passes={
+      {program='update',conditions={runIf={{uniform='enabled',equals=1}}},
+        inputs={prev='global_memory'},outputs={color='global_memory'}},
+      {program='show',inputs={src='global_memory'},outputs={color='outputTex'}},
+    },
+    shaders={
+      update={glsl='uniform sampler2D prev; out vec4 fragColor; void main(){fragColor=texture(prev,vec2(0.5))+vec4(0.25,0,0,0);}'},
+      show={glsl='uniform sampler2D src; out vec4 fragColor; void main(){fragColor=texture(src,vec2(0.5));}'},
+    },
+  }))
+  local publicMemoryGraph=assert(nm.compile('search user\nmemoryCheck().write(o0)\nrender(o0)'))
+  local publicMemory=assert(nm.newRenderer(publicMemoryGraph,{width=4,height=4}))
+  local function publicMemoryRed()
+    local pixels=assert(publicMemory:render({})):newImageData()
+    local red=pixels:getPixel(0,0)
+    pixels:release()
+    return red
+  end
+  assert(math.abs(publicMemoryRed()-.25)<.02)
+  assert(publicMemory:setParameter(0,'enabled',0))
+  for _=1,3 do
+    assert(math.abs(publicMemoryRed()-.25)<.02,'Portable persistent memory lost state during skipped updates')
+  end
+  assert(publicMemory:setParameter(0,'enabled',1))
+  assert(math.abs(publicMemoryRed()-.5)<.02,'Portable persistent memory failed to resume from saved state')
+  publicMemory:release()
   local scratchGraph={
     passes={
       {id='clear',program='clear',inputs={},outputs={color='global_scratch'},uniforms={}},
@@ -255,29 +305,79 @@ local function check()
   end
   scratchRenderer:release()
   local originalNew=viewer.new
+  local originalRead=love.filesystem.read
   local capturedSession
+  local bundled=read('examples/viewer/program.dsl')
   viewer.new=function(...)
     capturedSession=originalNew(...)
     return capturedSession
   end
+  love.filesystem.read=function(path,...)
+    if path=='program.dsl' then return bundled end
+    return originalRead(path,...)
+  end
+  local function drop(source)
+    love.filedropped({
+      open=function() return true end,
+      read=function() return source end,
+      close=function() end,
+      getFilename=function() return 'dropped.dsl' end,
+    })
+  end
+  local function samePixels(a,b)
+    if a:getWidth()~=b:getWidth() or a:getHeight()~=b:getHeight() then return false end
+    for y=0,a:getHeight()-1 do
+      for x=0,a:getWidth()-1 do
+        local ar,ag,ab,aa=a:getPixel(x,y)
+        local br,bg,bb,ba=b:getPixel(x,y)
+        if ar~=br or ag~=bg or ab~=bb or aa~=ba then return false end
+      end
+    end
+    return true
+  end
+  local function assertGreen(canvas)
+    local pixels=canvas:newImageData()
+    local r,g,b,a=pixels:getPixel(0,0)
+    pixels:release()
+    assert(r<.02 and g>.98 and b<.02 and a>.98,'Viewer did not display dropped green program')
+  end
   dofile(root..'/examples/viewer/main.lua')
   love.load()
-  love.update(1/60)
+  assert(capturedSession.source==bundled and capturedSession.canvas,'Viewer did not load bundled program')
+  local feedbackProgram='search synth\nnoise(seed: 3, scaleX: 30, scaleY: 30).write(o1)\nreactionDiffusion(tex: read(o1)).write(o0)\nrender(o0)'
+  drop(feedbackProgram)
+  assert(capturedSession.source==feedbackProgram,'Viewer did not load feedback program')
+  for _=1,2 do love.update(1/60) end
+  local beforePause=capturedSession.canvas:newImageData()
   love.keypressed('space')
   local pausedFrame=capturedSession.renderer.frameIndex
-  for _=1,3 do love.update(1/60) end
+  for _=1,5 do love.update(1/60) end
+  local duringPause=capturedSession.canvas:newImageData()
   assert(capturedSession.renderer.frameIndex==pausedFrame,'Viewer pause advanced feedback frame')
+  assert(samePixels(beforePause,duringPause),'Viewer pause changed feedback pixels')
+  love.keypressed('space')
+  for _=1,5 do love.update(1/60) end
+  local afterResume=capturedSession.canvas:newImageData()
+  assert(capturedSession.renderer.frameIndex==pausedFrame+5,'Viewer resume did not advance feedback frames')
+  assert(not samePixels(duringPause,afterResume),'Viewer resume did not advance feedback pixels')
+  beforePause:release();duringPause:release();afterResume:release()
   local dropped='search synth\nsolid(color: #00ff00).write(o0)\nrender(o0)'
-  love.filedropped({
-    open=function() return true end,
-    read=function() return dropped end,
-    close=function() end,
-    getFilename=function() return 'dropped.dsl' end,
-  })
+  drop(dropped)
   assert(capturedSession.source==dropped,'Viewer did not load dropped DSL')
+  assertGreen(capturedSession.canvas)
   love.keypressed('f5')
   assert(capturedSession.source==dropped,'Viewer F5 replaced dropped DSL')
+  assertGreen(capturedSession.canvas)
+  local stableRenderer,stableCanvas=capturedSession.renderer,capturedSession.canvas
+  drop('search synth\nmissing().write(o0)\nrender(o0)')
+  assert(capturedSession.renderer==stableRenderer and capturedSession.canvas==stableCanvas
+    and capturedSession.source==dropped,'Failed drop replaced the last valid renderer')
+  love.keypressed('f5')
+  assert(capturedSession.source==dropped and capturedSession.renderer~=stableRenderer,
+    'Viewer F5 after failed drop did not reload the last valid program')
+  assertGreen(capturedSession.canvas)
   love.quit()
+  love.filesystem.read=originalRead
   viewer.new=originalNew
   print('clean consumer GPU hot replacement and 100 lifecycle cycles passed; GPU object counts and texture bytes returned to baseline, Lua growth below 1 MiB')
 end

@@ -200,6 +200,42 @@ local function run()
    string.format('Index %d: got %.4f %.4f %.4f %.4f, expected %.4f',case[1],r,gc,b,a,case[2]))
   data:release()
  end
+ local fixtureFile=assert(io.open(root..'/parity/array-index.json','rb'))
+ local fixture=require('noisemaker.json').decode(fixtureFile:read('*a'))
+ fixtureFile:close()
+ assert(fixture.version==1 and #fixture.cases==6,'Invalid array-index differential fixture')
+ local differentialShaders={}
+ for _,name in ipairs({'literal','macro'}) do
+  local adapted,adaptError=adapter.adapt{pixel=fixture.shaders[name],path='test/array-index-differential-'..name}
+  assert(adapted,adaptError and adaptError.detail)
+  differentialShaders[name]=g.newShader(adapted.pixel,adapted.vertex)
+ end
+ local differential={}
+ local function channelByte(value) return math.floor(value*255+0.5) end
+ for _,case in ipairs(fixture.cases) do
+  local variant=assert(differentialShaders[case.extent])
+  g.setCanvas(canvas);g.clear(0,0,0,0);g.setShader(variant)
+  variant:send('lookup',case.lookup);g.draw(mesh);g.setCanvas()
+  local pixels=canvas:newImageData()
+  local r,gc,b,a=pixels:getPixel(4,4)
+  pixels:release()
+  local rgba={channelByte(r),channelByte(gc),channelByte(b),channelByte(a)}
+  if case.rgba then
+   for channel=1,4 do
+    assert(rgba[channel]==case.rgba[channel],
+     string.format('%s channel %d: native byte %d, defined fixture byte %d',
+      case.id,channel,rgba[channel],case.rgba[channel]))
+   end
+  end
+  differential[#differential+1]={id=case.id,rgba=rgba}
+ end
+ for _,variant in pairs(differentialShaders) do variant:release() end
+ local outputPath=os.getenv('NM_ARRAY_INDEX_OUTPUT')
+ if outputPath and outputPath~='' then
+  local output=assert(io.open(outputPath,'wb'))
+  output:write(require('noisemaker.json').encode({cases=differential}))
+  output:close()
+ end
  local shadowPixel=[[
   uniform int lookup;
   float values[2];

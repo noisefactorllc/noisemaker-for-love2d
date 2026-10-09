@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "shaders": {
+    "literal": "#version 300 es\nprecision highp float;\nprecision highp int;\nuniform int lookup;\nout vec4 fragColor;\nvoid main() {\n  float values[3];\n  values[0] = 0.125;\n  values[1] = 0.5;\n  values[2] = 0.875;\n  fragColor = vec4(values[lookup], 0.0, 0.0, 1.0);\n}\n",
+    "macro": "#version 300 es\nprecision highp float;\nprecision highp int;\n#define N 3\nuniform int lookup;\nout vec4 fragColor;\nvoid main() {\n  float values[N];\n  values[0] = 0.125;\n  values[1] = 0.5;\n  values[2] = 0.875;\n  fragColor = vec4(values[lookup], 0.0, 0.0, 1.0);\n}\n"
+  },
+  "cases": [
+    {
+      "id": "literal-negative",
+      "extent": "literal",
+      "lookup": -4
+    },
+    {
+      "id": "literal-in-range",
+      "extent": "literal",
+      "lookup": 1,
+      "rgba": [
+        128,
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "id": "literal-oversized",
+      "extent": "literal",
+      "lookup": 9
+    },
+    {
+      "id": "macro-negative",
+      "extent": "macro",
+      "lookup": -4
+    },
+    {
+      "id": "macro-in-range",
+      "extent": "macro",
+      "lookup": 1,
+      "rgba": [
+        128,
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "id": "macro-oversized",
+      "extent": "macro",
+      "lookup": 9
+    }
+  ]
+}

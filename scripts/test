@@ -27,4 +27,5 @@ LOVE_BIN="$LOVE" node tools/check-graph.mjs --corpus
 LOVE_BIN="$LOVE" node tools/check-graph.mjs --coverage
 LOVE_BIN="$LOVE" node tools/check-graph.mjs --variants
 LOVE_BIN="$LOVE" node tools/check-capture.mjs
+LOVE_BIN="$LOVE" node tools/check-array-index.mjs
 LOVE_BIN="$LOVE" node tools/check-hooks-raster.mjs

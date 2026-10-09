@@ -60,7 +60,7 @@ Run the standalone viewer with `love noisemaker-love2d.love`, then drop a DSL fi
 
 `setInput` accepts a LÖVE Texture, such as an Image or Canvas, rather than ImageData. Create an Image from data with `love.graphics.newImage(data, {linear = true})`. The `media()` effect uses the external binding `imageTex`: `renderer:setInput('imageTex', hostTexture)`. Inspect `graph.passes[*].inputs` for each pass's sampler-to-resource mapping; these maps also contain internal graph resources. Call `renderer:setParameter(mediaStep, 'imageSize', {w, h})` only when the host should replace the authored layout size.
 
-Audio capture, MIDI devices, text rasterization, and mesh loading belong to the host. Supply snapshots to each render; omitted audio/MIDI state clears the previous snapshot. Audio arrays use Lua's one-based indexing and are padded to 16 FFT bands, 128 spectrum bins, and 128 waveform samples. MIDI channels are 1–16; note keys are 0–127 with velocities 0–127. String keys make the note map unambiguous, including note zero:
+Audio capture, MIDI devices, text rasterization, and mesh loading belong to the host. Supply snapshots to each render. Omitting the audio field clears the previous snapshot and sends zero spectrum and waveform uniforms; passing an empty audio table creates a snapshot with zero spectrum and waveform samples padded to 0.5. Omitting the MIDI field clears its previous snapshot. Audio arrays use Lua's one-based indexing and are padded to 16 FFT bands, 128 spectrum bins, and 128 waveform samples. MIDI channels are 1–16; note keys are 0–127 with velocities 0–127. String keys make the note map unambiguous, including note zero:
 
 ```lua
 local audio = {
@@ -115,7 +115,7 @@ The comparison used the common 8,192-pixel texture limit; native LÖVE retains i
 
 ## 5. Repository state
 
-Private development repository under `noisefactorllc`, with default branch `main`. This repository remains private until the port is ready to use and the operator explicitly authorizes a public release. It has no CI, release, or deployment workflows. Reference tools use Node.js and Playwright with Firefox hardware WebGL2 as the canonical pixel authority; each run records its browser version and GPU identity. Packaging uses Python's standard library. Native checks require LÖVE; GPU checks require a real graphics context. The package includes the existing MIT license and trademark policy; publication remains subject to release qualification.
+Private development repository under `noisefactorllc`, with default branch `main`. This repository remains private until the port is ready to use and the operator explicitly authorizes a public release. Its test-only CI workflow requires an allowlisted GPU runner; there are no release or deployment workflows. Reference tools use Node.js and Playwright with Firefox hardware WebGL2 as the canonical pixel authority; each run records its browser version and GPU identity. Packaging uses Python's standard library. Native checks require LÖVE; GPU checks require a real graphics context. The package includes the existing MIT license and trademark policy; publication remains subject to release qualification.
 
 ## 6. Development checks
 

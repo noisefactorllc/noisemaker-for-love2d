@@ -21,6 +21,43 @@ local function unwrap(value)
   return nil
 end
 local definitionByEffect = unwrap(definitions)
+local function qualifiedMrtPixels()
+  local source = [[
+layout(location=0) out mediump vec4 firstColor;
+layout(location=1) out highp vec4 secondColor;
+void main() {
+  firstColor = vec4(0.25, 0.5, 0.75, 0.125);
+  secondColor = vec4(0.875, 0.625, 0.375, 0.9375);
+}
+]]
+  local program, diagnostic = adapter.adapt{pixel=source, path='test/qualified-mrt'}
+  assert(program, diagnostic and (diagnostic.detail or diagnostic.code))
+  local g = love.graphics
+  local shader = g.newShader(program.pixel, program.vertex)
+  local first = g.newCanvas(4, 4, {format='rgba16f', dpiscale=1})
+  local second = g.newCanvas(4, 4, {format='rgba16f', dpiscale=1})
+  local mesh = g.newMesh({{0, 0, 0, 0}, {8, 0, 2, 0}, {0, 8, 0, 2}}, 'triangles', 'static')
+  g.push('all')
+  g.origin()
+  g.setBlendMode('replace', 'premultiplied')
+  g.setColor(1, 1, 1, 1)
+  g.setCanvas(first, second)
+  g.clear(0, 0, 0, 0)
+  g.setShader(shader)
+  g.draw(mesh)
+  g.pop()
+  local expected = {{0.25, 0.5, 0.75, 0.125}, {0.875, 0.625, 0.375, 0.9375}}
+  for index, canvas in ipairs({first, second}) do
+    local data = canvas:newImageData()
+    local actual = {data:getPixel(2, 2)}
+    for channel = 1, 4 do
+      assert(math.abs(actual[channel] - expected[index][channel]) < 0.002,
+        string.format('qualified MRT attachment %d channel %d: %.6f ~= %.6f', index, channel, actual[channel], expected[index][channel]))
+    end
+    data:release()
+  end
+  first:release(); second:release(); mesh:release(); shader:release()
+end
 local function defineVariants(effect, program)
   local def = definitionByEffect[effect]
   local base = {}
@@ -101,7 +138,10 @@ function love.load()
       if validProgram then report.pass = report.pass + 1 end
     end
   end
-  report.ok = report.pass == report.programCount
+  local pixelOk, pixelError = xpcall(qualifiedMrtPixels, debug.traceback)
+  report.qualifiedMrtPixelPass = pixelOk
+  if not pixelOk then report.failures[#report.failures + 1] = {program='qualified-mrt', stage='pixels', error=tostring(pixelError)} end
+  report.ok = report.pass == report.programCount and pixelOk
   local line = 'SHADER-SWEEP ' .. json(report)
   print(line)
   local path = os.getenv('NM_SHADER_SWEEP_RESULT')
