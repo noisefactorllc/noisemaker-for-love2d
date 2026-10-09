@@ -254,19 +254,24 @@ local function check()
   writeOnlyRenderer:release()
   assert(nm.registerEffect({
     name='Memory check',namespace='user',func='memoryCheck',
-    globals={enabled={type='int',default=1,uniform='enabled'}},
+    globals={enabled={type='int',default=1,uniform='enabled'},fill={type='float',default=.25,uniform='fill'}},
     textures={global_memory={width='screen',height='screen',format='rgba16f',persistent=true}},
     passes={
       {program='update',conditions={runIf={{uniform='enabled',equals=1}}},
-        inputs={prev='global_memory'},outputs={color='global_memory'}},
+        inputs={},outputs={color='global_memory'}},
       {program='show',inputs={src='global_memory'},outputs={color='outputTex'}},
     },
     shaders={
-      update={glsl='uniform sampler2D prev; out vec4 fragColor; void main(){fragColor=texture(prev,vec2(0.5))+vec4(0.25,0,0,0);}'},
+      update={glsl='uniform float fill; out vec4 fragColor; void main(){fragColor=vec4(fill,0,0,1);}'},
       show={glsl='uniform sampler2D src; out vec4 fragColor; void main(){fragColor=texture(src,vec2(0.5));}'},
     },
   }))
   local publicMemoryGraph=assert(nm.compile('search user\nmemoryCheck().write(o0)\nrender(o0)'))
+  local publicPersistent=false
+  for id,spec in pairs(publicMemoryGraph.textures) do
+    if id:match('^global_memory') and spec.persistent==true then publicPersistent=true end
+  end
+  assert(publicPersistent,'Portable compiler did not preserve the persistent texture contract')
   local publicMemory=assert(nm.newRenderer(publicMemoryGraph,{width=4,height=4}))
   local function publicMemoryRed()
     local pixels=assert(publicMemory:render({})):newImageData()
@@ -279,8 +284,9 @@ local function check()
   for _=1,3 do
     assert(math.abs(publicMemoryRed()-.25)<.02,'Portable persistent memory lost state during skipped updates')
   end
+  assert(publicMemory:setParameter(0,'fill',.5))
   assert(publicMemory:setParameter(0,'enabled',1))
-  assert(math.abs(publicMemoryRed()-.5)<.02,'Portable persistent memory failed to resume from saved state')
+  assert(math.abs(publicMemoryRed()-.5)<.02,'Portable persistent writer failed to resume')
   publicMemory:release()
   local scratchGraph={
     passes={
