@@ -41,8 +41,7 @@ jobs:
           echo "LOVE_BIN=$RUNNER_TEMP/love-runtime/love.app/Contents/MacOS/love" >> "$GITHUB_ENV"
 
       - name: Verify native host capabilities
-        run: |
-          "$LOVE_BIN" parity/capabilities
+        run: node tools/qualify-capabilities.mjs
 
       - name: Verify source, compiler, and locked reference
         run: scripts/test
