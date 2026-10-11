@@ -18,11 +18,18 @@ function Session:replace(source, frame)
   canvas, diagnostics = candidate:render(frame or {time=0})
   if not canvas then candidate:release(); self.diagnostics=diagnostics; return nil,diagnostics end
   local previous=self.renderer
+  if previous then
+    local released,releaseErrors=previous:release()
+    if not released then
+      candidate:release()
+      self.diagnostics=releaseErrors
+      return nil,releaseErrors
+    end
+  end
   self.renderer=candidate
   self.canvas=canvas
   self.source=source
   self.diagnostics=nil
-  if previous then previous:release() end
   return canvas
 end
 
@@ -45,7 +52,11 @@ function Session:resize(width,height)
 end
 
 function Session:release()
-  if self.renderer then self.renderer:release();self.renderer=nil end
+  if self.renderer then
+    local ok,diagnostics=self.renderer:release()
+    if not ok then self.diagnostics=diagnostics;return nil,diagnostics end
+    self.renderer=nil
+  end
   self.canvas=nil
   return true
 end

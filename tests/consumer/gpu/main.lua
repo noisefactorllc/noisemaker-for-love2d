@@ -14,6 +14,16 @@ local function check()
   local canvas,diagnostics=session:replace(source,{time=0})
   assert(canvas,diagnostics and diagnostics[1] and diagnostics[1].message)
   local stable=session.renderer
+  love.graphics.setCanvas(canvas)
+  local blocked,blockedErrors=session:replace(source,{time=1})
+  local restoredCanvas=love.graphics.getCanvas()
+  love.graphics.setCanvas()
+  assert(not blocked and blockedErrors and blockedErrors[1].code=='ERR_RESOURCE_IN_USE',
+    'Replacing a bound output must report the release failure')
+  assert(session.renderer==stable and session.canvas==canvas and not stable.released,
+    'Failed replacement must keep the previous renderer and output')
+  assert(restoredCanvas==canvas,'Failed replacement changed the host Canvas binding')
+  assert(session:render({time=1}),'Previous renderer must remain usable after a blocked replacement')
   local invalid,errors=session:replace('search synth\nmissing().write(o0)\nrender(o0)')
   assert(not invalid and errors and session.renderer==stable and session.canvas==canvas)
   local definition=json.decode(read('parity/portable/portableRings.portable.json'))
@@ -31,7 +41,18 @@ local function check()
   assert(session.renderer~=stable and stable.released)
   assert(session:resize(19,13))
   assert(session:render({time=2}))
-  session:release()
+  local activeRenderer,activeCanvas=session.renderer,session.canvas
+  love.graphics.setCanvas(activeCanvas)
+  local released,releaseErrors=session:release()
+  local restoredReleaseCanvas=love.graphics.getCanvas()
+  love.graphics.setCanvas()
+  assert(not released and releaseErrors and releaseErrors[1].code=='ERR_RESOURCE_IN_USE',
+    'Releasing a session with a bound output must report the refusal')
+  assert(session.renderer==activeRenderer and session.canvas==activeCanvas and not activeRenderer.released,
+    'Refused session release must preserve the active renderer and output')
+  assert(restoredReleaseCanvas==activeCanvas,'Refused release changed the host Canvas binding')
+  assert(session:render({time=3}),'Renderer must remain usable after refused session release')
+  assert(session:release())
   local dimensionGraph=assert(nm.compile(source))
   dimensionGraph.textures.node_0_out.width={screenDivide='zoom_chain_0',default=2}
   dimensionGraph.passes[1].uniforms.zoom_chain_0=2
