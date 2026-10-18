@@ -365,7 +365,7 @@ function Renderer:setParameter(stepIndex,name,value)
  if type(value)=='table' and #value==0 and not (type(value.fn)=='function' or require('noisemaker.runtime.automation').isAutomationValue(value)) then
   return nil,{{stage='parameter',code='ERR_UNIFORM_VALUE',message='Expected a scalar, vector, or compiled automation value'}}
  end
- local define
+ local define,uniformName
  for _,pass in ipairs(self.graph.passes) do if pass.stepIndex==stepIndex and pass.effectKey then
   local definition=require('noisemaker.catalog.registry').getEffect(pass.effectKey)
   local parameter=definition and definition.globals and definition.globals[name]
@@ -373,6 +373,8 @@ function Renderer:setParameter(stepIndex,name,value)
    return nil,{{stage='parameter',code='ERR_UNIFORM_VALUE',message='Expected scalar or automation for '..name}}
   end
   if parameter and parameter.define then define=parameter.define;break end
+  -- Upstream applyStepParameterValues writes a DSL parameter to spec.uniform || paramName.
+  if parameter and type(parameter.uniform)=='string' and parameter.uniform~=name and parameter.type~='surface' then uniformName=parameter.uniform end
  end end
  if define then
   local bound=boundCanvases()
@@ -406,7 +408,8 @@ function Renderer:setParameter(stepIndex,name,value)
   end)
  end
 
- if resourceLib.isVolumeSizeUniform(name) then
+ uniformName=uniformName or name
+ if resourceLib.isVolumeSizeUniform(name) or resourceLib.isVolumeSizeUniform(uniformName) then
   value=resourceLib.clampVolumeSize(value,love.graphics.getSystemLimits().texturesize)
  end
  local palette
@@ -426,13 +429,15 @@ function Renderer:setParameter(stepIndex,name,value)
   pass.uniforms[key]=newValue
  end
  for _,pass in ipairs(self.graph.passes) do if pass.stepIndex==stepIndex or (pass.stepIndex==nil and stepIndex==0) then
-  change(pass,name,value)
-  local explicit=pass.scopedParams and pass.scopedParams[name]
-  if explicit then change(pass,explicit,value);scopedNames[explicit]=true end
-  for _,alias in ipairs(keys(pass.uniformAliases)) do if pass.uniformAliases[alias]==name and alias~=name then change(pass,alias,value) end end
-  for _,scoped in ipairs(keys(pass.uniforms)) do
-   if scoped:sub(1,#name+1)==name..'_' and (scoped:match('_chain_%d+$') or scoped:match('_node_%d+$')) then
-    change(pass,scoped,value);scopedNames[scoped]=true
+  for _,key in ipairs(uniformName==name and {name} or {name,uniformName}) do
+   change(pass,key,value)
+   local explicit=pass.scopedParams and pass.scopedParams[key]
+   if explicit then change(pass,explicit,value);scopedNames[explicit]=true end
+   for _,alias in ipairs(keys(pass.uniformAliases)) do if pass.uniformAliases[alias]==key and alias~=key then change(pass,alias,value) end end
+   for _,scoped in ipairs(keys(pass.uniforms)) do
+    if scoped:sub(1,#key+1)==key..'_' and (scoped:match('_chain_%d+$') or scoped:match('_node_%d+$')) then
+     change(pass,scoped,value);scopedNames[scoped]=true
+    end
    end
   end
  end end
@@ -448,7 +453,7 @@ function Renderer:setParameter(stepIndex,name,value)
  if palette then for _,entry in ipairs(changes) do for key,v in pairs(palette) do change(entry.pass,key,v) end end end
  self.uniforms=gatherUniforms(self.graph)
  local resize=false
- local affected={ [name]=true }
+ local affected={ [name]=true,[uniformName]=true }
  for scoped in pairs(scopedNames) do affected[scoped]=true end
  for _,id in ipairs(keys(self.graph.textures)) do
   local spec=self.graph.textures[id]

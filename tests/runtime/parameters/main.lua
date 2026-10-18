@@ -54,6 +54,81 @@ invalid_shader_source
   local clock=assert(temporal:render{time=3}):newImageData();local frame,delta=clock:getPixel(0,0)
   assert(math.abs(frame-.2)<.002 and math.abs(delta-1)<.002,'Resize must preserve temporal counters');clock:release()
   assert(temporal:reset());local reset=assert(temporal:render{time=4}):newImageData();local f,d=reset:getPixel(0,0);assert(f==0 and d==0);reset:release();temporal:release()
+  -- A DSL parameter name resolves to its catalog uniform, as upstream applyStepParameterValues
+  -- writes spec.uniform || paramName. Each renamed parameter is set by its DSL name on its
+  -- effect's coverage default program.
+  local registry=require('noisemaker.catalog.registry')
+  local listed={'classicNoisedeck/cellNoise:smooth','classicNoisedeck/cellRefract:amount','classicNoisedeck/cellRefract:smooth',
+   'classicNoisedeck/kaleido:sides','filter/celShading:mix','filter/chromaticAberration:aberration','filter/directionalBlur:distance',
+   'filter/dither:type','filter/dither:mix','filter/edge:mix','filter/feedback:mix','filter/flipMirror:mode','filter/historicPalette:index',
+   'filter/lens:displacement','filter/octaveWarp:freq','filter/oilPaint:texture','filter/outline:shape','filter/palette:index',
+   'filter/polar:mode','filter/prismaticAberration:aberration','filter/scale:x','filter/scale:y','filter/skew:skew','filter/skew:rotate',
+   'filter/smooth:type','filter/strokes:length','filter/vignette:brightness','filter3d/palette3d:index','mixer/patternMix:type',
+   'render/meshRender:scale','synth/cell:shape','synth/gradient:type','synth/mandelbrot:centerX','synth/mandelbrot:centerY',
+   'synth/newton:centerX','synth/newton:centerY','synth/osc2d:freq','synth/pattern:type','synth/polygon:smooth','synth/roll:color',
+   'synth/scope:color','synth/scope:thickness','synth/spectrum:color','synth/spectrum:thickness','synth3d/cell3d:variation',
+   'synth3d/flythrough3d:type','synth3d/fractal3d:type'}
+  assert(#listed==47)
+  local function same(a,b)
+   if type(a)~='table' or type(b)~='table' then return a==b end
+   if #a~=#b then return false end
+   for i=1,#a do if a[i]~=b[i] then return false end end
+   return true
+  end
+  local function nextValue(spec,current)
+   if type(current)=='table' then local v={};for i,c in ipairs(current) do v[i]=c>.5 and .125 or .875 end;return v end
+   local candidates={spec.max,spec.min,current+1,current-1}
+   for i=1,4 do
+    local candidate=candidates[i]
+    if type(candidate)=='number' and candidate~=current then return candidate end
+   end
+  end
+  local covered,renamedCount={},0
+  local effectKeys={}
+  for _,entry in ipairs(require('noisemaker.catalog.definitions').entries) do effectKeys[#effectKeys+1]=entry[1] end
+  table.sort(effectKeys)
+  assert(#effectKeys>=200,'catalog enumeration found '..#effectKeys..' effects')
+  for _,effectKey in ipairs(effectKeys) do
+   local definition=assert(registry.getEffect(effectKey),'no catalog definition for '..effectKey)
+   local renamed={}
+   for _,name in ipairs(registry.keys(definition.globals or {})) do
+    local spec=definition.globals[name]
+    if type(spec.uniform)=='string' and spec.uniform~=name and not spec.define and spec.type~='surface' and spec.type~='volume' and spec.type~='geometry' then renamed[#renamed+1]=name end
+   end
+   if #renamed>0 then
+    local file=assert(io.open(root..'/parity/coverage/'..effectKey:gsub('/','_')..'.dsl','rb'),'missing coverage default for '..effectKey)
+    local source=file:read('*a');file:close()
+    local graph=assert(nm.compile(source))
+    local instance=assert(nm.newRenderer(graph,{width=16,height=16}))
+    local step
+    for _,pass in ipairs(instance.graph.passes) do if pass.effectKey==effectKey or pass.effectKey==effectKey:gsub('/','.') then step=pass.stepIndex;break end end
+    assert(step,'no compiled step for '..effectKey)
+    for _,name in ipairs(renamed) do
+     local spec=definition.globals[name]
+     local current
+     for _,pass in ipairs(instance.graph.passes) do if pass.stepIndex==step and pass.uniforms and pass.uniforms[spec.uniform]~=nil then current=pass.uniforms[spec.uniform];break end end
+     assert(current~=nil,effectKey..' step holds no uniform '..spec.uniform)
+     local value=nextValue(spec,current)
+     local changed,errors=instance:setParameter(step,name,value)
+     assert(changed==true,effectKey..' '..name..': '..tostring(errors and errors[1].message))
+     local held=0
+     for _,pass in ipairs(instance.graph.passes) do if pass.stepIndex==step and pass.uniforms and pass.uniforms[spec.uniform]~=nil then
+      assert(same(pass.uniforms[spec.uniform],value),effectKey..' '..name..' did not reach uniform '..spec.uniform);held=held+1
+     end end
+     assert(held>0)
+     covered[effectKey..':'..name]=true;renamedCount=renamedCount+1
+    end
+    local unknown,unknownErrors=instance:setParameter(step,'noSuchParameter',1)
+    assert(not unknown and unknownErrors[1].code=='ERR_PARAMETER','Unknown names must still be refused')
+    assert(instance:render{time=0});instance:release()
+   end
+  end
+  for _,key in ipairs(listed) do assert(covered[key],'renamed parameter not covered: '..key) end
+  local scaled=assert(nm.newRenderer(assert(nm.compile('search synth, filter\nnoise(seed: 1).scale(x: 2).write(o0)\nrender(o0)')),{width=8,height=8}))
+  local scalePass;for _,pass in ipairs(scaled.graph.passes) do if pass.stepIndex==1 then scalePass=pass end end
+  assert(scaled:setParameter(1,'scaleX',3) and scalePass.uniforms.scaleX==3,'Uniform names must keep working')
+  scaled:release()
+  print('DSL-NAME-PARAMETERS '..renamedCount..' renamed catalog parameters accept their DSL names; '..#listed..' listed parameters covered')
   print('define-backed parameters compile transactionally and preserve working shader on failure')
  end,debug.traceback)
  love.graphics.setCanvas();if not ok then io.stderr:write(tostring(err),'\n')end;love.event.quit(ok and 0 or 1)
