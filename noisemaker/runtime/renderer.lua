@@ -124,9 +124,20 @@ function M.new(graph,options,hookOverrides)
  return self
 end
 function Renderer:_alive() if self.released then return nil,{{stage='lifecycle',code='ERR_RELEASED',message='Renderer has been released'}} end;return true end
+-- A compiled external texture is step-scoped (imageTex_step_<N>). A host binding of that exact id
+-- wins; otherwise the documented binding name (imageTex) reaches every step that samples it.
+local function inputKeys(id)
+ local chainless=id:gsub('_chain_%d+$','')
+ return id,chainless,(chainless:gsub('_step_%d+$',''))
+end
+local function bindsInput(id,binding)
+ local exact,chainless,stepless=inputKeys(id)
+ return exact==binding or chainless==binding or stepless==binding
+end
 function Renderer:_input(id,reads)
- local uploaded=self.uploads[id] or self.uploads[id:gsub('_chain_%d+$','')]
- local texture=uploaded and uploaded.texture or self.external[id] or self.external[id:gsub('_chain_%d+$','')]
+ local exact,chainless,stepless=inputKeys(id)
+ local uploaded=self.uploads[exact] or self.uploads[chainless]
+ local texture=uploaded and uploaded.texture or self.external[exact] or self.external[chainless] or self.external[stepless]
  if texture then return texture end
  local name=global(id)
  return name and reads[name] or self.resources.textures[id] or self.resources.textures.__black
@@ -290,7 +301,7 @@ function Renderer:setInput(binding,texture,options)
    local info=self.programs[pass.program..':'..(pass.drawMode or 'fullscreen')]
    for _,sampler in ipairs(keys(pass.inputs)) do
     local id=pass.inputs[sampler]
-    if id==binding or id:gsub('_chain_%d+$','')==binding then
+    if bindsInput(id,binding) then
      local uniform=info.uniforms[sampler]
      local expected=uniform and samplerTypes[uniform.type]
      if expected and expected~=textureType and info.shader:hasUniform(sampler) then
@@ -305,7 +316,7 @@ function Renderer:setInput(binding,texture,options)
   for _,pass in ipairs(self.graph.passes) do
    if pass.effectKey=='synth/media' or pass.effectKey=='synth.media' then
     local matches=false
-    for _,sampler in ipairs(keys(pass.inputs)) do local id=pass.inputs[sampler];if id==binding or id:gsub('_chain_%d+$','')==binding then matches=true end end
+    for _,sampler in ipairs(keys(pass.inputs)) do if bindsInput(pass.inputs[sampler],binding) then matches=true end end
     if matches then found=true end
    end
   end
