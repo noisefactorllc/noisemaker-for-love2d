@@ -241,6 +241,7 @@ NM_REFERENCE_ROOT=/path/to/noisemaker LOVE_BIN=/path/to/love scripts/test
 NM_REFERENCE_ROOT=/path/to/noisemaker node tools/export-reference.mjs --out /tmp/love-reference.json
 NM_REFERENCE_ROOT=/path/to/noisemaker node tools/import-catalog.mjs --check
 love parity/capabilities
+LOVE_BIN=/path/to/love node tools/qualify-capabilities.mjs
 LOVE_BIN=/path/to/love scripts/test-gpu
 LOVE_BIN=/path/to/love scripts/parity-summary --tier all --out /tmp/love-parity
 LOVE_BIN=/path/to/love scripts/benchmark /tmp/love-benchmark.json
@@ -254,10 +255,16 @@ LOVE_BIN=/path/to/love scripts/package
 - `scripts/test-gpu` runs the shader, runtime, and consumer regressions.
 - `love parity/capabilities` prints `CAPABILITIES-RESULT` with host identity, pixel checks, and
   separate pass, fail, and unsupported counts. Set `NM_CAPABILITIES_RESULT` to save that line outside
-  the source tree. It exits nonzero when any required probe fails or is unsupported. The probes include
-  raw replacement RGBA, float targets, MRT, half packing, the remap data-texture lowering, custom
-  vertex behavior, volume textures, and graphics-state recovery. Capability passes do not establish
-  reference-versus-port parity or platform support.
+  the source tree. It exits nonzero when any of its 11 probes fails or is unsupported, required or not.
+  The probes include raw replacement RGBA, float targets, MRT, the remap data-texture lowering, custom
+  vertex behavior, volume textures, and graphics-state recovery, plus the optional half-packing and
+  `gl_PointSize` probes. Capability passes do not establish reference-versus-port parity or platform
+  support.
+- `node tools/qualify-capabilities.mjs` is the capability check that CI runs. It runs
+  `love parity/capabilities`, requires the nine other probes to pass, and accepts two measured limits:
+  an unsupported `half_packing` probe whose shader lacks `packHalf2x16`, and a failed `gl_PointSize`
+  probe that observes widths 1 and 1 for requested widths 1 and 7. It prints `CAPABILITIES-QUALIFIED`
+  and exits 0 when the host qualifies, even when `love parity/capabilities` exits 1.
 - `scripts/package` builds a source zip, extracts it into a temporary clean directory, and runs CPU
   and real GPU consumer checks from the extracted copy. Its outputs are `dist/noisemaker-love2d.zip`
   and a standalone `dist/noisemaker-love2d.love` viewer.
