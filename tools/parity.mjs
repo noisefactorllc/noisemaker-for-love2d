@@ -8,15 +8,15 @@ import {renderReference} from './render-reference.mjs'
 import {gradePixels} from './grade.mjs'
 import {resolveReference} from './reference.mjs'
 import {authoredAttributionTarget,rgbContrast,effectEvidenceKind} from './attribution.mjs'
+import {parseParityArguments,selectParityCases} from './parity-args.mjs'
 const root=resolve(import.meta.dirname,'..')
 const definitions=JSON.parse(readFileSync(join(root,'noisemaker/catalog/definitions.json')))
 const authority=await resolveReference()
 const effects=Object.keys(JSON.parse(readFileSync(join(authority.root,'shaders/effects/manifest.json'))))
 if(effects.length!==Object.keys(definitions).length||effects.some(id=>!definitions[id]))throw Error('Candidate catalog differs from locked authority')
 execFileSync(process.execPath,['tools/import-corpus.mjs','--check'],{cwd:root,stdio:'inherit'})
-const args=process.argv.slice(2)
-const option=(name,fallback)=>{const i=args.indexOf(name);return i<0?fallback:args[i+1]}
-const tier=option('--tier','all'),limit=Number(option('--limit',Infinity)),output=resolve(option('--out',join(root,'parity/out',new Date().toISOString().replaceAll(':','-'))))
+const {tier,limit,out,ids}=parseParityArguments(process.argv.slice(2))
+const output=resolve(out??join(root,'parity/out',new Date().toISOString().replaceAll(':','-')))
 mkdirSync(output,{recursive:true});mkdirSync(join(output,'inputs'),{recursive:true})
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex')
 const sourceEffects=source=>effects.filter(id=>new RegExp('\\b'+definitions[id].func+'\\s*\\(').test(source))
@@ -119,8 +119,7 @@ if(tier==='upstream'||tier==='all'||tier==='supplemental'){
    capture:{...capture,frames:1}})
  }
 }
-const ids=option('--ids',null)?.split(',').filter(Boolean)
-if(ids){const available=new Set(cases.map(item=>item.id));for(const id of ids)if(!available.has(id))throw Error('Unknown parity case '+id);cases=cases.filter(item=>ids.includes(item.id))}
+cases=selectParityCases(cases,ids)
 const expected=cases.length;cases=cases.slice(0,limit)
 mkdirSync(join(output,'reference'));mkdirSync(join(output,'candidate'))
 const nativeCapabilitiesPath=join(output,'native-capabilities.json')
