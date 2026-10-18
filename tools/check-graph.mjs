@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { isDeepStrictEqual } from 'node:util'
 import { exportReference } from './export-reference.mjs'
+import { boundaryCases } from './boundary.mjs'
 
 const projectRoot = resolve(import.meta.dirname, '..')
 const coverageIndex = process.argv.indexOf('--coverage')
@@ -47,6 +48,14 @@ if (process.argv.includes('--corpus')) {
     const called=new Set([...source.matchAll(/\b([A-Za-z][A-Za-z0-9_]*)\s*\(/g)].map(match=>match[1]))
     return {id:family+'-'+name.slice(0,-4).replaceAll('_','-').toLowerCase(),source,effects:Object.keys(definitions).filter(id=>called.has(definitions[id].func))}
   }))}
+}
+if (process.argv.includes('--boundary')) {
+  const definitions = JSON.parse(readFileSync(join(projectRoot, 'noisemaker/catalog/definitions.json'), 'utf8'))
+  manifest = { version: 1, cases: boundaryCases(projectRoot, definitions).map((item, index) => {
+    const called = new Set([...item.source.matchAll(/\b([A-Za-z][A-Za-z0-9_]*)\s*\(/g)].map(match => match[1]))
+    const id = `boundary-${index}-${item.id.slice('boundary-'.length).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+    return { id, source: item.source, effects: Object.keys(definitions).filter(id => called.has(definitions[id].func)) }
+  }) }
 }
 const reference = await exportReference({ projectRoot, referenceRoot: process.env.NM_REFERENCE_ROOT, manifest })
 const directory = mkdtempSync(join(tmpdir(), 'nm-love-graph-'))

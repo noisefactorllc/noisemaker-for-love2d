@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "cases": {
+    "boundary-filter_fibers__alpha_max": {
+      "authority": "2f9736ebb6c39be683074edc3a2cd0338a8a0c9a",
+      "protocol": {
+        "width": 257,
+        "height": 129,
+        "time": 0.25,
+        "frames": 8,
+        "seedPolicy": "authored"
+      },
+      "referenceSha256": "5d371954f7999989d9d251337241216f284d20014e1c03be62ce81b116699771",
+      "candidateSha256": "ad235b2b5d99de36d2bf7fc274eab3f7cb12f45045592bce15591b65d5f3bd36",
+      "maxChannelDelta": 3,
+      "minSsim": 0.9999,
+      "mechanism": "filter/fibers draws its fibers into a CPU overlay; the native and reference rasterizers differ by 1-3 levels on fiber edges, and alpha 1 doubles the default overlay weight. 16 of 132,612 channels differ by 3.",
+      "review": "2026-10-18: Firefox 153.0 WebGL2 reference and LÖVE 11.5 candidate on Apple M4, side by side at native size: they look the same."
+    }
+  }
+}

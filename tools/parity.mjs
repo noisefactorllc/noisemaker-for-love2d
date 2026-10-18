@@ -9,9 +9,15 @@ import {gradePixels} from './grade.mjs'
 import {resolveReference} from './reference.mjs'
 import {authoredAttributionTarget,rgbContrast,effectEvidenceKind} from './attribution.mjs'
 import {parseParityArguments,selectParityCases} from './parity-args.mjs'
+import {boundaryCases} from './boundary.mjs'
 const root=resolve(import.meta.dirname,'..')
 const definitions=JSON.parse(readFileSync(join(root,'noisemaker/catalog/definitions.json')))
 const authority=await resolveReference()
+// Reviewed per-case NEAR policies: each binds the case, the pinned authority, the capture
+// protocol, the reviewed reference and candidate bytes, and the measured bound. A near case
+// passes only when its policy matches; any other near case fails the run.
+const nearPolicies=JSON.parse(readFileSync(join(root,'parity/near-policy.json'),'utf8'))
+if(nearPolicies.version!==1||typeof nearPolicies.cases!=='object')throw Error('Invalid parity/near-policy.json')
 const effects=Object.keys(JSON.parse(readFileSync(join(authority.root,'shaders/effects/manifest.json'))))
 if(effects.length!==Object.keys(definitions).length||effects.some(id=>!definitions[id]))throw Error('Candidate catalog differs from locked authority')
 execFileSync(process.execPath,['tools/import-corpus.mjs','--check'],{cwd:root,stdio:'inherit'})
@@ -60,25 +66,33 @@ const mediaInput=(()=>{
 const coverageMeshes=JSON.parse(readFileSync(join(root,'parity/upstream/render_meshRender.json'))).meshInputs
 const wireframeMeshes=[{mesh:'mesh0',path:'share/meshes/torus.obj'}]
 let cases=[]
-for(const family of tier==='defaults'?['coverage']:tier==='all'?['programs','coverage','portable','curated','timed']:[tier]){
+// The boundary family is generated from the locked catalog (tools/boundary.mjs): one min and one
+// max case for each bounded numeric parameter, on the effect's coverage default program.
+const familyEntries=family=>family==='boundary'
+ ?boundaryCases(root,definitions).map(item=>({file:item.id.slice('boundary-'.length)+'.dsl',source:item.source,path:'tools/boundary.mjs',attributionTarget:item.effect}))
+ :readdirSync(join(root,'parity',family)).filter(x=>x.endsWith('.dsl')).sort().map(file=>{const path=join(root,'parity',family,file);return {file,path:relative(root,path),source:readFileSync(path,'utf8')}})
+for(const family of tier==='defaults'?['coverage']:tier==='all'?['programs','coverage','portable','curated','timed','boundary']:[tier]){
  if(family==='upstream'||family==='supplemental')continue
- for(const file of readdirSync(join(root,'parity',family)).filter(x=>x.endsWith('.dsl')).sort()){
+ for(const entry of familyEntries(family)){
+  const {file,source}=entry
   if(tier==='defaults'&&!effects.some(id=>file===id.replace('/','_')+'.dsl'))continue
-  const path=join(root,'parity',family,file),source=readFileSync(path,'utf8'),id=family+'-'+file.slice(0,-4)
-  const fixture={id,source,effects:sourceEffects(source),path:relative(root,path),capture:{...capture}}
+  const path=join(root,entry.path),id=family+'-'+file.slice(0,-4)
+  const fixture={id,source,effects:sourceEffects(source),path:entry.path,capture:{...capture}}
   if(family==='coverage')fixture.attributionTarget=effects.find(effect=>{
    const prefix=effect.replace('/','_')
    return file===prefix+'.dsl'||file.startsWith(prefix+'__')
   })
+  if(family==='boundary')fixture.attributionTarget=entry.attributionTarget
   if(family==='timed'){fixture.capture.frames=30;fixture.capture.deltaTime=1/60;fixture.capture.time=0;fixture.capture.advanceTime=true}
-  const portable=path.replace(/\.dsl$/,'.portable.json');if(existsSync(portable)){
+  const portable=path.endsWith('.dsl')&&path.replace(/\.dsl$/,'.portable.json');if(portable&&existsSync(portable)){
    fixture.portable=JSON.parse(readFileSync(portable));fixture.portable.shaders={}
    for(const pass of fixture.portable.passes){const shader=fixture.portable.func==='rings'?'rings':fixture.portable.func+'-'+pass.program;fixture.portable.shaders[pass.program]={glsl:readFileSync(join(root,'noisemaker/shaders/portable',shader+'.glsl'),'utf8')}}
   }
   const bindings=fixture.effects.map(id=>definitions[id].externalTexture).filter(Boolean)
-  fixture.capture.inputs=[...new Set(bindings)].map(binding=>family==='coverage'&&fixture.attributionTarget==='synth/media'&&binding==='imageTex'?{...mediaInput}:
+  const coverageBased=family==='coverage'||family==='boundary'
+  fixture.capture.inputs=[...new Set(bindings)].map(binding=>coverageBased&&fixture.attributionTarget==='synth/media'&&binding==='imageTex'?{...mediaInput}:
    ({binding,asset:'parity/inputs/marker.rgba',width:17,height:13,sha256:createHash('sha256').update(readFileSync(join(root,'parity/inputs/marker.rgba'))).digest('hex'),origin:'top-left',format:'rgba8'}))
-  if(family==='coverage'&&['render/meshLoader','render/meshRender'].includes(fixture.attributionTarget)&&/\bmeshLoader\(\s*\)/.test(source))
+  if(coverageBased&&['render/meshLoader','render/meshRender'].includes(fixture.attributionTarget)&&/\bmeshLoader\(\s*\)/.test(source))
    fixture.capture.inputs.push(...meshInputs(/__wireframe_wireframe\.dsl$/.test(file)?wireframeMeshes:coverageMeshes,id,file))
   if(family==='timed'){for(const frames of [1,2,4,10,30])cases.push({...fixture,id:fixture.id+'-frame'+frames,capture:{...fixture.capture,frames}})}else cases.push(fixture)
  }
@@ -202,6 +216,16 @@ for(const fixture of cases){
  else if(JSON.stringify(volumeChangeTuples(oracle.volumeSizeChanges))!==JSON.stringify(volumeChangeTuples(actual.volumeSizeChanges)))result={bucket:'fail',reason:'volume size capability clamp differs',referenceChanges:oracle.volumeSizeChanges,candidateChanges:actual.volumeSizeChanges}
  else if(JSON.stringify(expectedInputs)!==JSON.stringify(consumedKeys(oracle.consumed))||JSON.stringify(expectedInputs)!==JSON.stringify(consumedKeys(actual.consumed)))result={bucket:'fail',reason:'fixture input was not consumed',expectedInputs,referenceInputs:consumedKeys(oracle.consumed),candidateInputs:consumedKeys(actual.consumed)}
  else result=gradePixels(readFileSync(join(output,'reference',fixture.id+'.rgba')),readFileSync(join(output,'candidate',fixture.id+'.rgba')),oracle.width,oracle.height)
+ if(result.bucket==='near'){
+  const policy=nearPolicies.cases[fixture.id]
+  const referenceBytes=readFileSync(join(output,'reference',fixture.id+'.rgba')),candidateBytes=readFileSync(join(output,'candidate',fixture.id+'.rgba'))
+  const protocol={width:fixture.capture.width,height:fixture.capture.height,time:fixture.capture.time,frames:fixture.capture.frames,seedPolicy:fixture.capture.seedPolicy}
+  const checks=policy&&{authority:policy.authority===authority.lock.commit,protocol:JSON.stringify(policy.protocol)===JSON.stringify(protocol),
+   reference:policy.referenceSha256===sha256(referenceBytes),candidate:policy.candidateSha256===sha256(candidateBytes),
+   bound:result.max<=policy.maxChannelDelta&&result.ssim>=policy.minSsim}
+  result.nearPolicy=checks&&Object.values(checks).every(Boolean)?'reviewed':{unreviewed:checks||'no policy',referenceSha256:sha256(referenceBytes),candidateSha256:sha256(candidateBytes),protocol}
+  console.error('PARITY-NEAR '+JSON.stringify({id:fixture.id,max:result.max,ssim:result.ssim,policy:result.nearPolicy}))
+ }
  summary[result.bucket]++
  if(result.uninformative&&(result.bucket==='exact'||result.bucket==='strict')){summary[result.bucket]--;summary.uninformative++;result.pixelBucket=result.bucket;result.bucket='uninformative'}
  const target=oracle?.targetEvidence
@@ -238,4 +262,5 @@ writeFileSync(join(output,'results.json'),JSON.stringify({summary,sourceStable,c
 console.log('PARITY-SUMMARY '+JSON.stringify(summary))
 console.log('PARITY-RESULT '+output)
 const requiredEffects=ids?[...new Set(cases.map(item=>item.attributionTarget).filter(Boolean))]:effects
-if(!sourceStable||summary.near+summary.defer+summary.skip+summary.fail+summary.missing>0||requiredEffects.some(effect=>!evidenced.has(effect)))process.exitCode=1
+const unreviewedNear=results.filter(result=>result.bucket==='near'&&result.nearPolicy!=='reviewed').length
+if(!sourceStable||unreviewedNear+summary.defer+summary.skip+summary.fail+summary.missing>0||requiredEffects.some(effect=>!evidenced.has(effect)))process.exitCode=1
