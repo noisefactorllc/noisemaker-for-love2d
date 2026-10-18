@@ -21,6 +21,44 @@ mkdirSync(output,{recursive:true});mkdirSync(join(output,'inputs'),{recursive:tr
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex')
 const sourceEffects=source=>effects.filter(id=>new RegExp('\\b'+definitions[id].func+'\\s*\\(').test(source))
 const capture={backend:'webgl2',width:257,height:129,time:.25,deltaTime:0,frame:0,frames:8,seed:1,seedPolicy:'authored',reset:true,inputs:[]}
+const {parseOBJ,packMeshDataForTextures}=await import(pathToFileURL(join(authority.root,'shaders/src/runtime/obj-parser.js')).href)
+// Locked mesh files packed into the position, normal and UV textures that meshLoader reads.
+const meshInputs=(meshes,id,where)=>{
+ const inputs=[]
+ for(const [index,mesh] of (meshes||[]).entries()){
+  if(!/^share\/meshes\/[A-Za-z0-9_.-]+\.obj$/.test(mesh.path))throw Error(`${where}: invalid locked mesh path`)
+  const bytes=readFileSync(join(authority.root,mesh.path))
+  const parsed=parseOBJ(bytes.toString('utf8'))
+  const packed=packMeshDataForTextures(parsed.positions,parsed.normals,parsed.uvs,256,256)
+  if(!packed.vertexCount)throw Error(`${where}: empty mesh`)
+  for(const [component,data] of [['positions',packed.positionData],['normals',packed.normalData],['uvs',packed.uvData]]){
+   const binary=Buffer.from(data.buffer,data.byteOffset,data.byteLength)
+   const asset=`inputs/${id}-mesh${index}-${component}.f32`
+   writeFileSync(join(output,asset),binary)
+   inputs.push({kind:'mesh',mesh:mesh.mesh,component,binding:`global_${mesh.mesh}_${component}`,sourcePath:mesh.path,sourceSha256:sha256(bytes),vertexCount:packed.vertexCount,asset,assetRoot:'capture',width:256,height:256,format:'rgba32f',sha256:sha256(binary),origin:'bottom-left'})
+  }
+ }
+ return inputs
+}
+// The synth/media coverage cases bind an asymmetric 97x61 image, so each flip and position mode
+// shows structure: red runs left to right, green top to bottom, and a blue block marks the
+// top-left corner.
+const mediaInput=(()=>{
+ const width=97,height=61,rgba=Buffer.alloc(width*height*4)
+ for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+  const at=(y*width+x)*4
+  rgba[at]=Math.round(255*x/(width-1));rgba[at+1]=Math.round(255*y/(height-1));rgba[at+2]=x<24&&y<15?255:48;rgba[at+3]=255
+ }
+ const asset='inputs/coverage-synth_media.rgba'
+ writeFileSync(join(output,asset),rgba)
+ return {binding:'imageTex',asset,assetRoot:'capture',width,height,sha256:sha256(rgba),origin:'top-left',format:'rgba8'}
+})()
+// The coverage meshLoader programs load mesh0; they take the cube that the authored
+// render/meshRender case loads. meshRender's wireframe mode draws only where the interpolated
+// normal changes by at least 0.1 per pixel, which the cube's flat faces never do, so the
+// wireframe variant loads the locked torus.
+const coverageMeshes=JSON.parse(readFileSync(join(root,'parity/upstream/render_meshRender.json'))).meshInputs
+const wireframeMeshes=[{mesh:'mesh0',path:'share/meshes/torus.obj'}]
 let cases=[]
 for(const family of tier==='defaults'?['coverage']:tier==='all'?['programs','coverage','portable','curated','timed']:[tier]){
  if(family==='upstream'||family==='supplemental')continue
@@ -38,12 +76,14 @@ for(const family of tier==='defaults'?['coverage']:tier==='all'?['programs','cov
    for(const pass of fixture.portable.passes){const shader=fixture.portable.func==='rings'?'rings':fixture.portable.func+'-'+pass.program;fixture.portable.shaders[pass.program]={glsl:readFileSync(join(root,'noisemaker/shaders/portable',shader+'.glsl'),'utf8')}}
   }
   const bindings=fixture.effects.map(id=>definitions[id].externalTexture).filter(Boolean)
-  fixture.capture.inputs=[...new Set(bindings)].map(binding=>({binding,asset:'parity/inputs/marker.rgba',width:17,height:13,sha256:createHash('sha256').update(readFileSync(join(root,'parity/inputs/marker.rgba'))).digest('hex'),origin:'top-left',format:'rgba8'}))
+  fixture.capture.inputs=[...new Set(bindings)].map(binding=>family==='coverage'&&fixture.attributionTarget==='synth/media'&&binding==='imageTex'?{...mediaInput}:
+   ({binding,asset:'parity/inputs/marker.rgba',width:17,height:13,sha256:createHash('sha256').update(readFileSync(join(root,'parity/inputs/marker.rgba'))).digest('hex'),origin:'top-left',format:'rgba8'}))
+  if(family==='coverage'&&['render/meshLoader','render/meshRender'].includes(fixture.attributionTarget)&&/\bmeshLoader\(\s*\)/.test(source))
+   fixture.capture.inputs.push(...meshInputs(/__wireframe_wireframe\.dsl$/.test(file)?wireframeMeshes:coverageMeshes,id,file))
   if(family==='timed'){for(const frames of [1,2,4,10,30])cases.push({...fixture,id:fixture.id+'-frame'+frames,capture:{...fixture.capture,frames}})}else cases.push(fixture)
  }
 }
 if(tier==='upstream'||tier==='all'||tier==='supplemental'){
- const {parseOBJ,packMeshDataForTextures}=await import(pathToFileURL(join(authority.root,'shaders/src/runtime/obj-parser.js')).href)
  const appendAuthored=(authored,file,id,source=authored.dsl,target=authoredAttributionTarget(file,authored.effects,effects),declaredEffects=authored.effects)=>{
   const inputs=[]
   for(const [index,texture] of (authored.textureInputs||[]).entries()){
@@ -57,19 +97,7 @@ if(tier==='upstream'||tier==='all'||tier==='supplemental'){
    writeFileSync(join(output,asset),bytes)
    inputs.push({kind:'texture',effect:texture.effect,uniform:texture.uniform,binding:texture.uniform,asset,assetRoot:'capture',width:texture.width,height:texture.height,format:'rgba8',sha256:sha256(bytes),origin:'bottom-left',flipY:false})
   }
-  for(const [index,mesh] of (authored.meshInputs||[]).entries()){
-   if(!/^share\/meshes\/[A-Za-z0-9_.-]+\.obj$/.test(mesh.path))throw Error(`${file}: invalid locked mesh path`)
-   const bytes=readFileSync(join(authority.root,mesh.path))
-   const parsed=parseOBJ(bytes.toString('utf8'))
-   const packed=packMeshDataForTextures(parsed.positions,parsed.normals,parsed.uvs,256,256)
-   if(!packed.vertexCount)throw Error(`${file}: empty mesh`)
-   for(const [component,data] of [['positions',packed.positionData],['normals',packed.normalData],['uvs',packed.uvData]]){
-    const binary=Buffer.from(data.buffer,data.byteOffset,data.byteLength)
-    const asset=`inputs/${id}-mesh${index}-${component}.f32`
-    writeFileSync(join(output,asset),binary)
-    inputs.push({kind:'mesh',mesh:mesh.mesh,component,binding:`global_${mesh.mesh}_${component}`,sourcePath:mesh.path,sourceSha256:sha256(bytes),vertexCount:packed.vertexCount,asset,assetRoot:'capture',width:256,height:256,format:'rgba32f',sha256:sha256(binary),origin:'bottom-left'})
-   }
-  }
+  inputs.push(...meshInputs(authored.meshInputs,id,file))
   // An authored tiles plan renders the resolution as a grid of tiles (upstream setTileRegion).
   let tiles
   if(authored.tiles!==undefined){
@@ -125,6 +153,9 @@ if(tier==='upstream'||tier==='all'||tier==='supplemental'){
    '.physical(gravity: 2, wind: 2, energy: 2, drag: 0, deviation: 0, wander: 0)')
   cases.push({id:'supplemental-points_physical-forced',source:forcedPhysical,
    effects:sourceEffects(forcedPhysical),attributionTarget:'points/physical',capture:{...capture}})
+  const squareSource='search synth, render\nnoise(seed: 1, scaleX: 50, scaleY: 50).pointsEmit(stateSize: 64).pointsBillboardRender(shapeMode: square, pointSize: 6, density: 100, intensity: 100, inputIntensity: 0).write(o0)\nrender(o0)\n'
+  cases.push({id:'supplemental-render_pointsBillboardRender-square',source:squareSource,
+   effects:sourceEffects(squareSource),attributionTarget:'render/pointsBillboardRender',capture:{...capture}})
   const heightGridSource=readFileSync(join(root,'parity/coverage/points_heightGrid.dsl'),'utf8')
   cases.push({id:'supplemental-points_heightGrid-first-state',source:heightGridSource,
    effects:sourceEffects(heightGridSource),attributionTarget:'points/heightGrid',
