@@ -26,8 +26,12 @@ local function midiState(snapshot,ports)
   return setmetatable({channels=snapshot.channels or {},clockCount=snapshot.clockCount or 0,
     ports=ports or snapshot.ports or {},mpeZones=snapshot.mpeZones or {}},Midi)
 end
+-- Upstream MidiState holds all 16 channels, so a valid channel absent from the host snapshot is
+-- an empty channel. Only an invalid channel number falls back to channel 1.
 function Midi:getChannel(channel)
-  return pick(self.channels,channel) or pick(self.channels,1) or {key=0,velocity=0,gate=0,time=0,keys={}}
+  local number=type(channel)=='string' and channel:match('^[1-9]%d?$') and tonumber(channel) or channel
+  local valid=type(number)=='number' and number%1==0 and number>=1 and number<=16
+  return pick(self.channels,valid and number or 1) or {key=0,velocity=0,gate=0,time=0,keys={}}
 end
 function Midi:getPortState(selector)
   selector=selector or {}

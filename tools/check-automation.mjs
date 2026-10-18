@@ -7,6 +7,7 @@ import { resolveReference } from './reference.mjs'
 const projectRoot=resolve(import.meta.dirname,'..')
 const {root,sourceIdentity}=await resolveReference({projectRoot,referenceRoot:process.env.NM_REFERENCE_ROOT})
 const {Pipeline}=await import(pathToFileURL(join(root,'shaders/src/runtime/pipeline.js')).href)
+const {MidiState}=await import(pathToFileURL(join(root,'shaders/src/runtime/external-input.js')).href)
 const osc=(oscType,fields={})=>({type:'Oscillator',oscType,min:0,max:1,speed:1,offset:0,seed:1,...fields})
 const midi=(mode,fields={})=>({type:'Midi',channel:1,mode,min:0,max:1,sensitivity:1,...fields})
 const audio=(band,fields={})=>({type:'Audio',band,min:0,max:1,...fields})
@@ -35,6 +36,26 @@ for (const time of [0.13,0.51,0.88]) {
   cases.push({name:`nested-midi/${time}`,automation:osc(0,{speed:midi(5,{cc:0,min:0,max:1})}),time,
     external:{midi:{channels:{'1':{key:60,velocity:90,gate:1,time:900,cc:[64]}}}},wallTime:1000})
 }
+// A host snapshot with only channel 1, resolved through the renderer's host path, against a real
+// upstream 16-channel MidiState. Valid channels absent from the snapshot are empty; invalid ones
+// fall back to channel 1.
+const hostChannel={key:60,velocity:100,gate:1,time:900,keys:{'60':100},cc:[32,64],cc14:[8192,16383],nrpn:{'100':4096},pitchBend:1024,pressure:50,polyPressure:Array(61).fill(0)}
+hostChannel.polyPressure[60]=42
+for (const channel of [1,2,5,16,0,17]) for (let mode=0;mode<=10;mode++) {
+  cases.push({name:`host-midi/channel-${channel}/${mode}`,automation:midi(mode,{channel,cc:1,nrpn:100,min:0.1,max:0.9}),time:0.4,
+    hostMidi:{channels:{'1':hostChannel}},wallTime:1000})
+}
+function upstreamMidiState(snapshot) {
+  const state=new MidiState()
+  for (const [number,source] of Object.entries(snapshot.channels)) {
+    const channel=state.channels[number]
+    Object.assign(channel,{key:source.key,velocity:source.velocity,gate:source.gate,time:source.time,pitchBend:source.pitchBend,pressure:source.pressure})
+    for (const [key,velocity] of Object.entries(source.keys)) channel.keys[Number(key)]=velocity
+    channel.cc.set(source.cc);channel.cc14.set(source.cc14);channel.polyPressure.set(source.polyPressure)
+    for (const [key,value] of Object.entries(source.nrpn)) channel.nrpn.set(Number(key),value)
+  }
+  return state
+}
 const temp=mkdtempSync(join(tmpdir(),'nm-love-automation-'))
 try {
   const input=join(temp,'input.json'),output=join(temp,'output.json')
@@ -60,8 +81,8 @@ try {
       }
       continue
     }
-    const external=structuredClone(item.external ?? {})
-    if (external.midi) {
+    const external=item.hostMidi ? {midi:upstreamMidiState(item.hostMidi)} : structuredClone(item.external ?? {})
+    if (external.midi && !item.hostMidi) {
       const midiState=external.midi
       midiState.getChannel=channel=>midiState.channels[channel]
       for (const channel of Object.values(midiState.channels)) {

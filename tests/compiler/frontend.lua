@@ -140,7 +140,13 @@ local function runOne(item)
     return {ok=true,value=out}
   end
   if item.automation then
-    local ok,value=pcall(automation.resolve,item.automation,item.time,item.range,item.external or {},{wallTime=item.wallTime or 1000})
+    local external=item.external or {}
+    if item.hostMidi then
+      -- The renderer's host path: a MIDI snapshot becomes the runtime MIDI state.
+      local _,_,state=inputs.new():update({midi=item.hostMidi})
+      external={midi=state.midi}
+    end
+    local ok,value=pcall(automation.resolve,item.automation,item.time,item.range,external,{wallTime=item.wallTime or 1000})
     if not ok then return {ok=false,error=tostring(value)} end
     return {ok=true,value=portable(value)}
   end
