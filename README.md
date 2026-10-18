@@ -46,7 +46,7 @@ It is self-contained: the runtime needs no Node.js, browser, or network connecti
   support. Treat that as a proposed API baseline, not a claim that it is the newest release or that
   all 11.5 devices can run the catalog.
 - **A real graphics context** to render.
-- The qualified configuration is macOS 14.8.3 on Apple M2 (see
+- The qualified configuration is macOS 26.6.2 on Apple M4 (see
   [What works and what does not](#what-works-and-what-does-not)). Windows and Linux each require
   actual host qualification. Mobile support is a later qualification stage, not an initial support
   claim.
@@ -189,21 +189,22 @@ local graph = assert(nm.compile('search user\nred().write(o0)\nrender(o0)'))
 ## What works and what does not
 
 The native compiler matches the locked upstream graphs for the catalog defaults, 1,815 choice and
-boolean parameter variants, 912 shared programs, and 52 authored upstream fixtures. Function-valued
+boolean parameter variants, 912 shared programs, and 143 authored upstream fixtures. Function-valued
 parameters are compared by evaluation on deterministic state vectors as well as by graph structure.
 The extracted package runs a CPU compilation check and a real LÖVE GPU check, including Portable GLSL,
 failed hot replacement, persistent resize, feedback, and 100 renderer lifecycles.
 
-The 2026-10-07 same-run qualification against upstream `8e5835932a7297d360b943200b42953224eea0a4`
-executed all 3,466 cases with unchanged candidate source: 3,371 informative exact cases, 16
-informative strict cases, and 79 uninformative cases. Every one of the 210 effects has informative
-evidence. Near, deferred, skipped, failed, and missing counts are all zero. Strict comparison requires
+The 2026-10-18 same-run qualification against upstream `2f9736ebb6c39be683074edc3a2cd0338a8a0c9a`
+executed all 3,557 cases with unchanged candidate source: 3,460 exact cases, 18 strict cases, and 79
+uninformative cases. Every one of the 210 effects has informative evidence. Near, deferred, skipped,
+failed, and missing counts are all zero. The 54 authored upstream cases with a `tiles` plan render
+each tile through the upstream tile region and grade the stitched frame. Strict comparison requires
 maximum channel error ≤ 2.001 in 8-bit units and SSIM ≥ 0.98, with matching dimensions and alpha.
 
 | Qualification configuration | Result |
 |---|---|
-| macOS 14.8.3 arm64, Apple M2, LÖVE 11.5, LuaJIT 2.1.1700008891, OpenGL 4.1 Metal 88.1 | Full catalog parity, native GPU regressions, and clean-package consumer checks pass |
-| Firefox 153.0, build 20260722115600, Apple M2 WebGL2 | Same-run reference renderer |
+| macOS 26.6.2 arm64, Apple M4, LÖVE 11.5, LuaJIT 2.1.1700008891, OpenGL 4.1 Metal 90.5 | Full catalog parity, native GPU regressions, and clean-package consumer checks pass |
+| Firefox 153.0, Apple M4 WebGL2 | Same-run reference renderer |
 | Windows and Linux | Not yet qualified; no platform support claim |
 
 The comparison used the common 8,192-pixel texture limit; native LÖVE retains its 16,384-pixel limit

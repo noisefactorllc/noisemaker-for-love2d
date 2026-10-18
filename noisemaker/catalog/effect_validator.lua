@@ -20,7 +20,7 @@ local dimKeys=set{'param','power','multiply','default','paramDefault','screenDiv
 local formats=set{'rgba16f','rgba16float','rgba8','rgba8unorm','rgba32f','rgba32float','r8','r8unorm','r16f','r16float','r32f','r32float'}
 local drawModes=set{'points','triangles','billboards'}
 local passTypes=set{'render','compute'}
-local topKeys=set{'name','namespace','func','description','tags','globals','passes','textures','textures3d','shaders','uniformLayout','uniformLayouts','paramAliases','openCategories','defaultProgram','hidden','deprecatedBy','externalTexture','externalMesh','builtinMeshes','outputTex3d','outputGeo','state','uniforms','onInit','onUpdate','onDestroy','asyncInit'}
+local topKeys=set{'name','namespace','func','description','tags','globals','passes','textures','textures3d','shaders','uniformLayout','uniformLayouts','openCategories','defaultProgram','hidden','deprecatedBy','externalTexture','externalMesh','builtinMeshes','outputTex3d','outputGeo','state','uniforms','onInit','onUpdate','onDestroy','asyncInit'}
 local pipelineInputs=set{'inputTex','inputTex3d','inputGeo','inputXyz','inputVel','inputRgba','noise','midiNoteGrid','feedback','selfTex','outputTex','none'}
 local pipelineOutputs=set{'outputTex','outputTex3d','outputXyz','outputVel','outputRgba'}
 local dimensionWords=set{'screen','auto','input','resolution'}
@@ -598,14 +598,6 @@ function M.validateEffectDefinition(def)
     if not object(def.uniformLayouts) then add(errors,'"uniformLayouts" must be an object mapping program names to layouts')
     else for _,name in ipairs(keys(def.uniformLayouts)) do
       uniformLayout(def.uniformLayouts[name],errors,"uniformLayouts['"..name.."']")
-    end end
-  end
-  if def.paramAliases~=nil then
-    if not object(def.paramAliases) then add(errors,'"paramAliases" must be an object mapping aliases to global names')
-    else for _,name in ipairs(keys(def.paramAliases)) do
-      local target=def.paramAliases[name]
-      if not nonempty(target) then add(errors,"paramAliases['"..name.."'] must be a non-empty string")
-      elseif not context.globalKeys[target] then add(errors,"paramAliases['"..name.."'] references unknown global '"..target.."'") end
     end end
   end
   checkKeys(def,topKeys,errors,'Definition')

@@ -90,7 +90,10 @@ export async function renderReference({cases,output,referenceRoot=process.env.NM
      return {...spec,url:'/__fixture_asset__/'+spec.sha256}
     })
     result=await page.evaluate(async fixture=>{
-     const capture=fixture.capture||{};const width=capture.width||257,height=capture.height||129
+     const capture=fixture.capture||{};const fullWidth=capture.width||257,fullHeight=capture.height||129
+     // A tiled case renders at tile size, one tile region at a time (upstream setTileRegion).
+     const tiles=capture.tiles||null
+     const width=tiles?tiles.size[0]:fullWidth,height=tiles?tiles.size[1]:fullHeight
      const canvas=document.querySelector('canvas');canvas.width=width;canvas.height=height
      const {compiler,pipeline,CanvasRenderer,enums}=window.nmReference
      if(fixture.portable){
@@ -331,17 +334,8 @@ export async function renderReference({cases,output,referenceRoot=process.env.NM
        p.setMidiState(midi)
       }
       await p.whenAsyncInitsSettled()
-      for(let i=0;i<(capture.frames||1);i++){
-       executedPasses=[]
-       attributionActive=i===(capture.frames||1)-1
-       if(attributionActive)targetEvidence={target:fixture.attributionTarget||null,observedPasses:0,comparablePasses:0,defaultBaselinePasses:0,changedRgbPixels:0,outputRgbPixels:0,maxRgbDelta:0,readbackErrors:0,
-        stateWriteComparisons:0,stateChangedRgbPixels:0,stateOutputRgbPixels:0,maxStateRgbDelta:0,feedbackReadPasses:0}
-       p.frameIndex=(capture.frame||0)+i
-       const time=(capture.time??.25)+(capture.advanceTime?i*(capture.deltaTime??1/60):0)
-       p.lastTime=time-(capture.deltaTime??0)
-       p.render(time)
-      }
-      if(p.backend.getName().toLowerCase()!=='webgl2')throw Error('Backend changed before capture')
+      const resetEvidence=()=>{targetEvidence={target:fixture.attributionTarget||null,observedPasses:0,comparablePasses:0,defaultBaselinePasses:0,changedRgbPixels:0,outputRgbPixels:0,maxRgbDelta:0,readbackErrors:0,
+        stateWriteComparisons:0,stateChangedRgbPixels:0,stateOutputRgbPixels:0,maxStateRgbDelta:0,feedbackReadPasses:0}}
       const readCapture=()=>{
        if(capture.surface){
         const surface=p.surfaces.get(capture.surface);if(!surface)throw Error('Missing authored capture surface '+capture.surface)
@@ -357,31 +351,65 @@ export async function renderReference({cases,output,referenceRoot=process.env.NM
        for(let y=0;y<height;y++)top.set(pixels.subarray((height-1-y)*width*4,(height-y)*width*4),y*width*4)
        return {pixels:top,width,height}
       }
-      let captured=readCapture(),settled=!capture.settleMs
-      if(capture.settleMs){
-       const deadline=Date.now()+capture.settleMs
-       while(Date.now()<deadline){
-        await new Promise(resolve=>setTimeout(resolve,250))
+      // Render the case's frames and read the capture; `final` marks the frames whose passes
+      // supply attribution evidence (the last tile of a tiled case).
+      const renderAndCapture=async final=>{
+       for(let i=0;i<(capture.frames||1);i++){
         executedPasses=[]
-        attributionActive=false
-        p.render(capture.time??.25)
-        executedPasses=[]
-        targetEvidence={target:fixture.attributionTarget||null,observedPasses:0,comparablePasses:0,defaultBaselinePasses:0,changedRgbPixels:0,outputRgbPixels:0,maxRgbDelta:0,readbackErrors:0,
-         stateWriteComparisons:0,stateChangedRgbPixels:0,stateOutputRgbPixels:0,maxStateRgbDelta:0,feedbackReadPasses:0}
-        attributionActive=true
-        p.render(capture.time??.25)
-        const next=readCapture()
-        if(next.pixels.length===captured.pixels.length&&next.pixels.every((value,index)=>value===captured.pixels[index])){captured=next;settled=true;break}
-        captured=next
+        attributionActive=final&&i===(capture.frames||1)-1
+        if(attributionActive)resetEvidence()
+        p.frameIndex=(capture.frame||0)+i
+        const time=(capture.time??.25)+(capture.advanceTime?i*(capture.deltaTime??1/60):0)
+        p.lastTime=time-(capture.deltaTime??0)
+        p.render(time)
        }
-       if(!settled)throw Error('Authored fixture did not settle within '+capture.settleMs+' ms')
+       if(p.backend.getName().toLowerCase()!=='webgl2')throw Error('Backend changed before capture')
+       let captured=readCapture(),settled=!capture.settleMs
+       if(capture.settleMs){
+        const deadline=Date.now()+capture.settleMs
+        while(Date.now()<deadline){
+         await new Promise(resolve=>setTimeout(resolve,250))
+         executedPasses=[]
+         attributionActive=false
+         p.render(capture.time??.25)
+         executedPasses=[]
+         if(final)resetEvidence()
+         attributionActive=final
+         p.render(capture.time??.25)
+         const next=readCapture()
+         if(next.pixels.length===captured.pixels.length&&next.pixels.every((value,index)=>value===captured.pixels[index])){captured=next;settled=true;break}
+         captured=next
+        }
+        if(!settled)throw Error('Authored fixture did not settle within '+capture.settleMs+' ms')
+       }
+       if(captured.width!==width||captured.height!==height)throw Error('Authored surface dimensions differ from resolution')
+       return {captured,settled}
+      }
+      let captured,settled
+      if(!tiles)({captured,settled}=await renderAndCapture(true))
+      else{
+       // Tiles go row-major with bottom-origin offsets; each tile's top-down rows land in the
+       // top-down full frame, as the upstream WebGL2 attestation stitches them.
+       const columns=fullWidth/width,rows=fullHeight/height,pixels=new Uint8Array(fullWidth*fullHeight*4)
+       settled=true;let surfaceId=null
+       for(let index=0;index<columns*rows;index++){
+        const offset=[(index%columns)*width,Math.floor(index/columns)*height]
+        p.setTileRegion({offset,fullResolution:[fullWidth,fullHeight],renderScale:tiles.renderScale??1})
+        const part=await renderAndCapture(index===columns*rows-1)
+        settled=settled&&part.settled;surfaceId=part.captured.surfaceId||null
+        for(let row=0;row<height;row++){
+         const fullRow=fullHeight-offset[1]-height+row
+         pixels.set(part.captured.pixels.subarray(row*width*4,(row+1)*width*4),(fullRow*fullWidth+offset[0])*4)
+        }
+       }
+       p.clearTileRegion()
+       captured={pixels,width:fullWidth,height:fullHeight,surfaceId}
       }
       if(capture.requireColorVariation){
        const colors=new Set();for(let i=0;i<captured.pixels.length;i+=4)colors.add(captured.pixels[i]+','+captured.pixels[i+1]+','+captured.pixels[i+2])
        if(colors.size<2)throw Error('Authored fixture requires color variation')
       }
-      if(captured.width!==width||captured.height!==height)throw Error('Authored surface dimensions differ from resolution')
-      return {status:'rendered',width,height,gpu,backend:p.backend.getName(),pixels:Array.from(captured.pixels),passes:graph.passes.length,executedPasses:executedPasses.length,effects:[...new Set(graph.passes.map(pass=>pass.effectKey?.replace('.', '/')).filter(Boolean))],contributingEffects:contributingEffects(),targetEvidence,volumeSizeChanges,captureSurface:capture.surface||null,surfaceId:captured.surfaceId||null,settled,consumed,midiSnapshot}
+      return {status:'rendered',width:fullWidth,height:fullHeight,tiles:tiles?{size:[width,height],renderScale:tiles.renderScale??1,count:(fullWidth/width)*(fullHeight/height)}:null,gpu,backend:p.backend.getName(),pixels:Array.from(captured.pixels),passes:graph.passes.length,executedPasses:executedPasses.length,effects:[...new Set(graph.passes.map(pass=>pass.effectKey?.replace('.', '/')).filter(Boolean))],contributingEffects:contributingEffects(),targetEvidence,volumeSizeChanges,captureSurface:capture.surface||null,surfaceId:captured.surfaceId||null,settled,consumed,midiSnapshot}
      }finally{p.dispose()}
     },{...fixture,loadedInputs,__browserMaxTextureSize:browserMaxTextureSize,__testInputReadbackFailure:testInputReadbackFailureCaseId===fixture.id,__testInputIncompleteFramebuffer:testInputIncompleteFramebufferCaseId===fixture.id})
     const {pixels,...metadata}=result

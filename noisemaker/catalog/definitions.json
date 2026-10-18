@@ -355,9 +355,6 @@
         "components": "zw"
       }
     },
-    "paramAliases": {
-      "loopAmp": "speed"
-    },
     "openCategories": [
       "general",
       "bit mask"
@@ -536,9 +533,6 @@
         "slot": 3,
         "components": "zw"
       }
-    },
-    "paramAliases": {
-      "loopAmp": "speed"
     }
   },
   "classicNoisedeck/cellNoise": {
@@ -978,11 +972,6 @@
         }
       }
     },
-    "paramAliases": {
-      "cellSmooth": "smooth",
-      "cellVariation": "variation",
-      "loopAmp": "speed"
-    },
     "passes": [
       {
         "name": "render",
@@ -1186,14 +1175,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "cellSmooth": "smooth",
-      "cellVariation": "variation",
-      "refractAmt": "amount",
-      "refractDir": "direction",
-      "loopAmp": "speed"
-    }
+    ]
   },
   "classicNoisedeck/coalesce": {
     "state": {},
@@ -1350,10 +1332,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "mixAmt": "mix"
-    }
+    ]
   },
   "classicNoisedeck/colorLab": {
     "state": {},
@@ -1784,10 +1763,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "mixAmt": "mix"
-    }
+    ]
   },
   "classicNoisedeck/effects": {
     "state": {},
@@ -2499,11 +2475,6 @@
         }
       }
     },
-    "paramAliases": {
-      "fractalType": "type",
-      "backgroundColor": "bgColor",
-      "backgroundOpacity": "bgAlpha"
-    },
     "passes": [
       {
         "name": "render",
@@ -2660,10 +2631,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "aberrationAmt": "aberration"
-    }
+    ]
   },
   "classicNoisedeck/kaleido": {
     "state": {},
@@ -2889,10 +2857,6 @@
         }
       }
     ],
-    "paramAliases": {
-      "kaleido": "sides",
-      "loopAmp": "speed"
-    },
     "openCategories": [
       "general",
       "animation"
@@ -3119,12 +3083,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "aberrationAmt": "aberration",
-      "opacity": "alpha",
-      "loopAmp": "speed"
-    }
+    ]
   },
   "classicNoisedeck/moodscape": {
     "state": {},
@@ -3348,9 +3307,6 @@
         "slot": 4,
         "components": "zw"
       }
-    },
-    "paramAliases": {
-      "loopAmp": "speed"
     }
   },
   "classicNoisedeck/noise": {
@@ -3920,10 +3876,6 @@
         }
       }
     },
-    "paramAliases": {
-      "noiseType": "type",
-      "loopAmp": "speed"
-    },
     "passes": [
       {
         "name": "render",
@@ -4101,11 +4053,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "noiseScale": "scale",
-      "noiseType": "type"
-    }
+    ]
   },
   "classicNoisedeck/refract": {
     "state": {},
@@ -4222,11 +4170,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "refractDir": "direction",
-      "mixAmt": "mix"
-    }
+    ]
   },
   "classicNoisedeck/shapeMixer": {
     "state": {},
@@ -4640,6 +4584,14 @@
       "palettePhase": {
         "slot": 6,
         "components": "xyz"
+      },
+      "tileOffset": {
+        "slot": 7,
+        "components": "xy"
+      },
+      "fullResolution": {
+        "slot": 7,
+        "components": "zw"
       }
     },
     "globals": {
@@ -5021,10 +4973,6 @@
           "category": "palette"
         }
       }
-    },
-    "paramAliases": {
-      "loopAAmp": "speedA",
-      "loopBAmp": "speedB"
     },
     "passes": [
       {
@@ -5675,10 +5623,6 @@
         }
       }
     },
-    "paramAliases": {
-      "backgroundColor": "bgColor",
-      "backgroundOpacity": "bgAlpha"
-    },
     "passes": [
       {
         "name": "render",
@@ -5951,16 +5895,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "splatColor": "color",
-      "splatCutoff": "cutoff",
-      "splatMode": "mode",
-      "splatScale": "scale",
-      "splatSeed": "seed",
-      "splatSpeed": "speed",
-      "useSplats": "enabled"
-    }
+    ]
   },
   "filter/adjust": {
     "state": {},
@@ -6529,10 +6464,6 @@
         "format": "rgba16f"
       }
     },
-    "paramAliases": {
-      "shadingStrength": "strength",
-      "mixAmount": "mix"
-    },
     "openCategories": [
       "general",
       "edges"
@@ -6703,9 +6634,6 @@
         }
       }
     ],
-    "paramAliases": {
-      "aberrationAmt": "aberration"
-    },
     "defaultProgram": "search synth, filter\nnoise(colorMode: mono, ridges: true)\n.chromaticAberration()\n.write(o0)"
   },
   "filter/chrome": {
@@ -7304,6 +7232,18 @@
       "bandHeight": {
         "slot": 2,
         "components": "z"
+      },
+      "renderScale": {
+        "slot": 2,
+        "components": "w"
+      },
+      "tileOffset": {
+        "slot": 3,
+        "components": "xy"
+      },
+      "fullResolution": {
+        "slot": 3,
+        "components": "zw"
       }
     }
   },
@@ -7759,11 +7699,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "ditherType": "type",
-      "mixAmount": "mix"
-    }
+    ]
   },
   "filter/edge": {
     "state": {},
@@ -8346,10 +8282,6 @@
         "height": "input",
         "format": "rgba8unorm"
       }
-    },
-    "paramAliases": {
-      "mixAmt": "mix",
-      "aberrationAmt": "aberration"
     }
   },
   "filter/fibers": {
@@ -9314,9 +9246,6 @@
         "height": "input",
         "format": "rgba16f"
       }
-    },
-    "paramAliases": {
-      "vignetteHighlightProtect": "vigHiProtect"
     }
   },
   "filter/grain": {
@@ -9962,9 +9891,6 @@
         }
       }
     ],
-    "paramAliases": {
-      "paletteIndex": "index"
-    },
     "defaultProgram": "search filter, synth\n\nnoise(ridges: true, colorMode: mono)\n.historicPalette()\n.write(o0)"
   },
   "filter/invert": {
@@ -10618,11 +10544,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "freq": "scale",
-      "nth": "mode"
-    }
+    ]
   },
   "filter/median": {
     "state": {},
@@ -11179,10 +11101,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "frequency": "freq"
-    }
+    ]
   },
   "filter/oilPaint": {
     "state": {},
@@ -11570,13 +11489,7 @@
           "fragColor": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "paletteIndex": "index",
-      "paletteOffset": "offset",
-      "paletteRepeat": "repeat",
-      "paletteRotation": "rotation"
-    }
+    ]
   },
   "filter/parallax": {
     "state": {},
@@ -12534,9 +12447,6 @@
         }
       }
     ],
-    "paramAliases": {
-      "aberrationAmt": "aberration"
-    },
     "defaultProgram": "search filter, synth\n\nnoise(ridges: true)\n.prismaticAberration(modulate: true)\n.write(o0)"
   },
   "filter/reindex": {
@@ -16092,11 +16002,6 @@
       }
     },
     "defaultProgram": "search filter, synth\n\nperlin(scale: 100)\n  .text()\n  .write(o0)",
-    "paramAliases": {
-      "bgOpacity": "matteOpacity",
-      "bgAlpha": "matteOpacity",
-      "bgColor": "matteColor"
-    },
     "passes": [
       {
         "name": "overlay",
@@ -17882,13 +17787,7 @@
       }
     },
     "outputTex3d": "volumeCache",
-    "outputGeo": "inputGeo",
-    "paramAliases": {
-      "paletteIndex": "index",
-      "paletteOffset": "offset",
-      "paletteRepeat": "repeat",
-      "paletteRotation": "rotation"
-    }
+    "outputGeo": "inputGeo"
   },
   "mixer/alphaMask": {
     "state": {},
@@ -17962,9 +17861,6 @@
         }
       }
     ],
-    "paramAliases": {
-      "mixAmt": "mix"
-    },
     "defaultProgram": "search mixer, synth\n\npolygon(smooth: 0, bgAlpha: 0)\n  .write(o0)\n\n noise(scaleX: 100, scaleY: 100)\n  .alphaMask(tex: read(o0))\n  .write(o1)\n"
   },
   "mixer/applyMode": {
@@ -18027,9 +17923,6 @@
         }
       }
     ],
-    "paramAliases": {
-      "mixAmt": "mix"
-    },
     "defaultProgram": "search mixer, synth\n\nnoise(seed: 1, ridges: true)\n.write(o0)\n\nperlin()\n.applyMode(tex: read(o0))\n.write(o1)"
   },
   "mixer/blendMode": {
@@ -18105,9 +17998,6 @@
         }
       }
     ],
-    "paramAliases": {
-      "mixAmt": "mix"
-    },
     "defaultProgram": "search mixer, synth\n\nnoise(ridges: true, colorMode: mono)\n.write(o0)\n\nperlin()\n.blendMode(tex: read(o0), mode: phoenix)\n.write(o1)"
   },
   "mixer/cellSplit": {
@@ -18316,9 +18206,6 @@
         }
       }
     ],
-    "paramAliases": {
-      "mixAmt": "mix"
-    },
     "defaultProgram": "search mixer, synth\n\nnoise(ridges: true, colorMode: mono)\n.write(o0)\n\nnoise(ridges: true)\n.centerMask(tex: read(o0), mix: -75)\n.write(o1)"
   },
   "mixer/channelCombine": {
@@ -23622,9 +23509,6 @@
         "format": "rgba16f"
       }
     },
-    "paramAliases": {
-      "rotationVariation": "rotationVar"
-    },
     "openCategories": [
       "source",
       "visual"
@@ -25504,10 +25388,6 @@
         "slot": 3,
         "components": "zw"
       }
-    },
-    "paramAliases": {
-      "cellVariation": "variation",
-      "loopAmp": "speed"
     }
   },
   "synth/cellularAutomata": {
@@ -25710,6 +25590,14 @@
         "smoothing": {
           "slot": 1,
           "components": "y"
+        },
+        "tileOffset": {
+          "slot": 2,
+          "components": "xy"
+        },
+        "fullResolution": {
+          "slot": 2,
+          "components": "zw"
         }
       },
       "caFb": {
@@ -27261,10 +27149,15 @@
       "rotation": {
         "slot": 4,
         "components": "z"
+      },
+      "tileOffset": {
+        "slot": 5,
+        "components": "xy"
+      },
+      "fullResolution": {
+        "slot": 5,
+        "components": "zw"
       }
-    },
-    "paramAliases": {
-      "poiMode": "poi"
     },
     "openCategories": [
       "fractal",
@@ -27480,10 +27373,6 @@
           "control": false
         }
       }
-    },
-    "paramAliases": {
-      "backgroundColor": "bgColor",
-      "backgroundOpacity": "bgAlpha"
     },
     "passes": [
       {
@@ -27887,6 +27776,14 @@
       "n2r2": {
         "slot": 5,
         "components": "x"
+      },
+      "tileOffset": {
+        "slot": 6,
+        "components": "xy"
+      },
+      "fullResolution": {
+        "slot": 6,
+        "components": "zw"
       }
     }
   },
@@ -28149,6 +28046,14 @@
       "animMode": {
         "slot": 4,
         "components": "x"
+      },
+      "tileOffset": {
+        "slot": 5,
+        "components": "xy"
+      },
+      "fullResolution": {
+        "slot": 5,
+        "components": "zw"
       }
     },
     "openCategories": [
@@ -28520,6 +28425,14 @@
         "inputIntensity": {
           "slot": 1,
           "components": "x"
+        },
+        "tileOffset": {
+          "slot": 2,
+          "components": "xy"
+        },
+        "fullResolution": {
+          "slot": 2,
+          "components": "zw"
         }
       }
     },
@@ -29120,12 +29033,6 @@
         "slot": 4,
         "components": "zw"
       }
-    },
-    "paramAliases": {
-      "noiseType": "type",
-      "loopAmp": "speed",
-      "xScale": "scaleX",
-      "yScale": "scaleY"
     }
   },
   "synth/osc2d": {
@@ -29210,10 +29117,7 @@
           "color": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "frequency": "freq"
-    }
+    ]
   },
   "synth/pattern": {
     "state": {},
@@ -29407,10 +29311,7 @@
           "color": "outputTex"
         }
       }
-    ],
-    "paramAliases": {
-      "patternType": "type"
-    }
+    ]
   },
   "synth/perlin": {
     "state": {},
@@ -29999,6 +29900,14 @@
         "inputIntensity": {
           "slot": 1,
           "components": "x"
+        },
+        "tileOffset": {
+          "slot": 2,
+          "components": "xy"
+        },
+        "fullResolution": {
+          "slot": 2,
+          "components": "zw"
         },
         "smoothing": {
           "slot": 3,
@@ -36756,11 +36665,15 @@
       "speedB": {
         "slot": 2,
         "components": "z"
+      },
+      "tileOffset": {
+        "slot": 3,
+        "components": "xy"
+      },
+      "fullResolution": {
+        "slot": 3,
+        "components": "zw"
       }
-    },
-    "paramAliases": {
-      "loopAAmp": "speedA",
-      "loopBAmp": "speedB"
     }
   },
   "synth/solid": {
@@ -37079,6 +36992,18 @@
       "speed": {
         "slot": 2,
         "components": "w"
+      },
+      "tileOffset": {
+        "slot": 3,
+        "components": "xy"
+      },
+      "fullResolution": {
+        "slot": 3,
+        "components": "zw"
+      },
+      "renderScale": {
+        "slot": 4,
+        "components": "x"
       }
     }
   },
@@ -37283,10 +37208,7 @@
       }
     },
     "outputTex3d": "volumeCache",
-    "outputGeo": "geoBuffer",
-    "paramAliases": {
-      "cellVariation": "variation"
-    }
+    "outputGeo": "geoBuffer"
   },
   "synth3d/cellularAutomata3d": {
     "state": {},
@@ -37677,10 +37599,7 @@
       }
     },
     "outputTex3d": "volumeCache",
-    "outputGeo": "geoBuffer",
-    "paramAliases": {
-      "fractalType": "type"
-    }
+    "outputGeo": "geoBuffer"
   },
   "synth3d/fractal3d": {
     "state": {},
@@ -37884,10 +37803,7 @@
       }
     },
     "outputTex3d": "volumeCache",
-    "outputGeo": "geoBuffer",
-    "paramAliases": {
-      "fractalType": "type"
-    }
+    "outputGeo": "geoBuffer"
   },
   "synth3d/heightmap3d": {
     "state": {},

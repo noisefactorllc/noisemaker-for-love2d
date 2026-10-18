@@ -2,7 +2,7 @@
   "schema": 1,
   "authority": {
     "repository": "https://github.com/noisefactorllc/noisemaker",
-    "commit": "8e5835932a7297d360b943200b42953224eea0a4"
+    "commit": "2f9736ebb6c39be683074edc3a2cd0338a8a0c9a"
   },
   "sourceCount": 317,
   "programCount": 309,
@@ -90,8 +90,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/classicNoisedeck/effects/glsl/effects.glsl",
-          "sha256": "c837f01ab747d2363bd1bd9ffb9950e0ececcfae40a9768a3dce90fb01d83457",
-          "bytes": 21279
+          "sha256": "b4f4279698ce60bd3c0c45f8339a4869cd6c2f0714f219ee6b2e997328057316",
+          "bytes": 28403
         }
       }
     },
@@ -112,8 +112,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/classicNoisedeck/glitch/glsl/glitch.glsl",
-          "sha256": "9ed4cce15c5d4358f191d8beeaae93624520530f1c4181dd7a5895e47821cc0e",
-          "bytes": 8195
+          "sha256": "4bb633e963eed011c4724d9b18470baed3ac474eadce98e06288ace5c382846a",
+          "bytes": 8268
         }
       }
     },
@@ -156,8 +156,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/classicNoisedeck/noise/glsl/noise.glsl",
-          "sha256": "e8eeb7d9134b7c08901df12f041767151b26b23ee534d038d1b71b6e47f69586",
-          "bytes": 31461
+          "sha256": "d86306e285a2f80dae86fe79cde92ceb89ec898ef78e6a15d140bfdf0e030bb2",
+          "bytes": 32527
         }
       }
     },
@@ -497,8 +497,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/filter/crt/glsl/crt.glsl",
-          "sha256": "62d915eda8e20a458b1df91198cee3e85f0f0b9676cd4d0777264e9cd8b99b7c",
-          "bytes": 19560
+          "sha256": "dfbba2918a68889c5b82ef619bf472387acec116b4d72bf76d62f35a60c9aa7f",
+          "bytes": 19644
         }
       }
     },
@@ -618,8 +618,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/filter/flipMirror/glsl/flipMirror.glsl",
-          "sha256": "696263e373913b7ab71430189fb7626ca966780ff645384b89509cf9d1a3fa7e",
-          "bytes": 2497
+          "sha256": "ce6ddc95ded4628892f42ca6b9889234983ad91a8cf985b15d81940611835d8e",
+          "bytes": 2619
         }
       }
     },
@@ -651,8 +651,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/filter/glyphMap/glsl/glyphMap.glsl",
-          "sha256": "853c3c15f300cf56ba3c11d5613cb91bfcb14b8b2f1be6bb5193e71397fdcea1",
-          "bytes": 7838
+          "sha256": "dc0af9a6a6fb4d0cd62ea25c4508a714a36a1dc66923f5578d91ac190d9f4dd6",
+          "bytes": 8145
         }
       }
     },
@@ -1619,8 +1619,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/filter/spinBlur/glsl/spinBlur.glsl",
-          "sha256": "a5ee242e189066b55d4d5c3140e957418bdff582b367d1f6d4cdfee4c333b405",
-          "bytes": 3077
+          "sha256": "bd83ef6a8fb02370d51c333e63285c13406ad9ef4bafa64513b2018e61050a4e",
+          "bytes": 2304
         }
       }
     },
@@ -2437,8 +2437,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/points/heightGrid/glsl/agent.glsl",
-          "sha256": "40edcf1e02d2ee47a25404c5f4f0e809a5243c5b639bb301b823217b9fda1e77",
-          "bytes": 1037
+          "sha256": "9edb336514439c0cbe2c29eb38ad8acb26586bd5d59ac0f68ed999ba2ce9024a",
+          "bytes": 1180
         }
       }
     },
@@ -2743,8 +2743,8 @@
         },
         "vert": {
           "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/deposit.vert",
-          "sha256": "b16dde6e0e89d1fea3bc2278c35f2a96583cbd815373ea9f127ad8973cda5ba4",
-          "bytes": 8537
+          "sha256": "77e027d2917305a9955c58d321e02b57c3d70b2a01de17458a22b5bf6a9688cf",
+          "bytes": 8564
         }
       }
     },
@@ -2754,8 +2754,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/depthKeys.glsl",
-          "sha256": "e8c0dbd5acf0aa5a695b07f091d653165d50b5a35ba51b49e60ae34cee906e89",
-          "bytes": 1134
+          "sha256": "70435ced4eaad1f78853ff17996a72d3b212330f3c95dc32503221f061f44fa9",
+          "bytes": 1161
         }
       }
     },
@@ -2765,8 +2765,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/render/pointsBillboardRender/glsl/depthMerge.glsl",
-          "sha256": "e023d00bddd8dc5b94ce8eafe76b668f0dca06254f6db56fb1513f08bc8bbd6e",
-          "bytes": 1570
+          "sha256": "7579a796b29b63d5e728762a8758384868d8c26d5822472e482d4eb0ba3b42f9",
+          "bytes": 1597
         }
       }
     },
@@ -2880,8 +2880,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/render/render3d/glsl/render3d.glsl",
-          "sha256": "5ff6fc621924c7c53425c2f18202e549ace6a4ff8a96f9e908ad26bba6e0c7e2",
-          "bytes": 14169
+          "sha256": "138d3e0daa247100fe3553b2699bce3f302e77fce25d9d4fb507868d31a84a30",
+          "bytes": 14393
         }
       }
     },
@@ -2924,8 +2924,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/render/renderLit3d/glsl/renderLit3d.glsl",
-          "sha256": "77460fb4a9e53f7776d7a3d73cb3fcc1840dce577c6f0989354eeb540011529f",
-          "bytes": 12143
+          "sha256": "ea309e7e9c4bcb13fd96bf05f0e587bfd25557b7184872b32aabc160df49b627",
+          "bytes": 12406
         }
       }
     },
@@ -3397,8 +3397,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/synth3d/fractal3d/glsl/precompute.glsl",
-          "sha256": "8ab3dfe63e16d4406deee719c1f822d405c712bae21bd1348ae5b75b79a14d41",
-          "bytes": 6912
+          "sha256": "4bc39fb7920cf0829cc6a6fc4670cdac9f5ea68c5438f569050a4732c1e6de19",
+          "bytes": 6882
         }
       }
     },

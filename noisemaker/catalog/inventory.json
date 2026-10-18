@@ -2,7 +2,7 @@
   "schema": 1,
   "authority": {
     "repository": "https://github.com/noisefactorllc/noisemaker",
-    "commit": "8e5835932a7297d360b943200b42953224eea0a4"
+    "commit": "2f9736ebb6c39be683074edc3a2cd0338a8a0c9a"
   },
   "counts": {
     "definitions": 210,
@@ -25,7 +25,7 @@
     "classicNoisedeck/bitEffects": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/bitEffects/definition.js",
-        "sha256": "b150c3cf04164fa5d26b670088046d3fbbd263a7d3e0e47c65e904f62c35e016",
+        "sha256": "323240afffde5cf11f17a2727a7fc501125405b513733b6c605d0b8ce24472eb",
         "methods": []
       },
       "sources": [
@@ -51,7 +51,7 @@
     "classicNoisedeck/caustic": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/caustic/definition.js",
-        "sha256": "5784fcb276e3864a2bf6365a7bc9dcddc35c72750c88e249388a821e353da721",
+        "sha256": "043b2eb91bd22dd0e7026a47e56231976fd59db76d4d04c5e97903d043b1d039",
         "methods": []
       },
       "sources": [
@@ -77,7 +77,7 @@
     "classicNoisedeck/cellNoise": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/cellNoise/definition.js",
-        "sha256": "71c08afac4579a2ca532b1cec779201ba72e14547bea444dc37f4c89dff4808f",
+        "sha256": "d906a7d279a51c4b5143516f988d80138ca07a1a2dc230c506f52de728a1e0df",
         "methods": []
       },
       "sources": [
@@ -103,7 +103,7 @@
     "classicNoisedeck/cellRefract": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/cellRefract/definition.js",
-        "sha256": "4d8c71fcfa0d66fe9bc2bba06738b0414f3c02aaa866f6a34c6cfcfbb5df8fb1",
+        "sha256": "e5fd25d2684cf3e2580f5f64b20340b6c47bb2b33cd515cacac386e4b03c486c",
         "methods": []
       },
       "sources": [
@@ -129,7 +129,7 @@
     "classicNoisedeck/coalesce": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/coalesce/definition.js",
-        "sha256": "765ca5acd12a117c26156cd62e92dcad82dda028f21f3d6cb08e9384c6ee636c",
+        "sha256": "e1424d43b375c002f8b8c29bf7ee4d206bcf5cefe1dbcb6a330a6de822331e4b",
         "methods": []
       },
       "sources": [
@@ -181,7 +181,7 @@
     "classicNoisedeck/composite": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/composite/definition.js",
-        "sha256": "812ca2226f27d0359729e336ccb51a7f39442915859d3bb5c147a855e4d0ab22",
+        "sha256": "e9af4084db388c9ce1993eb893e0e36bfc42ea428c25fc679172a030af5e28f5",
         "methods": []
       },
       "sources": [
@@ -233,7 +233,7 @@
     "classicNoisedeck/fractal": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/fractal/definition.js",
-        "sha256": "6cd7b9f7e9111343aff864bbec25a8a7831e55a455b574ab5d46d5114af5bdd8",
+        "sha256": "2df62b44832f5f30083b6ba696c1a0da9c5ce23092ac04502795bd94a6bae8b0",
         "methods": []
       },
       "sources": [
@@ -259,7 +259,7 @@
     "classicNoisedeck/glitch": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/glitch/definition.js",
-        "sha256": "ca8a87fdcd9debea47daa67a5013df289fab4a5373a34670c38c3863157d913c",
+        "sha256": "7220282df29d342c559643e86f3ccda9354bfbe74b2850859b87710bf833b102",
         "methods": []
       },
       "sources": [
@@ -285,7 +285,7 @@
     "classicNoisedeck/kaleido": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/kaleido/definition.js",
-        "sha256": "eddf23acc36c20abc0ce27e7ec53447530ac27c149e5005c9c63a235c9c51f52",
+        "sha256": "c64ef8a4f7e2a647ac17180f68c6f0aa5d3ab063289253e99158fe7f80adad97",
         "methods": []
       },
       "sources": [
@@ -311,7 +311,7 @@
     "classicNoisedeck/lensDistortion": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/lensDistortion/definition.js",
-        "sha256": "f15251c47e41ba543732c13707a4e8682f6cd22ac584536a63a151e0b1d73350",
+        "sha256": "61146f19279eda4065b6a9be2bf5074d6825da30bcc19afe1621140b0ad9c68b",
         "methods": []
       },
       "sources": [
@@ -337,7 +337,7 @@
     "classicNoisedeck/moodscape": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/moodscape/definition.js",
-        "sha256": "7a946f97917be46fb8baa600e93e82cdfe4ae79764f5f97aaaa6251d14cdbfe1",
+        "sha256": "1959c18a7a5e37c4d49003c17baf568eab77028e2f22adacbedee2b01a460dc6",
         "methods": []
       },
       "sources": [
@@ -363,7 +363,7 @@
     "classicNoisedeck/noise": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/noise/definition.js",
-        "sha256": "092e88cd43e8ff4e28ca2283463299fa788a605f73e6aaa9cb18cf84a3245090",
+        "sha256": "b83f448a761f4ee89f4c5d443b53db8274ea11755506c859ab058db3c1777a46",
         "methods": []
       },
       "sources": [
@@ -389,7 +389,7 @@
     "classicNoisedeck/noise3d": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/noise3d/definition.js",
-        "sha256": "639aa24ab634fd7e32d64da3becdee845e2375cbee30c9165dfaeebdce0683a9",
+        "sha256": "d5117a382f6e37be5cff19c22a936f37c321d1806f28cc1d685b93de64b9f73f",
         "methods": []
       },
       "sources": [
@@ -415,7 +415,7 @@
     "classicNoisedeck/refract": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/refract/definition.js",
-        "sha256": "5d515d283373ff94608153b0fffa4d96b1d0c426d6fc58f04dfdee71abb85a30",
+        "sha256": "197e2ba660ed85ee537058b7e6308ec389dfe7b0aca27d123756b676d08ef06c",
         "methods": []
       },
       "sources": [
@@ -467,7 +467,7 @@
     "classicNoisedeck/shapes": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/shapes/definition.js",
-        "sha256": "d36d5c8bf6ebdb6860dfd2d00185742763d14275a721640dcf5c0e67ae714d5e",
+        "sha256": "c470149fa594f0a609bcc6eb9be0fabfc74f1718f0e15dc892fbff257782609d",
         "methods": []
       },
       "sources": [
@@ -493,7 +493,7 @@
     "classicNoisedeck/shapes3d": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/shapes3d/definition.js",
-        "sha256": "19b1e98ea690365fe11490d53da839dad86a97cfd135a457cdf7caa3f9d22609",
+        "sha256": "d737371045c617e93cded3736b0ca4fb5f4661d2f2b60c78df0ffe8c503091ed",
         "methods": []
       },
       "sources": [
@@ -519,7 +519,7 @@
     "classicNoisedeck/splat": {
       "definition": {
         "path": "shaders/effects/classicNoisedeck/splat/definition.js",
-        "sha256": "d2627f94b7925d44c39633fa5d387ecf3c67ec305509ce7cd828705e252642b9",
+        "sha256": "5b25fac896ba9d21b3ec15ff18a7a5deaf840dff4a71cb45e72d2c6d90b2cbdc",
         "methods": []
       },
       "sources": [
@@ -652,7 +652,7 @@
     "filter/celShading": {
       "definition": {
         "path": "shaders/effects/filter/celShading/definition.js",
-        "sha256": "81e7ae7deeb2202a885740b69cf8765e2615cbb26b09fe7c020a87c16cf03b48",
+        "sha256": "ebc95e9908ce1399915bfbe055a503bd6692b5251a1b4c58e086bcf74adb7a7d",
         "methods": []
       },
       "sources": [
@@ -732,7 +732,7 @@
     "filter/chromaticAberration": {
       "definition": {
         "path": "shaders/effects/filter/chromaticAberration/definition.js",
-        "sha256": "f2fba24402f374adbbbf17b1c2115ce23248d1244727ed4e1a3953f6d86ceaa4",
+        "sha256": "1163971d9894373912aacd4f3d5a543eace59b42f4834ce185751b589581111a",
         "methods": []
       },
       "sources": [
@@ -866,7 +866,7 @@
     "filter/corrupt": {
       "definition": {
         "path": "shaders/effects/filter/corrupt/definition.js",
-        "sha256": "d9577f4cfa7a67b9f18c0822494a833436427ea784504ba62d9065f787fa90ae",
+        "sha256": "6c8ff883f4bf6224f8e80da0db1d1db4930fea1b1609590a0faf4d553abe5617",
         "methods": []
       },
       "sources": [
@@ -1022,7 +1022,7 @@
     "filter/dither": {
       "definition": {
         "path": "shaders/effects/filter/dither/definition.js",
-        "sha256": "c4a98ee058e6d34538770bfd6748139094d011dac64d873b8358690005a4d632",
+        "sha256": "17d4fd18302f7e37bd68e2255459c74d39d54d05218ec1a0b591712b98dd12b5",
         "methods": []
       },
       "sources": [
@@ -1126,7 +1126,7 @@
     "filter/feedback": {
       "definition": {
         "path": "shaders/effects/filter/feedback/definition.js",
-        "sha256": "a91c991e66d32c296e90fdf97bf6aefe6dc73072e18248d1330450b500233500",
+        "sha256": "10c33c335729ce1f9202c1c62c20db93452e0b1639ecf415ac87b1b162a9f1e7",
         "methods": []
       },
       "sources": [
@@ -1285,7 +1285,7 @@
     "filter/grade": {
       "definition": {
         "path": "shaders/effects/filter/grade/definition.js",
-        "sha256": "26c12a89cc0d5823d8b1db6e11cc49671a4f8bf2d0217bf71eec3ceebd5cc74b",
+        "sha256": "ef39c1725776b1b9d6be60c04dd406ca61d8b0799d9052ec76c8452dd64b6325",
         "methods": []
       },
       "sources": [
@@ -1448,7 +1448,7 @@
     "filter/historicPalette": {
       "definition": {
         "path": "shaders/effects/filter/historicPalette/definition.js",
-        "sha256": "89105b6b564251c0f3dc41fcba536d85e9c5addfad265558de2b9f00ef255015",
+        "sha256": "a6c0c749486c7464272c5f907e775243c49c44955c87b32f54e1171cf5bf5b74",
         "methods": []
       },
       "sources": [
@@ -1630,7 +1630,7 @@
     "filter/lowPoly": {
       "definition": {
         "path": "shaders/effects/filter/lowPoly/definition.js",
-        "sha256": "000dd8512f988bb31b931264497fb248a4262af7fe49c207a6df46c29ab32ac2",
+        "sha256": "33749fad0c84147403850e755cfca552f57bb5866424e60159b8162606574ce7",
         "methods": []
       },
       "sources": [
@@ -1817,7 +1817,7 @@
     "filter/octaveWarp": {
       "definition": {
         "path": "shaders/effects/filter/octaveWarp/definition.js",
-        "sha256": "de9facc19b98ab5a54226779d7a4c094764b44e0987b531bd1dd4daec7855c42",
+        "sha256": "6bfc7c63d0136b1d1e72788ac3b8c01de9c0fc1eb8d90a24e94b6359ac8b02ad",
         "methods": []
       },
       "sources": [
@@ -1924,7 +1924,7 @@
     "filter/palette": {
       "definition": {
         "path": "shaders/effects/filter/palette/definition.js",
-        "sha256": "cc248af8ec5624616bbbe275866baa9159862ccd8c684cc4e1aea4ebedfe87b3",
+        "sha256": "05e38f3b9088ec83ae37dc09fcf17c8e345b1de011ec8aa6595e452e41ef25cb",
         "methods": []
       },
       "sources": [
@@ -2219,7 +2219,7 @@
     "filter/prismaticAberration": {
       "definition": {
         "path": "shaders/effects/filter/prismaticAberration/definition.js",
-        "sha256": "cf3df5b0ba1128bca919055c012dd2924301fe266b2fa9c0bb7fd232d0c87fa0",
+        "sha256": "829fc0d15f2e9a94c7342e08e3fac99a788ba80533fdd38c0b721343aa5fb42c",
         "methods": []
       },
       "sources": [
@@ -3091,7 +3091,7 @@
     "filter/text": {
       "definition": {
         "path": "shaders/effects/filter/text/definition.js",
-        "sha256": "998332565d2209ecb0cefb585691d5964dfe89142c3e4a6a77390a2a4c1bffa3",
+        "sha256": "c8dbe507f4cefc05db8c327e67ea779a19ab0ef16e2a844fd1904c3ef68ac575",
         "methods": []
       },
       "sources": [
@@ -3571,7 +3571,7 @@
     "filter3d/palette3d": {
       "definition": {
         "path": "shaders/effects/filter3d/palette3d/definition.js",
-        "sha256": "2affd727aeb0fdf7b2c60512d85c78fa50c59ad5e45fe32e0a8e8d734f6b4a00",
+        "sha256": "070b16496ef076823d52268bb662e44b2a28529251d3bc47a0e8bb94712a58f9",
         "methods": []
       },
       "sources": [
@@ -3597,7 +3597,7 @@
     "mixer/alphaMask": {
       "definition": {
         "path": "shaders/effects/mixer/alphaMask/definition.js",
-        "sha256": "61d313e8ff0b2a88b42ef1931e5755a330d63b71f1ee600d7a184a6f3ff78ed6",
+        "sha256": "709fe8f8ab43b87660a4fcf032634c784e96329523346ca5c567959763783274",
         "methods": []
       },
       "sources": [
@@ -3623,7 +3623,7 @@
     "mixer/applyMode": {
       "definition": {
         "path": "shaders/effects/mixer/applyMode/definition.js",
-        "sha256": "43a8a83f711c222bb4e76edddeca0b53847b29a787a3a5c6a425464f07116412",
+        "sha256": "00dd6ca8d3b3c7cc71d3f28565892a6b4f4e6c83d39da937ac2780e9a6c62bbd",
         "methods": []
       },
       "sources": [
@@ -3649,7 +3649,7 @@
     "mixer/blendMode": {
       "definition": {
         "path": "shaders/effects/mixer/blendMode/definition.js",
-        "sha256": "a104a1b93189cdfa2ba12c6dd613c964d58d544b80696411df50d30d36d64f39",
+        "sha256": "89708107a41d6c3abe87919cdd40a285c8e7247ba1cdf2369a41ccd6db4b6f95",
         "methods": []
       },
       "sources": [
@@ -3701,7 +3701,7 @@
     "mixer/centerMask": {
       "definition": {
         "path": "shaders/effects/mixer/centerMask/definition.js",
-        "sha256": "d218d5ee1439fff76538585a41202edd8131638141973c66c23b95e4146bd32d",
+        "sha256": "b3d6600bfdf5f1b99e8d90186b4dfbe6833221214e482b12e7b933a83c33bcde",
         "methods": []
       },
       "sources": [
@@ -4403,7 +4403,7 @@
     "render/pointsBillboardRender": {
       "definition": {
         "path": "shaders/effects/render/pointsBillboardRender/definition.js",
-        "sha256": "b392ece386e40cbb6d1742a4296ed6c3a57f205b2d1a15f3c451264b8d164181",
+        "sha256": "03ac562bd09d8295faa866a1b67a9cbe1ef73355bec51a318153b9d876d8371f",
         "methods": []
       },
       "sources": [
@@ -4651,7 +4651,7 @@
     "synth/cell": {
       "definition": {
         "path": "shaders/effects/synth/cell/definition.js",
-        "sha256": "56dd1e5e2bb817e56a08be21c31898d560bb66e0ee4701398ff275e2a66847ff",
+        "sha256": "dca7225a7d2086b84116bac48d986659b854cdf912d9c5c574f925c5e89b7974",
         "methods": []
       },
       "sources": [
@@ -4677,7 +4677,7 @@
     "synth/cellularAutomata": {
       "definition": {
         "path": "shaders/effects/synth/cellularAutomata/definition.js",
-        "sha256": "d7677d6c7f8450051e87c72da5267aad0aa43ea5fc447ead1a659d087abf3431",
+        "sha256": "b30ed89af55c2fc2a6a0bd8ef1b78b15494c4a149392bee5c6c879708802231b",
         "methods": []
       },
       "sources": [
@@ -4834,7 +4834,7 @@
     "synth/mandelbrot": {
       "definition": {
         "path": "shaders/effects/synth/mandelbrot/definition.js",
-        "sha256": "3ab5e82593a6b55a46ab64989f3af1c6a1200ba4a36376d3769fe78a15dcc5c8",
+        "sha256": "d9baee07c1aecb735f106123c599966226f6c3b7238c311216e9a1811e4203f5",
         "methods": []
       },
       "sources": [
@@ -4860,7 +4860,7 @@
     "synth/media": {
       "definition": {
         "path": "shaders/effects/synth/media/definition.js",
-        "sha256": "653cf55e2c7c3a77203b7e57e29b4042560431a454c9da1281a8cadcd3a5e0fa",
+        "sha256": "9dd0c2bd5b7ace0fbb29cbfd02f56d4156b9da04a366ed5c6dfcbb45a4020f24",
         "methods": [
           "onInit",
           "onUpdate",
@@ -4890,7 +4890,7 @@
     "synth/mnca": {
       "definition": {
         "path": "shaders/effects/synth/mnca/definition.js",
-        "sha256": "5f096a5b60494160d84f005d4d97fd97d0b5fcafdd053f5f8518115191e929ca",
+        "sha256": "be75f0d2fa6df5f2ebaa7e54dbbc57c1fa3da969433127aafdd7270400567e6b",
         "methods": []
       },
       "sources": [
@@ -4917,7 +4917,7 @@
     "synth/modPattern": {
       "definition": {
         "path": "shaders/effects/synth/modPattern/definition.js",
-        "sha256": "e86b5368c861f6e3eb0c37f5f4027169de090824b1a9394587a59bef29b86e2e",
+        "sha256": "4a9596b90a664059dba58dda9cc74966739cce88490dcd0b954c52a406b6364f",
         "methods": []
       },
       "sources": [
@@ -4943,7 +4943,7 @@
     "synth/navierStokes": {
       "definition": {
         "path": "shaders/effects/synth/navierStokes/definition.js",
-        "sha256": "0226dbf9b01a6f06457a21d8a67bcf049d7349f1699dffdbdc5bcea3d7bd109e",
+        "sha256": "31536fb6f6076d3fad397351c6bafb6728da4f40d11cc7111e9cc5b48b9283e1",
         "methods": []
       },
       "sources": [
@@ -5001,7 +5001,7 @@
     "synth/noise": {
       "definition": {
         "path": "shaders/effects/synth/noise/definition.js",
-        "sha256": "b142761e58ad8688705b723bf6df98c7b1dba8b1a88ee4ae7249d44ea8e11285",
+        "sha256": "c1f3d5b83ee7fbf4fef2e00f2d943686fed39bffa90d495622df4b2766dc74b9",
         "methods": []
       },
       "sources": [
@@ -5027,7 +5027,7 @@
     "synth/osc2d": {
       "definition": {
         "path": "shaders/effects/synth/osc2d/definition.js",
-        "sha256": "55133b7e375797fec335e3947fe97393c941859e15ba9f0d80bc374697356db9",
+        "sha256": "dd25fe9db956b53e53c1e4b3dd3054b819ce834b590a4ceed6c544ba0e8e90ae",
         "methods": []
       },
       "sources": [
@@ -5053,7 +5053,7 @@
     "synth/pattern": {
       "definition": {
         "path": "shaders/effects/synth/pattern/definition.js",
-        "sha256": "27d432f0b43dfd59f502c78c212a9a4862ee5b36df749cae677388ac604e72ca",
+        "sha256": "8aba5da8dea8cc9d7535fd6c2c8455770f486c608ebd508bb5c765d235c6cd50",
         "methods": []
       },
       "sources": [
@@ -5131,7 +5131,7 @@
     "synth/reactionDiffusion": {
       "definition": {
         "path": "shaders/effects/synth/reactionDiffusion/definition.js",
-        "sha256": "453e86b60ab9ef01a8c77e42182b3ae2a410226c45e8991fc234677c687f95df",
+        "sha256": "f0feb9c1eaab3d50ac3c6600b32316e10ceead26428aa45d2639c4446ac92045",
         "methods": []
       },
       "sources": [
@@ -5263,7 +5263,7 @@
     "synth/shape": {
       "definition": {
         "path": "shaders/effects/synth/shape/definition.js",
-        "sha256": "e7166ba360866842c2afddc73295f90998e54b0857789e3cc090c9d9ead049e8",
+        "sha256": "f3f1afad354b2efb5d6263fdf525625c71043eba9326646e29b93f6d4dcf9017",
         "methods": []
       },
       "sources": [
@@ -5341,7 +5341,7 @@
     "synth/subdivide": {
       "definition": {
         "path": "shaders/effects/synth/subdivide/definition.js",
-        "sha256": "3bfa3afac88a745cb9451ff63564c1cbd01c006c6595aa09f7f1b8ee0821c470",
+        "sha256": "1e2a1ee0ec536e608f623e115e0f6869bf83f31709b0892535f0ba70e83bc782",
         "methods": []
       },
       "sources": [
@@ -5393,7 +5393,7 @@
     "synth3d/cell3d": {
       "definition": {
         "path": "shaders/effects/synth3d/cell3d/definition.js",
-        "sha256": "457052a5d053dfc5a13520092cd179282e0eb2aa87076b5c2e4f96ea31de88c7",
+        "sha256": "05a2636b6a6fc3cd838a94ca46a805a8bcecada88059cddd784246941baf7788",
         "methods": []
       },
       "sources": [
@@ -5445,7 +5445,7 @@
     "synth3d/flythrough3d": {
       "definition": {
         "path": "shaders/effects/synth3d/flythrough3d/definition.js",
-        "sha256": "7478e146c3aff799178d9dce2eabef87014ded0c2ad0802c452e9a1bd226e6e5",
+        "sha256": "5f782878261515184d1bfe4de3b970ce268d792a2929d329bebec098a5152de2",
         "methods": []
       },
       "sources": [
@@ -5471,7 +5471,7 @@
     "synth3d/fractal3d": {
       "definition": {
         "path": "shaders/effects/synth3d/fractal3d/definition.js",
-        "sha256": "a2d1c5846631875e3470fb88880eaad895c3d946c9125b869ad78f64d03a54b7",
+        "sha256": "a28c5a76d86955537f61e887669891bb31da4cd55224852d8bded968e9e437eb",
         "methods": []
       },
       "sources": [
@@ -5721,8 +5721,8 @@
       "path": "shaders/effects/classicNoisedeck/effects/glsl/effects.glsl",
       "effect": "classicNoisedeck/effects",
       "extension": "glsl",
-      "bytes": 21279,
-      "sha256": "c837f01ab747d2363bd1bd9ffb9950e0ececcfae40a9768a3dce90fb01d83457"
+      "bytes": 28403,
+      "sha256": "b4f4279698ce60bd3c0c45f8339a4869cd6c2f0714f219ee6b2e997328057316"
     },
     {
       "path": "shaders/effects/classicNoisedeck/fractal/glsl/fractal.glsl",
@@ -5735,8 +5735,8 @@
       "path": "shaders/effects/classicNoisedeck/glitch/glsl/glitch.glsl",
       "effect": "classicNoisedeck/glitch",
       "extension": "glsl",
-      "bytes": 8195,
-      "sha256": "9ed4cce15c5d4358f191d8beeaae93624520530f1c4181dd7a5895e47821cc0e"
+      "bytes": 8268,
+      "sha256": "4bb633e963eed011c4724d9b18470baed3ac474eadce98e06288ace5c382846a"
     },
     {
       "path": "shaders/effects/classicNoisedeck/kaleido/glsl/kaleido.glsl",
@@ -5763,8 +5763,8 @@
       "path": "shaders/effects/classicNoisedeck/noise/glsl/noise.glsl",
       "effect": "classicNoisedeck/noise",
       "extension": "glsl",
-      "bytes": 31461,
-      "sha256": "e8eeb7d9134b7c08901df12f041767151b26b23ee534d038d1b71b6e47f69586"
+      "bytes": 32527,
+      "sha256": "d86306e285a2f80dae86fe79cde92ceb89ec898ef78e6a15d140bfdf0e030bb2"
     },
     {
       "path": "shaders/effects/classicNoisedeck/noise3d/glsl/noise3d.glsl",
@@ -5980,8 +5980,8 @@
       "path": "shaders/effects/filter/crt/glsl/crt.glsl",
       "effect": "filter/crt",
       "extension": "glsl",
-      "bytes": 19560,
-      "sha256": "62d915eda8e20a458b1df91198cee3e85f0f0b9676cd4d0777264e9cd8b99b7c"
+      "bytes": 19644,
+      "sha256": "dfbba2918a68889c5b82ef619bf472387acec116b4d72bf76d62f35a60c9aa7f"
     },
     {
       "path": "shaders/effects/filter/degauss/glsl/degauss.glsl",
@@ -6057,8 +6057,8 @@
       "path": "shaders/effects/filter/flipMirror/glsl/flipMirror.glsl",
       "effect": "filter/flipMirror",
       "extension": "glsl",
-      "bytes": 2497,
-      "sha256": "696263e373913b7ab71430189fb7626ca966780ff645384b89509cf9d1a3fa7e"
+      "bytes": 2619,
+      "sha256": "ce6ddc95ded4628892f42ca6b9889234983ad91a8cf985b15d81940611835d8e"
     },
     {
       "path": "shaders/effects/filter/fxaa/glsl/fxaa.glsl",
@@ -6078,8 +6078,8 @@
       "path": "shaders/effects/filter/glyphMap/glsl/glyphMap.glsl",
       "effect": "filter/glyphMap",
       "extension": "glsl",
-      "bytes": 7838,
-      "sha256": "853c3c15f300cf56ba3c11d5613cb91bfcb14b8b2f1be6bb5193e71397fdcea1"
+      "bytes": 8145,
+      "sha256": "dc0af9a6a6fb4d0cd62ea25c4508a714a36a1dc66923f5578d91ac190d9f4dd6"
     },
     {
       "path": "shaders/effects/filter/grade/glsl/creative.glsl",
@@ -6694,8 +6694,8 @@
       "path": "shaders/effects/filter/spinBlur/glsl/spinBlur.glsl",
       "effect": "filter/spinBlur",
       "extension": "glsl",
-      "bytes": 3077,
-      "sha256": "a5ee242e189066b55d4d5c3140e957418bdff582b367d1f6d4cdfee4c333b405"
+      "bytes": 2304,
+      "sha256": "bd83ef6a8fb02370d51c333e63285c13406ad9ef4bafa64513b2018e61050a4e"
     },
     {
       "path": "shaders/effects/filter/spiral/glsl/spiral.glsl",
@@ -7226,8 +7226,8 @@
       "path": "shaders/effects/points/heightGrid/glsl/agent.glsl",
       "effect": "points/heightGrid",
       "extension": "glsl",
-      "bytes": 1037,
-      "sha256": "40edcf1e02d2ee47a25404c5f4f0e809a5243c5b639bb301b823217b9fda1e77"
+      "bytes": 1180,
+      "sha256": "9edb336514439c0cbe2c29eb38ad8acb26586bd5d59ac0f68ed999ba2ce9024a"
     },
     {
       "path": "shaders/effects/points/heightGrid/glsl/passthrough.glsl",
@@ -7436,22 +7436,22 @@
       "path": "shaders/effects/render/pointsBillboardRender/glsl/deposit.vert",
       "effect": "render/pointsBillboardRender",
       "extension": "vert",
-      "bytes": 8537,
-      "sha256": "b16dde6e0e89d1fea3bc2278c35f2a96583cbd815373ea9f127ad8973cda5ba4"
+      "bytes": 8564,
+      "sha256": "77e027d2917305a9955c58d321e02b57c3d70b2a01de17458a22b5bf6a9688cf"
     },
     {
       "path": "shaders/effects/render/pointsBillboardRender/glsl/depthKeys.glsl",
       "effect": "render/pointsBillboardRender",
       "extension": "glsl",
-      "bytes": 1134,
-      "sha256": "e8c0dbd5acf0aa5a695b07f091d653165d50b5a35ba51b49e60ae34cee906e89"
+      "bytes": 1161,
+      "sha256": "70435ced4eaad1f78853ff17996a72d3b212330f3c95dc32503221f061f44fa9"
     },
     {
       "path": "shaders/effects/render/pointsBillboardRender/glsl/depthMerge.glsl",
       "effect": "render/pointsBillboardRender",
       "extension": "glsl",
-      "bytes": 1570,
-      "sha256": "e023d00bddd8dc5b94ce8eafe76b668f0dca06254f6db56fb1513f08bc8bbd6e"
+      "bytes": 1597,
+      "sha256": "7579a796b29b63d5e728762a8758384868d8c26d5822472e482d4eb0ba3b42f9"
     },
     {
       "path": "shaders/effects/render/pointsBillboardRender/glsl/diffuse.glsl",
@@ -7527,8 +7527,8 @@
       "path": "shaders/effects/render/render3d/glsl/render3d.glsl",
       "effect": "render/render3d",
       "extension": "glsl",
-      "bytes": 14169,
-      "sha256": "5ff6fc621924c7c53425c2f18202e549ace6a4ff8a96f9e908ad26bba6e0c7e2"
+      "bytes": 14393,
+      "sha256": "138d3e0daa247100fe3553b2699bce3f302e77fce25d9d4fb507868d31a84a30"
     },
     {
       "path": "shaders/effects/render/renderCubemap3d/glsl/renderCubemap3d.glsl",
@@ -7555,8 +7555,8 @@
       "path": "shaders/effects/render/renderLit3d/glsl/renderLit3d.glsl",
       "effect": "render/renderLit3d",
       "extension": "glsl",
-      "bytes": 12143,
-      "sha256": "77460fb4a9e53f7776d7a3d73cb3fcc1840dce577c6f0989354eeb540011529f"
+      "bytes": 12406,
+      "sha256": "ea309e7e9c4bcb13fd96bf05f0e587bfd25557b7184872b32aabc160df49b627"
     },
     {
       "path": "shaders/effects/synth/bitwise/glsl/bitwise.glsl",
@@ -7856,8 +7856,8 @@
       "path": "shaders/effects/synth3d/fractal3d/glsl/precompute.glsl",
       "effect": "synth3d/fractal3d",
       "extension": "glsl",
-      "bytes": 6912,
-      "sha256": "8ab3dfe63e16d4406deee719c1f822d405c712bae21bd1348ae5b75b79a14d41"
+      "bytes": 6882,
+      "sha256": "4bc39fb7920cf0829cc6a6fc4670cdac9f5ea68c5438f569050a4732c1e6de19"
     },
     {
       "path": "shaders/effects/synth3d/heightmap3d/glsl/precompute.glsl",

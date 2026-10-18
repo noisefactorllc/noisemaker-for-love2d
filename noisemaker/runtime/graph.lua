@@ -24,6 +24,15 @@ function M.decode(x,active)
  end
  active[x]=nil;return out
 end
+-- JavaScript Number() for the values a texture dimension can read.
+local function jsNumber(value)
+ if type(value)=='number' then return value end
+ if type(value)=='boolean' then return value and 1 or 0 end
+ if value==values.NULL then return 0 end
+ if type(value)=='string' then return tonumber(value) or 0/0 end
+ return 0/0
+end
+local function finite(value) return type(value)=='number' and value==value and value~=math.huge and value~=-math.huge end
 function M.dimension(spec,screen,uniforms,diagnostics)
  uniforms=uniforms or {}
  local result
@@ -32,12 +41,28 @@ function M.dimension(spec,screen,uniforms,diagnostics)
  elseif type(spec)=='string' and spec:sub(-1)=='%' then result=screen*assert(tonumber(spec:sub(1,-2)),'Invalid percentage dimension')/100
  elseif type(spec)=='table' and spec.param then
   local value=uniforms[spec.param]; local found=value~=nil and value~=values.UNDEFINED
-  if not found then value=spec.paramDefault or 64 end
+  local paramDefault=spec.paramDefault or 64
+  if not found or value==values.NULL then value=paramDefault end
+  value=jsNumber(value)
   if spec.multiply~=nil then value=value*spec.multiply end
   if spec.power~=nil then value=value^spec.power end
   if not found and (spec.multiply~=nil or spec.power~=nil) and spec.default~=nil then value=spec.default end
+  -- Upstream resolveDimension: a nonnumeric value (an automation table, for example) uses the
+  -- spec's numeric default so no texture gets a NaN size.
+  if not finite(value) then
+   if spec.default~=nil then value=spec.default
+   else
+    value=paramDefault
+    if spec.multiply~=nil then value=value*spec.multiply end
+    if spec.power~=nil then value=value^spec.power end
+   end
+  end
   result=value
- elseif type(spec)=='table' and spec.screenDivide then result=math.floor(screen/(uniforms[spec.screenDivide] or spec.default or 1)+0.5)
+ elseif type(spec)=='table' and spec.screenDivide then
+  local divisor=uniforms[spec.screenDivide]
+  if divisor==nil or divisor==values.NULL or divisor==values.UNDEFINED then divisor=spec.default or 1 end
+  if not finite(jsNumber(divisor)) then divisor=spec.default or 1 end
+  result=math.floor(screen/jsNumber(divisor)+0.5)
  elseif type(spec)=='table' and spec.scale then
   result=math.floor(screen*spec.scale)
   if spec.clamp then result=math.max(spec.clamp.min or -math.huge,math.min(spec.clamp.max or math.huge,result)) end

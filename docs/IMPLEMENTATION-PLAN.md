@@ -111,7 +111,7 @@ Use failing behavioral fixtures followed by the minimal implementation and focus
 **Proposed files:** `tools/package.mjs`, `tests/package-consumer/{conf,main}.lua`, packaging exclusions and license notices when source is imported.
 
 - [x] Build the module and `.love` example from a clean source tree, then install into a separate consumer without sibling checkouts or network access.
-- [ ] Run `scripts/test` and `scripts/parity-summary` on identified Windows, macOS and Linux GPU hosts before claiming each platform. macOS Apple M2 passes; Windows and Linux remain unqualified.
+- [ ] Run `scripts/test` and `scripts/parity-summary` on identified Windows, macOS and Linux GPU hosts before claiming each platform. macOS Apple M4 passes at the current authority; Windows and Linux remain unqualified.
 - [x] Benchmark the architecture's sizes/workloads, recording warm-up, steady-state CPU/GPU costs, throughput and memory separately.
 - [x] Verify binary inputs stay binary and no private paths, credentials, generated run output, or development dependencies enter the package.
 

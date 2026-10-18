@@ -49,6 +49,10 @@ if(tier==='upstream'||tier==='all'||tier==='supplemental'){
   for(const [index,texture] of (authored.textureInputs||[]).entries()){
    const bytes=Buffer.from(texture.data)
    if(bytes.length!==texture.width*texture.height*4)throw Error(`${file}: texture input has wrong byte count`)
+   // Upstream's attestation uploads authored texture inputs through a Canvas2D, whose
+   // premultiplied storage keeps no colour in a fully transparent texel. Both runners get
+   // those texels; the reference canvas holds the same bytes either way.
+   for(let i=0;i<bytes.length;i+=4)if(bytes[i+3]===0)bytes[i]=bytes[i+1]=bytes[i+2]=0
    const asset=`inputs/${id}-texture${index}.rgba`
    writeFileSync(join(output,asset),bytes)
    inputs.push({kind:'texture',effect:texture.effect,uniform:texture.uniform,binding:texture.uniform,asset,assetRoot:'capture',width:texture.width,height:texture.height,format:'rgba8',sha256:sha256(bytes),origin:'bottom-left',flipY:false})
@@ -66,7 +70,15 @@ if(tier==='upstream'||tier==='all'||tier==='supplemental'){
     inputs.push({kind:'mesh',mesh:mesh.mesh,component,binding:`global_${mesh.mesh}_${component}`,sourcePath:mesh.path,sourceSha256:sha256(bytes),vertexCount:packed.vertexCount,asset,assetRoot:'capture',width:256,height:256,format:'rgba32f',sha256:sha256(binary),origin:'bottom-left'})
    }
   }
-  cases.push({id,source,effects:declaredEffects,attributionTarget:target||undefined,authored:{schemaVersion:authored.schemaVersion,sourcePath:'parity/upstream/'+file,surface:authored.surface,settleMs:authored.settleMs||0,epsilon:authored.epsilon,requireColorVariation:authored.requireColorVariation===true,textureInputs:(authored.textureInputs||[]).length,meshInputs:(authored.meshInputs||[]).length},capture:{...capture,width:authored.resolution[0],height:authored.resolution[1],frames:authored.frames||8,surface:authored.surface||'o0',settleMs:authored.settleMs||0,requireColorVariation:authored.requireColorVariation===true,inputs}})
+  // An authored tiles plan renders the resolution as a grid of tiles (upstream setTileRegion).
+  let tiles
+  if(authored.tiles!==undefined){
+   const [width,height]=authored.resolution,[tileWidth,tileHeight]=authored.tiles.size||[],renderScale=authored.tiles.renderScale??1
+   if(![tileWidth,tileHeight].every(Number.isInteger)||tileWidth<1||tileHeight<1||width%tileWidth||height%tileHeight||(width/tileWidth)*(height/tileHeight)<2||!(renderScale>0))
+    throw Error(`${file}: invalid tiles plan`)
+   tiles={size:[tileWidth,tileHeight],renderScale}
+  }
+  cases.push({id,source,effects:declaredEffects,attributionTarget:target||undefined,authored:{schemaVersion:authored.schemaVersion,sourcePath:'parity/upstream/'+file,surface:authored.surface,settleMs:authored.settleMs||0,epsilon:authored.epsilon,requireColorVariation:authored.requireColorVariation===true,textureInputs:(authored.textureInputs||[]).length,meshInputs:(authored.meshInputs||[]).length,tiles:authored.tiles},capture:{...capture,width:authored.resolution[0],height:authored.resolution[1],frames:authored.frames||8,surface:authored.surface||'o0',settleMs:authored.settleMs||0,requireColorVariation:authored.requireColorVariation===true,inputs,...(tiles?{tiles}:{})}})
  }
  if(tier==='upstream'||tier==='all')for(const file of readdirSync(join(root,'parity/upstream')).filter(x=>x.endsWith('.json')).sort()){
   const authored=JSON.parse(readFileSync(join(root,'parity/upstream',file)))

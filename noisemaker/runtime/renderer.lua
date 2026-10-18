@@ -252,7 +252,15 @@ function Renderer:render(frame)
   for name,value in pairs(inputUniforms) do globals[name]=value end
   local hookUniforms=self.hooks:update(time,delta)
   globals.time=time;globals.deltaTime=delta;globals.frame=frame.frame or self.frameIndex
-  globals.resolution={self.width,self.height};globals.fullResolution={self.width,self.height};globals.tileOffset={0,0};globals.aspect=self.width/self.height;globals.aspectRatio=globals.aspect;globals.renderScale=1;globals.midiClockCount=frame.midiClockCount or inputUniforms.midiClockCount or 0
+  globals.resolution={self.width,self.height}
+  -- Upstream pipeline.updateGlobalUniforms: a tile region renders one tile of a larger image;
+  -- aspect and the reciprocals then follow the full resolution.
+  local tile=self.tileRegion
+  local fullWidth,fullHeight=tile and tile.fullResolution[1] or self.width,tile and tile.fullResolution[2] or self.height
+  globals.tileOffset=tile and {tile.offset[1],tile.offset[2]} or {0,0};globals.fullResolution={fullWidth,fullHeight}
+  globals.aspect=fullWidth/fullHeight;globals.aspectRatio=globals.aspect;globals.aspectInv=1/globals.aspect
+  globals.invFullResolution={1/fullWidth,1/fullHeight};globals.renderScale=tile and tile.renderScale or 1
+  globals.midiClockCount=frame.midiClockCount or inputUniforms.midiClockCount or 0
   for _,key in ipairs({'audioWaveform','audioSpectrum','midiNoteGrid'}) do if frame[key] then globals[key]=frame[key] end end
   local reads,writes={},{};for name,s in pairs(self.resources.surfaces) do reads[name]=s.read;writes[name]=s.write end
   local count=0
@@ -263,7 +271,7 @@ function Renderer:render(frame)
     local repeats=repeatCount(pass,uniforms,globals)
     for _=1,repeats do
      self:_execute(pass,uniforms,globals,reads,writes);count=count+1
-     if repeats>1 then for _,id in ipairs((function()local out={};for _,k in ipairs(keys(pass.outputs))do out[#out+1]=pass.outputs[k]end;return out end)()) do local name=global(id);if name then local s=self.resources.surfaces[name];s.read,s.write=reads[name],writes[name] end end end
+     if repeats>1 then for _,id in ipairs((function()local outputs,out=normalizedOutputs(pass),{};for _,k in ipairs(keys(outputs))do out[#out+1]=outputs[k]end;return out end)()) do local name=global(id);if name then local s=self.resources.surfaces[name];s.read,s.write=reads[name],writes[name] end end end
     end
    end
   end
@@ -279,6 +287,14 @@ function Renderer:render(frame)
   return presented
  end)
 end
+-- Parity harness hook mirroring upstream pipeline.setTileRegion/clearTileRegion. Offsets are
+-- bottom-origin pixels; the renderer's own size is the tile size.
+function Renderer:_setTileRegion(region)
+ assert(type(region)=='table' and type(region.offset)=='table' and type(region.fullResolution)=='table','Invalid tile region')
+ self.tileRegion={offset={region.offset[1],region.offset[2]},fullResolution={region.fullResolution[1],region.fullResolution[2]},renderScale=region.renderScale or 1}
+ return true
+end
+function Renderer:_clearTileRegion() self.tileRegion=nil;return true end
 function Renderer:setInput(binding,texture,options)
  local alive,d=self:_alive();if not alive then return nil,d end
  if type(binding)~='string' or (texture~=nil and type(texture)~='userdata') then return nil,{{stage='input',code='ERR_INPUT',message='Expected a binding name and LÖVE Texture'}} end

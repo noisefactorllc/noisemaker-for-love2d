@@ -68,7 +68,10 @@ function love.load()
    local success,result=xpcall(function()
     if case.portable then local success,diagnostics=require('noisemaker').registerEffect(case.portable);if not success then error(json.encode(diagnostics)) end end
     local graph,diagnostics=compiler.compile(case.source);if not graph then error(json.encode(diagnostics)) end
-    local capture=case.capture or {};local width,height=capture.width or 257,capture.height or 129
+    local capture=case.capture or {};local fullWidth,fullHeight=capture.width or 257,capture.height or 129
+    -- A tiled case renders at tile size, one tile region at a time (upstream setTileRegion).
+    local tiles=capture.tiles
+    local width,height=tiles and tiles.size[1] or fullWidth,tiles and tiles.size[2] or fullHeight
     local common=capture.commonMaxTextureSize
     if common~=nil then
      assert(type(common)=='number' and common==math.floor(common) and common>0 and common<=nativeMaxTextureSize,
@@ -145,11 +148,6 @@ function love.load()
      end
     end
     local canvas
-    for i=0,(capture.frames or 1)-1 do
-     local time=(capture.time or .25)+(capture.advanceTime and i*(capture.deltaTime or 1/60) or 0)
-     canvas,diagnostics=r:render{time=time,deltaTime=referenceDeltaTime(time,capture.deltaTime or 0),frame=(capture.frame or 0)+i,midi=midi}
-     if not canvas then error(json.encode(diagnostics)) end
-    end
     local function selected()
      if not capture.surface then return captureBytes(canvas,width,height),nil end
      local surface=r.resources.surfaces[capture.surface];assert(surface,'Missing authored capture surface '..capture.surface)
@@ -160,28 +158,64 @@ function love.load()
      assert(slot,'Final frame binding is not the authored surface texture')
      return captureBytes(texture,width,height,true),slot
     end
-    local bytes,surfaceId=selected();local settled=not capture.settleMs or capture.settleMs==0
-    if os.getenv('NM_PARITY_DEBUG_PRESENT')=='1' then write(output..'/'..case.id..'.present.rgba',captureBytes(canvas,width,height)) end
-    if not settled then
-     local deadline=love.timer.getTime()+capture.settleMs/1000
-     local nextFrame=(capture.frame or 0)+(capture.frames or 1)
-     while love.timer.getTime()<deadline do
-      love.timer.sleep(.25)
-      canvas,diagnostics=r:render{time=capture.time or .25,frame=nextFrame,midi=midi};if not canvas then error(json.encode(diagnostics)) end;nextFrame=nextFrame+1
-      canvas,diagnostics=r:render{time=capture.time or .25,frame=nextFrame,midi=midi};if not canvas then error(json.encode(diagnostics)) end;nextFrame=nextFrame+1
-      local nextBytes,nextId=selected()
-      if nextBytes==bytes then bytes,surfaceId=nextBytes,nextId;settled=true;break end
-      bytes,surfaceId=nextBytes,nextId
+    local function renderAndCapture()
+     for i=0,(capture.frames or 1)-1 do
+      local time=(capture.time or .25)+(capture.advanceTime and i*(capture.deltaTime or 1/60) or 0)
+      canvas,diagnostics=r:render{time=time,deltaTime=referenceDeltaTime(time,capture.deltaTime or 0),frame=(capture.frame or 0)+i,midi=midi}
+      if not canvas then error(json.encode(diagnostics)) end
      end
-     assert(settled,'Authored fixture did not settle within '..capture.settleMs..' ms')
+     local bytes,surfaceId=selected();local settled=not capture.settleMs or capture.settleMs==0
+     if os.getenv('NM_PARITY_DEBUG_PRESENT')=='1' and not tiles then write(output..'/'..case.id..'.present.rgba',captureBytes(canvas,width,height)) end
+     if not settled then
+      local deadline=love.timer.getTime()+capture.settleMs/1000
+      local nextFrame=(capture.frame or 0)+(capture.frames or 1)
+      while love.timer.getTime()<deadline do
+       love.timer.sleep(.25)
+       canvas,diagnostics=r:render{time=capture.time or .25,frame=nextFrame,midi=midi};if not canvas then error(json.encode(diagnostics)) end;nextFrame=nextFrame+1
+       canvas,diagnostics=r:render{time=capture.time or .25,frame=nextFrame,midi=midi};if not canvas then error(json.encode(diagnostics)) end;nextFrame=nextFrame+1
+       local nextBytes,nextId=selected()
+       if nextBytes==bytes then bytes,surfaceId=nextBytes,nextId;settled=true;break end
+       bytes,surfaceId=nextBytes,nextId
+      end
+      assert(settled,'Authored fixture did not settle within '..capture.settleMs..' ms')
+     end
+     return bytes,surfaceId,settled
     end
+    local bytes,surfaceId,settled
+    if not tiles then bytes,surfaceId,settled=renderAndCapture()
+    else
+     -- Tiles go row-major with bottom-origin offsets; each tile's top-down rows land in the
+     -- top-down full frame, as the upstream WebGL2 attestation stitches them.
+     local columns,rows=fullWidth/width,fullHeight/height
+     local fullRows={}
+     settled=true
+     for index=0,columns*rows-1 do
+      local offset={(index%columns)*width,math.floor(index/columns)*height}
+      assert(r:_setTileRegion{offset=offset,fullResolution={fullWidth,fullHeight},renderScale=tiles.renderScale or 1})
+      local part,partId,partSettled=renderAndCapture()
+      settled=settled and partSettled;surfaceId=partId
+      for row=0,height-1 do
+       local fullRow=fullHeight-offset[2]-height+row
+       fullRows[fullRow]=fullRows[fullRow] or {}
+       fullRows[fullRow][index%columns+1]=part:sub(row*width*4+1,(row+1)*width*4)
+      end
+     end
+     assert(r:_clearTileRegion())
+     local out={}
+     for row=0,fullHeight-1 do
+      assert(fullRows[row] and #fullRows[row]==columns,'Incomplete tiled capture row '..row)
+      out[#out+1]=table.concat(fullRows[row])
+     end
+     bytes=table.concat(out)
+    end
+    assert(#bytes==fullWidth*fullHeight*4,'Capture byte count differs from resolution')
     write(output..'/'..case.id..'.rgba',bytes)
     if capture.requireColorVariation then local _,colors=colorStats(bytes);assert(colors>1,'Authored fixture requires color variation') end
     if os.getenv('NM_PARITY_PNG')=='1' then
-     local rgba=love.image.newImageData(width,height,'rgba8',bytes);local png=rgba:encode('png')
+     local rgba=love.image.newImageData(fullWidth,fullHeight,'rgba8',bytes);local png=rgba:encode('png')
      write(output..'/'..case.id..'.png',png:getString());png:release();rgba:release()
     end
-    return {id=case.id,status='rendered',width=width,height=height,passes=#graph.passes,captureSurface=capture.surface,surfaceId=surfaceId,settled=settled,consumed=consumed,midiSnapshot=midiSnapshot,commonMaxTextureSize=common,volumeSizeChanges=volumeSizeChanges}
+    return {id=case.id,status='rendered',width=fullWidth,height=fullHeight,tiles=tiles and {size={width,height},renderScale=tiles.renderScale or 1,count=(fullWidth/width)*(fullHeight/height)} or nil,passes=#graph.passes,captureSurface=capture.surface,surfaceId=surfaceId,settled=settled,consumed=consumed,midiSnapshot=midiSnapshot,commonMaxTextureSize=common,volumeSizeChanges=volumeSizeChanges}
    end,function(e)return tostring(e)end)
    if r then r:release() end
    for _,image in ipairs(borrowed) do image:release() end

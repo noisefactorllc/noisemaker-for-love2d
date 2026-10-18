@@ -7,7 +7,7 @@ local messages = {
   S001 = 'Unknown identifier', S002 = 'Argument out of range',
   S003 = 'Variable used before assignment', S004 = 'Cannot assign null or undefined',
   S005 = 'Illegal chain structure', S006 = 'Starter chain missing write() call',
-  S007 = 'Deprecated parameter alias', S008 = 'Deprecated effect'
+  S008 = 'Deprecated effect'
 }
 local stateValues = {time=true, frame=true, mouse=true, resolution=true, seed=true, a=true,
   u1=true,u2=true,u3=true,u4=true,s1=true,s2=true,b1=true,b2=true,a1=true,a2=true,deltaTime=true}
@@ -229,7 +229,7 @@ function M.validate(ast)
     end
     local text = message or messages[code]
     if name and not text:find(name,1,true) and not text:find("'",1,true) then text = text .. ": '" .. name .. "'" end
-    local item = {code=code,message=text,severity=(code == 'S002' or code == 'S007' or code == 'S008') and 'warning' or 'error'}
+    local item = {code=code,message=text,severity=(code == 'S002' or code == 'S008') and 'warning' or 'error'}
     item.nodeId = node and node.id or values.UNDEFINED
     if node and node.loc then item.location = {line=node.loc.line,column=node.loc.column or node.loc.col} end
     if name then item.identifier = tostring(name) end
@@ -323,7 +323,7 @@ function M.validate(ast)
         else
           local effect = registry.getEffect(name)
           if effect.hidden and effect.deprecatedBy then
-            diagnostic('S008',original,"effect '" .. call.name .. "' is deprecated, use '" .. effect.deprecatedBy .. "' instead. Aliases will be removed on 2026-09-01.")
+            diagnostic('S008',original,"effect '" .. call.name .. "' is deprecated, use '" .. effect.deprecatedBy .. "' instead.")
           end
           local root = current == NULL
           if root and not starter(effect) then diagnostic('S005',original)
@@ -331,13 +331,6 @@ function M.validate(ast)
             if not root and starter(effect) then diagnostic('S005',original) end
             local from = (root or starter(effect)) and NULL or current
             local kwargs = copy(call.kwargs or {})
-            for oldName,newName in pairs(effect.paramAliases or {}) do
-              if kwargs[oldName] ~= nil then
-                kwargs[newName] = kwargs[newName] or kwargs[oldName]
-                kwargs[oldName] = nil
-                diagnostic('S007',call,"param '" .. oldName .. "' is deprecated, use '" .. newName .. "' instead. Aliases will be removed on 2026-09-01.")
-              end
-            end
             local args, argSources, seen = {}, nil, {}
             local definitions = {}
             for _, key in ipairs(registry.keys(effect.globals or {})) do
