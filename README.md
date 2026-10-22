@@ -271,7 +271,7 @@ LOVE_BIN=/path/to/love scripts/package
   and a standalone `dist/noisemaker-love2d.love` viewer.
 
 The CI workflow runs the capability, source, GPU regression, full catalog parity, and package checks
-on every code push. It requires an allowlisted GPU runner. There are no release or deployment
+on every code push. It requires a native GPU host. There are no release or deployment
 workflows.
 
 ## Contributing
