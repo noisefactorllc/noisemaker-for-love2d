@@ -1,0 +1,43 @@
+{
+  "configVersion": 1,
+  "id": "love2d",
+  "series": "0.1",
+  "shaderSource": "kit",
+  "engineSource": "kit",
+  "pageTemplate": false,
+  "gatedTopLevelDirs": {
+    "noisemaker": "engine"
+  },
+  "subtrees": [
+    { "from": "noisemaker", "to": "noisemaker" },
+    { "from": "examples/viewer/session.lua", "to": "examples/viewer/session.lua" },
+    { "from": "examples/viewer/main.lua", "to": "main.lua" },
+    { "from": "examples/viewer/conf.lua", "to": "conf.lua" }
+  ],
+  "licenses": [
+    { "from": "LICENSE", "to": "LICENSES/noisemaker-for-love2d-LICENSE.txt" }
+  ],
+  "requireFiles": [
+    "main.lua",
+    "conf.lua",
+    "examples/viewer/session.lua",
+    "noisemaker/init.lua",
+    "noisemaker/catalog/inventory.json",
+    "noisemaker/catalog/definitions.lua",
+    "noisemaker/shaders/catalog.lua",
+    "LICENSES/noisemaker-for-love2d-LICENSE.txt"
+  ],
+  "forbidDirs": ["engine", "shaders", "parity", "tests", "tools", "scripts"],
+  "requiredTokens": {
+    "README.template.md": ["NM_PROGRAM_NAME", "NM_EFFECT_LIST", "NM_ENGINE_VERSION"]
+  },
+  "inject": {
+    "type": "dsl-file",
+    "target": "program.dsl"
+  },
+  "compat": {
+    "mode": "list",
+    "fromBundleMetadata": "noisemaker/catalog/inventory.json"
+  },
+  "engineBytesFrom": ["noisemaker/"]
+}
