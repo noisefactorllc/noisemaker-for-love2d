@@ -56,6 +56,15 @@ function M.getAllEffects()
   return effects
 end
 
+local function parsesAsUserEffectCall(name)
+  local ok,program=pcall(function()
+    local compiler=require('noisemaker.compiler.lexer')
+    return require('noisemaker.compiler.parser').parse(compiler.lex('search user\n'..name..'()'))
+  end)
+  local chain=ok and program and program.plans and program.plans[1] and program.plans[1].chain
+  return type(chain)=='table' and #chain==1 and chain[1].type=='Call' and chain[1].name==name
+end
+
 function M.registerEffect(name, definition)
   if type(name)=='table' and definition==nil then definition=name; name=nil end
   local validationDefinition=definition
@@ -78,6 +87,15 @@ function M.registerEffect(name, definition)
   local func=definition.func
   if type(func)~='string' or not func:match('^[A-Za-z_][A-Za-z0-9_]*$') then
     return nil,{{stage='registration',severity='error',code='ERR_PORTABLE_FUNCTION',message='Portable effect func must be a DSL identifier'}}
+  end
+  -- A `search user` program must be able to call func() as an effect: keywords, surface
+  -- references (o1, s1, vol2, ...) and calls the parser turns into other nodes (osc, midi,
+  -- audio, read, read3d, from) cannot be called, as upstream registerPortableEffect checks.
+  if not parsesAsUserEffectCall(func) then
+    return nil,{{stage='registration',severity='error',code='ERR_PORTABLE_FUNCTION',message='reserved func '..func}}
+  end
+  if definition.paramAliases~=nil then
+    return nil,{{stage='registration',severity='error',code='ERR_PORTABLE_DEFINITION',message='paramAliases is no longer supported'}}
   end
   for _,pass in ipairs(definition.passes or {}) do
     local shaders=definition.shaders and definition.shaders[pass.program]

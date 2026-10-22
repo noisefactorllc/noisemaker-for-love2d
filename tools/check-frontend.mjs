@@ -34,6 +34,11 @@ for (const [name, source, options] of [
   ['subchain-warning', 'search synth\nnoise().subchain(name: "x" id: "y") { .blur() }.write(o0) render(o0)'],
   ['midi-audio', 'search synth\nnoise(speed: midi(1, min: 0.1), seed: audio(audioBand.low, channel: 1, name: "mic")).write(o0) render(o0)'],
   ['triple-string', 'search synth\nnoise(label: """a\nb""").write(o0) render(o0)'],
+  ['if-block-comments', 'search synth\nif (true) {\n  // first\n  noise().write(o0)\n  // last\n}\nrender(o0)'],
+  ['elif-else-comments', 'search synth\nif (a) { /* x */ noise().write(o0) } elif (b) {\n// y\n} else { // z\n noise(seed: 2).write(o0)\n}\nrender(o0)'],
+  ['if-block-let', 'search synth\nif (1) {\n  // c\n  let x = 2\n  noise(seed: x).write(o0);;\n}\nrender(o0)'],
+  ['let-after-use', 'search synth\nnoise(seed: s).write(o0)\n// note\nlet s = 3\nrender(o0)'],
+  ['control-flow', 'search synth\nreturn foo\nbreak\ncontinue'],
 ]) cases.push({ name, source, options })
 const expressions = [
   ['3', {}], ['Math.sin(time) * 4 + 5', {time: 0.25}], ['seed + 1', {seed: 9}],

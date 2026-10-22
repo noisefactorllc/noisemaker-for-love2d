@@ -36,6 +36,144 @@
       "effects": [],
       "source": "search synth\nmissing().write(o0)\nrender(o0)",
       "capture": null
+    },
+    {
+      "id": "let-after-use",
+      "effects": ["synth/noise"],
+      "source": "search synth\nnoise(seed: s).write(o0)\nlet s = 3\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-redefined",
+      "effects": ["synth/noise"],
+      "source": "search synth\nlet s = 1\nnoise(seed: s).write(o0)\nlet s = 2\nnoise(seed: s).write(o1)\nrender(o1)",
+      "capture": null
+    },
+    {
+      "id": "let-effect-after",
+      "effects": ["synth/noise"],
+      "source": "search synth\nn(seed: 2).write(o0)\nlet n = noise\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-trailing-unused",
+      "effects": ["synth/noise"],
+      "source": "search synth\nnoise().write(o0)\nlet z = null\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "if-block",
+      "effects": ["synth/noise"],
+      "source": "search synth\nif (true) { noise().write(o0) }\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "if-let",
+      "effects": ["synth/noise"],
+      "source": "search synth\nif (1) {\n  let x = 2\n  noise(seed: x).write(o0)\n}\nnoise(seed: 5).write(o1)\nrender(o1)",
+      "capture": null
+    },
+    {
+      "id": "if-let-scope",
+      "effects": ["synth/noise"],
+      "source": "search synth\nlet x = 1\nif (1) { let x = 2\n noise(seed: x).write(o0) }\nnoise(seed: x).write(o1)\nrender(o1)",
+      "capture": null
+    },
+    {
+      "id": "if-elif-else",
+      "effects": ["synth/noise"],
+      "source": "search synth\nif (time) { noise().write(o0) } elif (false) { noise(seed: 2).write(o0) } else { noise(seed: 3).write(o0) }\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "if-unknown-effect",
+      "effects": ["synth/noise"],
+      "source": "search synth\nif (true) { missing().write(o0) }\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "if-undefined-cond",
+      "effects": ["synth/noise"],
+      "source": "search synth\nif (q) { noise().write(o0) }\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "if-comments",
+      "effects": ["synth/noise"],
+      "source": "search synth\nif (true) {\n  // first\n  noise().write(o0)\n  // last\n}\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "break-top",
+      "effects": ["synth/noise"],
+      "source": "search synth\nnoise().write(o0)\nbreak\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "continue-top",
+      "effects": ["synth/noise"],
+      "source": "search synth\nnoise().write(o0)\ncontinue\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "return-value",
+      "effects": ["synth/noise"],
+      "source": "search synth\nnoise().write(o0)\nreturn 1\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "return-before-let",
+      "effects": ["synth/noise"],
+      "source": "search synth\nnoise().write(o0)\nreturn r\nlet r = 2\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "vec2-media",
+      "effects": ["synth/media"],
+      "source": "search synth\nmedia(imageSize: vec2(640, 480)).write(o0)\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "vec2-media-bad",
+      "effects": ["synth/media"],
+      "source": "search synth\nmedia(imageSize: vec2(640, x)).write(o0)\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "vec2-media-count",
+      "effects": ["synth/media"],
+      "source": "search synth\nmedia(imageSize: vec2(640)).write(o0)\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "vec4-remap",
+      "effects": ["synth/remap"],
+      "source": "search synth\nremap(zone0_bounds: vec4(0.1, 0.2, 0.8, 0.9)).write(o0)\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "alias-flow",
+      "effects": ["synth/solid", "render/pointsEmit", "points/flow", "render/pointsRender"],
+      "source": "search synth, points, render\nsolid().pointsEmit(stateSize: 128).flow(fieldTex: o1).pointsRender().write(o0)\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "alias-both",
+      "effects": ["synth/solid", "render/pointsEmit", "points/physarum", "render/pointsRender"],
+      "source": "search synth, points, render\nsolid().pointsEmit(stateSize: 128).physarum(fieldTex: o1, heightTex: o2).pointsRender().write(o0)\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "diffuse-life",
+      "effects": ["synth/solid", "render/pointsEmit", "points/life", "render/pointsRender"],
+      "source": "search synth, points, render\nsolid().pointsEmit(stateSize: 64).life(diffuseTex: o1).pointsRender().write(o0)\nrender(o0)",
+      "capture": null
+    },
+    {
+      "id": "func-bool",
+      "effects": ["synth/noise"],
+      "source": "search synth\nnoise(ridges: () => time > 1).write(o0)\nrender(o0)",
+      "capture": null
     }
   ]
 }

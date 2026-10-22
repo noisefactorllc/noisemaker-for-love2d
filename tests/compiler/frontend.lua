@@ -15,7 +15,7 @@ local function portable(x,key,includePosition)
     return values.NULL
   end
   if type(x)~='table' then return x end
-  local isArray=arrays[key] or (#x>0 and not values.isObject(x))
+  local isArray=arrays[key] or values.isArray(x) or (#x>0 and not values.isObject(x))
   local out=isArray and values.array() or values.object()
   if isArray then
     for i=1,#x do out[i]=portable(x[i],nil,includePosition) end

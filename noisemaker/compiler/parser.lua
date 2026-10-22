@@ -272,7 +272,14 @@ function M.parse(tokens,options)
         advance();advance();path[#path+1]=nextToken.lexeme
       end
       if #path>1 then return {type='Member',path=path} end
-      return {type='Ident',name=path[1]}
+      local ident={type='Ident',name=path[1]}
+      -- Source position for structured diagnostics, outside the AST's fields as upstream
+      -- keeps it non-enumerable.
+      local position=token.position
+      if position then
+        setmetatable(ident,{__index={position={line=position.line,column=position.column,start=position.start,['end']=position['end']}}})
+      end
+      return ident
     end
     local refs={OUTPUT_REF='OutputRef',SOURCE_REF='SourceRef',VOL_REF='VolRef',GEO_REF='GeoRef',XYZ_REF='XyzRef',VEL_REF='VelRef',RGBA_REF='RgbaRef',MESH_REF='MeshRef'}
     if refs[t] then advance(); return {type=refs[t],name=token.lexeme} end
@@ -417,9 +424,15 @@ function M.parse(tokens,options)
   end
   parseBlock=function()
     expect('LBRACE',"Expect '{'")
-    local body={}
-    while peek().type~='RBRACE' do
-      body[#body+1]=parseStatement()
+    local body=values.array()
+    while true do
+      -- Comments attach to the next statement, as at top level. Comments before '}' have no
+      -- statement; upstream keeps them only for its unparser, as a non-enumerable property.
+      local comments=collectComments()
+      if peek().type=='RBRACE' then break end
+      local statement=parseStatement()
+      attachComments(statement,comments)
+      body[#body+1]=statement
       while peek().type=='SEMICOLON' do advance() end
     end
     expect('RBRACE',"Expect '}'")
@@ -526,7 +539,12 @@ function M.parse(tokens,options)
         else
           local statement=parseStatement()
           attachComments(statement,comments)
-          if statement.type=='VarAssign' then vars[#vars+1]=statement else plans[#plans+1]=statement end
+          if statement.type=='VarAssign' then
+            -- Statement order: the number of plans written before this let, outside the
+            -- AST's fields as upstream keeps it non-enumerable.
+            setmetatable(statement,{__index={planIndex=#plans}})
+            vars[#vars+1]=statement
+          else plans[#plans+1]=statement end
           while peek().type=='SEMICOLON' do advance() end
         end
       end

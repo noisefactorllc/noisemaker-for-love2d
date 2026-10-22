@@ -2,7 +2,7 @@
   "schema": 1,
   "authority": {
     "repository": "https://github.com/noisefactorllc/noisemaker",
-    "commit": "2f9736ebb6c39be683074edc3a2cd0338a8a0c9a"
+    "commit": "12751c78103ec352bd359a9944bbeac5ad239a4b"
   },
   "counts": {
     "definitions": 210,
@@ -3091,7 +3091,7 @@
     "filter/text": {
       "definition": {
         "path": "shaders/effects/filter/text/definition.js",
-        "sha256": "c8dbe507f4cefc05db8c327e67ea779a19ab0ef16e2a844fd1904c3ef68ac575",
+        "sha256": "7046dee495b4e3d44d6c89ef173ebc4801f9c3e72cf3e75afd3c9b9945f5d35e",
         "methods": []
       },
       "sources": [
@@ -3987,7 +3987,7 @@
     "points/attractor": {
       "definition": {
         "path": "shaders/effects/points/attractor/definition.js",
-        "sha256": "81ff3b211ade4180385c457cdfb4135d98002d0b2da198d1638d334bd260e07a",
+        "sha256": "4637676f8bfe0310648fa999283f415032018adbf0c9f1e047c0afe39e59939a",
         "methods": []
       },
       "sources": [
@@ -4014,7 +4014,7 @@
     "points/buddhabrot": {
       "definition": {
         "path": "shaders/effects/points/buddhabrot/definition.js",
-        "sha256": "297b97d70e38f53151a5082c37195f06ba93dbc721622576365188fe72712823",
+        "sha256": "36eea77fec3cb378ae48eb9e7e9b9e8e16faed7b7c02e6eb3293c7913034daf3",
         "methods": []
       },
       "sources": [
@@ -4042,7 +4042,7 @@
     "points/dla": {
       "definition": {
         "path": "shaders/effects/points/dla/definition.js",
-        "sha256": "237604693920c236752e684ffbd47d8857498d0430c1cb94eed48b5262b08644",
+        "sha256": "eb3f47406d599e120ff3cc1a94925b4247b241b34d979f9e078a63959edbb0cf",
         "methods": []
       },
       "sources": [
@@ -4073,7 +4073,7 @@
     "points/flock": {
       "definition": {
         "path": "shaders/effects/points/flock/definition.js",
-        "sha256": "f08bb7821ebd9b1fcd220be92218d505ad94663cb2b30a065e0b9ba8c4446a67",
+        "sha256": "e4f387014aaf2a5ba3012e4c479f3f66e544da9c0ef2dbd3d9ddbae7123784b0",
         "methods": []
       },
       "sources": [
@@ -4100,7 +4100,7 @@
     "points/flow": {
       "definition": {
         "path": "shaders/effects/points/flow/definition.js",
-        "sha256": "5705abea9dba6a5a75ae68b7226970911c8203124c9e85e9be770235ea3e237f",
+        "sha256": "ab5fdc0a67268a7b9ddffaa24deb8ec43cf782151f1abe376569e8517adb5eb2",
         "methods": []
       },
       "sources": [
@@ -4154,7 +4154,7 @@
     "points/hydraulic": {
       "definition": {
         "path": "shaders/effects/points/hydraulic/definition.js",
-        "sha256": "bdf2758e9968a5399457e099178d1455efb3750bbb9a30bda7be761f4709dea8",
+        "sha256": "5cf4d3ca312aee820ab1a833b92d2ca15cfc2ccd590668f101f2fe56b6eab04e",
         "methods": []
       },
       "sources": [
@@ -4181,7 +4181,7 @@
     "points/lenia": {
       "definition": {
         "path": "shaders/effects/points/lenia/definition.js",
-        "sha256": "5104892c0708d043f3481092954e995ec80a5b6abf5b61eb3492629c016d6e4e",
+        "sha256": "86a13c3ab2ad38003587cbbf77155f29e2fc465727295a42a80c7816eb4cac08",
         "methods": []
       },
       "sources": [
@@ -4212,7 +4212,7 @@
     "points/life": {
       "definition": {
         "path": "shaders/effects/points/life/definition.js",
-        "sha256": "546d86ee8411966a7a612e224942cf9a5d46f8aa0bc5e0cd33fbe954a31cecc7",
+        "sha256": "ee1d6c28ac2fa3bfe03a36a81a6fdae8880dae534662e5fdb47f188cd9e40280",
         "methods": []
       },
       "sources": [
@@ -4240,7 +4240,7 @@
     "points/physarum": {
       "definition": {
         "path": "shaders/effects/points/physarum/definition.js",
-        "sha256": "ad8261ca9962312683a7d13bd8ee86eac69a8e043369a4bebc81265097df756f",
+        "sha256": "1c124ba85cf6579f0ebe2b6d298b819006319c889dab248e9dae240efe401811",
         "methods": []
       },
       "sources": [
@@ -4270,7 +4270,7 @@
     "points/physical": {
       "definition": {
         "path": "shaders/effects/points/physical/definition.js",
-        "sha256": "e63a85c752f1aea26a5d56d4eca56c59c3ba1d76d9f0430818881cde445fae06",
+        "sha256": "8a99bab1a73acf3e9477457d862befb9ab5e33acb3a0d1632cce3f6846ff71bf",
         "methods": []
       },
       "sources": [
@@ -4860,7 +4860,7 @@
     "synth/media": {
       "definition": {
         "path": "shaders/effects/synth/media/definition.js",
-        "sha256": "9dd0c2bd5b7ace0fbb29cbfd02f56d4156b9da04a366ed5c6dfcbb45a4020f24",
+        "sha256": "e70c3427c7be8eaf0681a404d13ba58986f1984afb47534cb105d4280ee401a3",
         "methods": [
           "onInit",
           "onUpdate",
@@ -7121,8 +7121,8 @@
       "path": "shaders/effects/points/attractor/glsl/agent.glsl",
       "effect": "points/attractor",
       "extension": "glsl",
-      "bytes": 4936,
-      "sha256": "5ec5c8c92dc026ca123c37cb735386c4bca9df0e2b2ebbd9831d3fbc32ac127e"
+      "bytes": 6045,
+      "sha256": "cfe98602348063ab7cb3aa0c642f70de000c2352a40368e8fc9eddcf47447e82"
     },
     {
       "path": "shaders/effects/points/attractor/glsl/passthrough.glsl",
@@ -7135,8 +7135,8 @@
       "path": "shaders/effects/points/buddhabrot/glsl/agent.glsl",
       "effect": "points/buddhabrot",
       "extension": "glsl",
-      "bytes": 4826,
-      "sha256": "0e2e9336878287c4c856c6f6a4e7d2a19219d29025f33d0ead8c5f17fc19cc5c"
+      "bytes": 6121,
+      "sha256": "efecb24d045790bee064e160a1b09a7f411589e76fee87591261bba0cc44870f"
     },
     {
       "path": "shaders/effects/points/buddhabrot/glsl/passthrough.glsl",
@@ -7156,8 +7156,8 @@
       "path": "shaders/effects/points/dla/glsl/agent.glsl",
       "effect": "points/dla",
       "extension": "glsl",
-      "bytes": 5928,
-      "sha256": "5f11d2d5096ac4f54b243a2e9de1d7526960be76c460314f8ec7142c21c9995a"
+      "bytes": 7791,
+      "sha256": "cae55bc611428b4e6938a79814898c8bda2a3af19b303502ec5b77f5479b88f9"
     },
     {
       "path": "shaders/effects/points/dla/glsl/copyGrid.glsl",
@@ -7198,8 +7198,8 @@
       "path": "shaders/effects/points/flock/glsl/agent.glsl",
       "effect": "points/flock",
       "extension": "glsl",
-      "bytes": 9726,
-      "sha256": "4c664f7443b1085a37896730b5077ed6399ce345a7b5a25101a7a91e00b18363"
+      "bytes": 11303,
+      "sha256": "3be70196fe1ffee473c7352e5a13d600f507a1bb6f6005622d1c1d03f8b6c156"
     },
     {
       "path": "shaders/effects/points/flock/glsl/passthrough.glsl",
@@ -7212,8 +7212,8 @@
       "path": "shaders/effects/points/flow/glsl/agent.glsl",
       "effect": "points/flow",
       "extension": "glsl",
-      "bytes": 5848,
-      "sha256": "0584139db3b2e14af99788458a48094a0d650a03ae540a0468309bf2f097bb6b"
+      "bytes": 7515,
+      "sha256": "f8149c037daa3172ccafdb0ffcadbebad3a5fd7d3b9fa1112861518cddfede06"
     },
     {
       "path": "shaders/effects/points/flow/glsl/passthrough.glsl",
@@ -7240,8 +7240,8 @@
       "path": "shaders/effects/points/hydraulic/glsl/agent.glsl",
       "effect": "points/hydraulic",
       "extension": "glsl",
-      "bytes": 6329,
-      "sha256": "988fe48308354bc7cd8eaa1cb768bccf9ac37b3ce8ebb4256f567eb8419f1001"
+      "bytes": 7967,
+      "sha256": "02bff511e46a3e32cfd7d2aa0c8d49d24a9590441c8900379241ba210a06a0fc"
     },
     {
       "path": "shaders/effects/points/hydraulic/glsl/passthrough.glsl",
@@ -7254,8 +7254,8 @@
       "path": "shaders/effects/points/lenia/glsl/agentField.glsl",
       "effect": "points/lenia",
       "extension": "glsl",
-      "bytes": 3542,
-      "sha256": "dc6f5ea902d32e0fb7da530b93c2269ae095f99ac3a76d403a887d4078ef3237"
+      "bytes": 5099,
+      "sha256": "b5f996e1d84485c4726801aed539690cd242529a81d2101f98cb8ef2ccc56d87"
     },
     {
       "path": "shaders/effects/points/lenia/glsl/clear.glsl",
@@ -7296,8 +7296,8 @@
       "path": "shaders/effects/points/life/glsl/agent.glsl",
       "effect": "points/life",
       "extension": "glsl",
-      "bytes": 9544,
-      "sha256": "78513907f1480250cef2e603e91a012aa4972c2e9e4bd66fc5aefa089a9a4775"
+      "bytes": 9685,
+      "sha256": "60421e21ac31334ab7fa23c20d8dedd97a8285580ea85a110b5a347a44adca1e"
     },
     {
       "path": "shaders/effects/points/life/glsl/matrix.glsl",
@@ -7317,8 +7317,8 @@
       "path": "shaders/effects/points/physarum/glsl/agent.glsl",
       "effect": "points/physarum",
       "extension": "glsl",
-      "bytes": 4817,
-      "sha256": "d39a5afa26f97da83f61099e712b40d7a901978ce5b2a0070c2d87eef0c03c44"
+      "bytes": 6510,
+      "sha256": "a9b21cee808cf70e7d29d05f27bdf9bd598ef1f5ac8dae492e6541cf21456e2f"
     },
     {
       "path": "shaders/effects/points/physarum/glsl/deposit.frag",
@@ -7352,8 +7352,8 @@
       "path": "shaders/effects/points/physical/glsl/agent.glsl",
       "effect": "points/physical",
       "extension": "glsl",
-      "bytes": 4136,
-      "sha256": "a144cacbadeca15a78a83dac987bfd25164bd7904a2e9f0ea22e8b1bf22e3614"
+      "bytes": 5690,
+      "sha256": "06f3afef8efeaba67f1babf129ee107b06e860ec8458e270ce404fc770b46615"
     },
     {
       "path": "shaders/effects/points/physical/glsl/passthrough.glsl",
@@ -7632,8 +7632,8 @@
       "path": "shaders/effects/synth/media/glsl/mediaInput.glsl",
       "effect": "synth/media",
       "extension": "glsl",
-      "bytes": 6598,
-      "sha256": "3f26aa8aa6d813e0825f7ccbe1c0ab6d9e91445283d27d6d87d72eeb0b7b0c9c"
+      "bytes": 9666,
+      "sha256": "b7905564ff42d2373ecc28ffc5184d072eb88b1f4b85026c08abb541accb2f63"
     },
     {
       "path": "shaders/effects/synth/mnca/glsl/mnca.glsl",
@@ -7842,8 +7842,8 @@
       "path": "shaders/effects/synth3d/cellularAutomata3d/glsl/simulate.glsl",
       "effect": "synth3d/cellularAutomata3d",
       "extension": "glsl",
-      "bytes": 8843,
-      "sha256": "e29a5b033304463b8610c86823f46c16751270a3cbaa37f1204df968c6c5394a"
+      "bytes": 9257,
+      "sha256": "0e2cf2bb49dffd6d5e1360772e750fde7328c0e29e2122bcb829ab00e006b881"
     },
     {
       "path": "shaders/effects/synth3d/flythrough3d/glsl/precompute.glsl",

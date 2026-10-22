@@ -53,8 +53,15 @@ local function surface(value)
     type(value) == 'string' and value:match('^(rgba[0-7])$')
 end
 
+-- Compiled control-flow plan type -> DSL keyword
+local controlFlowKeywords = {Branch='if', Break='break', Continue='continue', Return='return'}
 local textureArgKinds = {temp=true,output=true,source=true,feedback=true,vol=true,geo=true,xyz=true,vel=true,rgba=true,pipeline=true}
 local particleTextures={global_xyz=true,global_vel=true,global_rgba=true,global_points_trail=true,global_life_data=true}
+-- Upstream /^global_(xyz|vel|rgba|points_trail|life_data|[a-z]+_base_color)$/: the shared particle
+-- state and each behavior's global_<behavior>_base_color.
+local function particleTexture(name)
+  return type(name)=='string' and (particleTextures[name] or name:match('^global_[a-z]+_base_color$')~=nil) or false
+end
 local function textureArg(value)
   return type(value) == 'table' and textureArgKinds[value.kind] == true
 end
@@ -110,14 +117,20 @@ function M.expand(compilation, options)
     if nodeId then pass.nodeId=nodeId; pass.stepIndex=stepIndex end
     ensureBlit(programs)
   end
-  for planIndex, plan in ipairs(compilation.plans or {}) do
+  for planIndex, plan in ipairs(compilation.plans or {}) do repeat
+    -- Branch, Break, Continue and Return plans have no chain. The parser and validator
+    -- accept them, but the runtime does not execute them.
+    if type(plan.chain) ~= 'table' then
+      errors[#errors+1]={message="The runtime does not yet execute control flow ('" .. (controlFlowKeywords[plan.type] or tostring(plan.type)) .. "')"}
+      break
+    end
     local current = {input=nil,input3d=nil,geo=nil,xyz=nil,vel=nil,rgba=nil}
     local lastInlineWriteTarget, particleId
     local pipelineUniforms = {}
     local chainId = 'chain_' .. (planIndex-1)
     local volumeSizeParam = 'volumeSize_' .. chainId
     local function scopeParticle(name)
-      if particleId and particleTextures[name] then return name .. '_' .. particleId end
+      if particleId and particleTexture(name) then return name .. '_' .. particleId end
       return name
     end
     local function scopeChain(name)
@@ -236,7 +249,7 @@ function M.expand(compilation, options)
           local scopedParams = {}
           for _, texName in ipairs(ordered(effect.textures)) do
             local spec = effect.textures[texName]
-            local particle = particleTextures[texName] and particleId
+            local particle = particleTexture(texName) and particleId
             local global = starts(texName,'global_')
             local id = global and (particle and texName .. '_' .. particleId or texName .. '_' .. chainId) or nodeId .. '_' .. texName
             local resolved = clone(spec)
@@ -250,7 +263,9 @@ function M.expand(compilation, options)
                   if original == 'stateSize' and particleId and not global then scope=particleId end
                   local scoped = original == 'volumeSize' and volumeSizeParam or original .. '_' .. scope
                   dim[field] = scoped
-                  scopedParams[original] = scoped
+                  -- An inherited dimension reads the scope's value and never writes this
+                  -- effect's own value over it.
+                  if not (field == 'param' and dim.inherit) then scopedParams[original] = scoped end
                 end
               end
             end
@@ -465,7 +480,7 @@ function M.expand(compilation, options)
         if current.input~=target then addBlit('final_blit_' .. outName,current.input,target) end
       end
     end
-  end
+  until true end
   for id, source in pairs(exportedTextures) do if textureSpecs[source] then textureSpecs[id]=clone(textureSpecs[source]) end end
   for param, read in pairs(readVolumes) do
     local writer=read.writer or writtenVolumes[read.surface]

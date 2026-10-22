@@ -57,6 +57,16 @@ local invalidFunction={name='Invalid function',namespace='user',func='bad-name',
 local badFunctionResult,badFunctionDiagnostics=registry.registerEffect(invalidFunction)
 assert(not badFunctionResult and badFunctionDiagnostics[1].code=='ERR_PORTABLE_FUNCTION')
 assert(registry.getEffect('user.bad-name')==nil)
+-- A func that `search user` cannot call is reserved, as upstream registerPortableEffect rejects it.
+for _,reserved in ipairs({'o1','s2','vol0','osc','midi','audio','read','read3d','from','if','render','write'}) do
+  local reservedResult,reservedDiagnostics=registry.registerEffect({name='Reserved',namespace='user',func=reserved,passes=portable.passes,shaders=portable.shaders})
+  assert(not reservedResult and reservedDiagnostics[1].code=='ERR_PORTABLE_FUNCTION' and reservedDiagnostics[1].message=='reserved func '..reserved,reserved)
+  assert(registry.getEffect('user.'..reserved)==nil,reserved)
+end
+local aliased={name='Aliased',namespace='user',func='aliased',globals=portable.globals,paramAliases={level='gain'},passes=portable.passes,shaders=portable.shaders}
+local aliasedResult,aliasedDiagnostics=registry.registerEffect(aliased)
+assert(not aliasedResult and aliasedDiagnostics[1].message=='paramAliases is no longer supported')
+assert(registry.getEffect('user.aliased')==nil)
 print('compiler graph registry and allocation checks passed')
 
 -- Compilation must not reorder the catalog's positional argument schema.

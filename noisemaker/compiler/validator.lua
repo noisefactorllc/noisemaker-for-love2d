@@ -7,19 +7,40 @@ local messages = {
   S001 = 'Unknown identifier', S002 = 'Argument out of range',
   S003 = 'Variable used before assignment', S004 = 'Cannot assign null or undefined',
   S005 = 'Illegal chain structure', S006 = 'Starter chain missing write() call',
-  S008 = 'Deprecated effect'
+  S007 = 'Deprecated parameter alias', S008 = 'Deprecated effect'
 }
+-- Hard removal date that upstream paramAliases.js states for all parameter aliases.
+local ALIAS_EOL_DATE = '2027-06-01'
 local stateValues = {time=true, frame=true, mouse=true, resolution=true, seed=true, a=true,
   u1=true,u2=true,u3=true,u4=true,s1=true,s2=true,b1=true,b2=true,a1=true,a2=true,deltaTime=true}
 local stateSurfaces = {time=true,frame=true,mouse=true,resolution=true,seed=true,a=true}
 local stringAllow = {['text.text']=true,['text.font']=true,['text.justify']=true,['text.style']=true}
 
+-- Identifier nodes that already have their S003 for a read before the let, in the validate
+-- call in progress. Copies of a marked node stay marked, as upstream reuses the node itself.
+local activeReads
 local function copy(value)
   if type(value) ~= 'table' or value == NULL then return value end
   local result = values.isArray(value) and values.array() or {}
   for k, v in pairs(value) do if k ~= '__nm_order' then result[k] = copy(v) end end
   if value.type=='Call' and type(result.args)=='table' then result.args=values.array(result.args) end
+  if activeReads and activeReads[value] then activeReads[result] = true end
   return result
+end
+
+-- A symbol's value in place of the identifier that names it. `_varRef` records the outermost
+-- name, as upstream substitute() does.
+local function substituteSymbol(node, symbols)
+  if type(node) ~= 'table' or node.type ~= 'Ident' or not symbols[node.name] then return node end
+  local result = copy(symbols[node.name])
+  if type(result) == 'table' and result ~= NULL then result._varRef = node._varRef or node.name end
+  return result
+end
+
+-- Upstream toBoolean: a number is true unless zero; any other value as JavaScript !!value.
+local function toBoolean(value)
+  if type(value) == 'number' then return value ~= 0 end
+  return values.truthy(value)
 end
 
 local function arraycopy(value)
@@ -91,7 +112,7 @@ end
 
 local function resolveArg(node, def, effectName, symbols, diagnostic)
   local kind = def.type == 'vec4' and 'color' or def.type
-  if node and node.type == 'Ident' and symbols[node.name] then node = copy(symbols[node.name]) end
+  node = substituteSymbol(node, symbols)
   if node and node.type == 'ArrayLiteral' then
     local result = {}
     for _, element in ipairs(node.elements or {}) do
@@ -119,6 +140,19 @@ local function resolveArg(node, def, effectName, symbols, diagnostic)
     end
     if node then diagnostic('S001', node, 'Invalid ' .. kind .. " reference '" .. tostring(name) .. "' for '" .. def.name .. "'") end
     return def.default and {kind=prefix,name=def.default} or NULL
+  end
+  if node and node.type == 'Call' and #(node.args or {}) == (node.name == 'vec2' and 2 or 4) and (
+    (kind == 'vec2' and node.name == 'vec2') or
+    (kind == 'color' and node.name == 'vec4' and type(def.default) == 'table' and def.default ~= NULL and #def.default == 4)) then
+    -- vec2(x, y) on a vec2 parameter, and vec4(x, y, z, w) on a vec4 parameter, which upstream
+    -- registers as `color` with its four-component default. Any other form, including a wrong
+    -- component count, takes the branches below.
+    local result = {}
+    for i, element in ipairs(node.args) do
+      if element.type == 'Number' then result[i] = element.value
+      else diagnostic('S002',element,"Argument out of range for '" .. def.name .. "' in " .. effectName .. '()'); result[i] = 0 end
+    end
+    return result
   end
   if kind == 'color' then
     if node and node.type == 'Color' then return node.hex or copy(node.value) end
@@ -170,14 +204,15 @@ local function resolveArg(node, def, effectName, symbols, diagnostic)
     if node and node.type == 'Func' then
       local fn,err=require('noisemaker.compiler.expressions').compile(node.src)
       if not fn then diagnostic('S001',node,"Invalid function for '" .. def.name .. "': '" .. tostring(node.src):sub(1,50) .. "'"); return def.default==true end
-      return {fn=function(state) return values.truthy(fn(state)) end}
+      -- _ast keeps the source text, as upstream keeps it for its unparser.
+      return {fn=function(state) return values.truthy(fn(state)) end,_ast=copy(node)}
     end
     return def.default == true
   end
   if node and node.type == 'Func' then
     local fn,err=require('noisemaker.compiler.expressions').compile(node.src)
     if not fn then diagnostic('S001',node,"Invalid function for '" .. def.name .. "': '" .. tostring(node.src):sub(1,50) .. "'"); return copy(def.default) end
-    return {fn=fn,min=def.min,max=def.max}
+    return {fn=fn,min=def.min,max=def.max,_ast=copy(node)}
   end
   if node and (node.type == 'Oscillator' or node.type == 'Midi' or node.type == 'Audio') then
     return require('noisemaker.runtime.automation').compileAST(node,function(path) return enumValue(path,symbols) end,diagnostic)
@@ -201,6 +236,8 @@ local function resolveArg(node, def, effectName, symbols, diagnostic)
     if kind == 'member' then return number end
     local bounded = clamp(number, def)
     if bounded ~= number then diagnostic('S002',node,"Argument out of range for '" .. def.name .. "' in " .. effectName .. '() (got ' .. number .. ', clamped to ' .. bounded .. ')') end
+    -- A number that a let supplied keeps its variable name, as upstream keeps it.
+    if (node.type == 'Number' or node.type == 'Boolean') and node._varRef then return {_varRef=node._varRef,value=bounded} end
     return bounded
   end
   if node and node.type == 'Ident' then diagnostic('S003',node)
@@ -216,7 +253,11 @@ function M.validate(ast)
   local diagnostics, plans, symbols, tempIndex = {}, {}, {}, 0
   local searchOrder = ast.namespace and ast.namespace.searchOrder or {}
   if #searchOrder == 0 then error("Missing required 'search' directive. Every program must start with 'search <namespace>, ...' to specify namespace search order.") end
+  local readsBeforeLet = setmetatable({}, {__mode='k'})
+  local previousReads = activeReads
+  activeReads = readsBeforeLet
   local function diagnostic(code, node, message)
+    if type(node) == 'table' and readsBeforeLet[node] then return end
     local name
     if node then
       if node.type == 'Ident' or node.type == 'Call' then name=node.name
@@ -229,17 +270,45 @@ function M.validate(ast)
     end
     local text = message or messages[code]
     if name and not text:find(name,1,true) and not text:find("'",1,true) then text = text .. ": '" .. name .. "'" end
-    local item = {code=code,message=text,severity=(code == 'S002' or code == 'S008') and 'warning' or 'error'}
+    local item = {code=code,message=text,severity=(code == 'S002' or code == 'S007' or code == 'S008') and 'warning' or 'error'}
     item.nodeId = node and node.id or values.UNDEFINED
     if node and node.loc then item.location = {line=node.loc.line,column=node.loc.column or node.loc.col} end
     if name then item.identifier = tostring(name) end
     diagnostics[#diagnostics+1] = item
   end
-  for _, declaration in ipairs(ast.vars or {}) do
+  local function declareVar(declaration)
     local expr = copy(declaration.expr)
     if not expr or expr == NULL or expr.type == 'Ident' and (expr.name == 'null' or expr.name == 'undefined') then
       diagnostic('S004',declaration)
     else symbols[declaration.name] = expr end
+  end
+  -- Top-level lets are declared in statement order: each statement sees the lets written
+  -- before it, and the latest assignment of a name wins. `pendingLets` holds the names of the
+  -- lets that come after the current statement.
+  local topLevelVars = ast.vars or {}
+  local nextVar, pendingLets = 1, {}
+  local function declareVarsBefore(planIndex)
+    while nextVar <= #topLevelVars and (topLevelVars[nextVar].planIndex or 0) <= planIndex do
+      declareVar(topLevelVars[nextVar])
+      nextVar = nextVar + 1
+    end
+    pendingLets = {}
+    for i = nextVar, #topLevelVars do pendingLets[topLevelVars[i].name] = true end
+  end
+  -- A statement that reads a variable before any let assigns it gets S003 "Variable used
+  -- before assignment" at the identifier. Other diagnostics for that identifier are not added.
+  local function reportReadsBeforeLet(node)
+    if next(pendingLets) == nil or type(node) ~= 'table' or node == NULL or node == values.UNDEFINED then return end
+    if node.type == 'Ident' and pendingLets[node.name] and not symbols[node.name] then
+      if not readsBeforeLet[node] then
+        local position = node.position
+        diagnostic('S003', position and {type='Ident',name=node.name,loc={line=position.line,column=position.column}}
+          or {type='Ident',name=node.name})
+        readsBeforeLet[node] = true
+      end
+      return
+    end
+    for _, key in ipairs(values.keys(node)) do reportReadsBeforeLet(node[key]) end
   end
   local function resolveName(call)
     local order = call.namespace and call.namespace.searchOrder or searchOrder
@@ -308,7 +377,9 @@ function M.validate(ast)
         end
       elseif original.type == 'Call' then
         local call = copy(original)
+        local merged = false
         if symbols[call.name] and symbols[call.name].type == 'Call' then
+          merged = true
           local saved = symbols[call.name]
           call.name = saved.name
           local args = arraycopy(saved.args)
@@ -331,6 +402,27 @@ function M.validate(ast)
             if not root and starter(effect) then diagnostic('S005',original) end
             local from = (root or starter(effect)) and NULL or current
             local kwargs = copy(call.kwargs or {})
+            -- Resolve deprecated parameter aliases (upstream resolveParamAliases): the canonical
+            -- name takes the alias's value unless both are given, and each alias warns.
+            if call.kwargs and effect.paramAliases then
+              for _, oldName in ipairs(registry.keys(effect.paramAliases)) do
+                if kwargs[oldName] ~= nil then
+                  local newName = effect.paramAliases[oldName]
+                  if kwargs[newName] == nil then kwargs[newName] = kwargs[oldName] end
+                  kwargs[oldName] = nil
+                  -- Upstream rewrites the call's own kwargs unless a let supplied the call.
+                  local own = not merged and original.kwargs
+                  if own and own[oldName] ~= nil then
+                    if own[newName] == nil then values.set(own, newName, own[oldName]) end
+                    own[oldName] = nil
+                    local order = rawget(own, '__nm_order')
+                    if order then for i = #order, 1, -1 do if order[i] == oldName then table.remove(order, i) end end end
+                  end
+                  diagnostic('S007', merged and {type='Call',name=call.name} or call,
+                    "param '" .. oldName .. "' is deprecated, use '" .. newName .. "' instead. Aliases will be removed on " .. ALIAS_EOL_DATE .. '.')
+                end
+              end
+            end
             local args, argSources, seen = {}, nil, {}
             local definitions = {}
             for _, key in ipairs(registry.keys(effect.globals or {})) do
@@ -341,7 +433,7 @@ function M.validate(ast)
             for i, def in ipairs(definitions) do
               local node = kwargs[def.name] or (call.args or {})[i]
               if node then seen[def.name] = true end
-              if node and node.type=='Ident' and symbols[node.name] then node=copy(symbols[node.name]) end
+              node=substituteSymbol(node,symbols)
               local value, source
               if def.type=='surface' and node and (node.type=='Chain' or node.type=='Call' and node.name~='read') then
                 local nestedPlan=processStatement({chain=node.type=='Chain' and node.chain or {node}},true)
@@ -384,10 +476,109 @@ function M.validate(ast)
     if stmt.leadingComments then plan.leadingComments=copy(stmt.leadingComments) end
     return plan
   end
-  for _, statement in ipairs(ast.plans or {}) do
-    local plan = processStatement(statement)
+  local function evalExpr(node)
+    local expr = substituteSymbol(copy(node), symbols)
+    if type(expr) == 'table' and expr.type == 'Chain' and expr.chain and expr.chain[1] and expr.chain[1].type == 'Call' then
+      local name = resolveName(expr.chain[1])
+      if name and starter(registry.getEffect(name)) then diagnostic('S006',expr.chain[1]) end
+    end
+    if type(expr) == 'table' and expr.type == 'Member' then
+      local resolved = enumValue(expr.path, symbols)
+      if type(resolved) == 'number' then return {type='Number',value=resolved} end
+      if resolved ~= nil then return resolved end
+    end
+    return expr
+  end
+  local function evalCondition(node, depth)
+    depth = depth or 0
+    local expr = evalExpr(node)
+    if type(expr) ~= 'table' or expr == NULL then return false end
+    if expr.type == 'Number' then return toBoolean(expr.value) end
+    if expr.type == 'Boolean' then return expr.value == true end
+    if expr.type == 'Func' then
+      local fn = require('noisemaker.compiler.expressions').compile(expr.src)
+      if not fn then diagnostic('S001',expr,"Invalid function expression: '" .. tostring(expr.src):sub(1,50) .. "'"); return false end
+      return {fn=function(state) return toBoolean(fn(state)) end}
+    end
+    if expr.type == 'Ident' then
+      if symbols[expr.name] and depth < 64 then return evalCondition(symbols[expr.name], depth + 1) end
+      if stateValues[expr.name] then
+        local key = expr.name
+        return {fn=function(state) return toBoolean(state[key]) end}
+      end
+      diagnostic('S003',expr)
+      return false
+    end
+    if expr.type == 'Member' then
+      local resolved = enumValue(expr.path, symbols)
+      if resolved ~= nil then return toBoolean(resolved) end
+      diagnostic('S001',expr,"Unknown enum path: '" .. (type(expr.path) == 'table' and table.concat(expr.path,'.') or 'unknown') .. "'")
+      return false
+    end
+    return false
+  end
+  local compileStmt
+  -- A let inside a block applies to the rest of that block only, so a block cannot change how
+  -- statements outside it compile.
+  local function compileBlock(body)
+    local result, shadowed, order = values.array(), {}, {}
+    if type(body) ~= 'table' or body == NULL then return result end
+    for _, statement in ipairs(body) do
+      if statement.type == 'VarAssign' then
+        if shadowed[statement.name] == nil then
+          order[#order+1] = statement.name
+          shadowed[statement.name] = symbols[statement.name] ~= nil and {value=symbols[statement.name]} or false
+        end
+        declareVar(statement)
+        -- Kept as the parser node, like the top-level vars entries
+        result[#result+1] = statement
+      else
+        local compiled = compileStmt(statement)
+        if compiled then result[#result+1] = compiled end
+      end
+    end
+    for _, name in ipairs(order) do
+      local previous = shadowed[name]
+      if previous then symbols[name] = previous.value else symbols[name] = nil end
+    end
+    return result
+  end
+  compileStmt = function(statement)
+    if statement.type == 'IfStmt' then
+      reportReadsBeforeLet(statement.condition)
+      local cond = evalCondition(statement.condition)
+      local thenBranch = compileBlock(statement['then'])
+      local elif = values.array()
+      for _, branch in ipairs(statement.elif or {}) do
+        reportReadsBeforeLet(branch.condition)
+        local branchCond = evalCondition(branch.condition)
+        elif[#elif+1] = {cond=branchCond,['then']=compileBlock(branch['then'])}
+      end
+      local elseBranch = compileBlock(statement['else'])
+      return {type='Branch',cond=cond,['then']=thenBranch,elif=elif,['else']=elseBranch}
+    end
+    if statement.type == 'Break' then return {type='Break'} end
+    if statement.type == 'Continue' then return {type='Continue'} end
+    if statement.type == 'Return' then
+      local node = {type='Return'}
+      if statement.value ~= nil and statement.value ~= NULL then
+        reportReadsBeforeLet(statement.value)
+        node.value = evalExpr(statement.value)
+      end
+      return node
+    end
+    reportReadsBeforeLet(statement.chain)
+    return processStatement(statement)
+  end
+  -- Statements compile in order. Lets that come after the last statement are still declared,
+  -- so their own checks run.
+  for index, statement in ipairs(ast.plans or {}) do
+    declareVarsBefore(index - 1)
+    local plan = compileStmt(statement)
     if plan then plans[#plans+1] = plan end
   end
+  declareVarsBefore(math.huge)
+  activeReads = previousReads
   local render = ast.render and ast.render ~= NULL and ast.render.name or NULL
   local result = {plans=plans,diagnostics=diagnostics,render=render,vars=arraycopy(ast.vars),searchNamespaces=arraycopy(searchOrder)}
   if ast.trailingComments then result.trailingComments=copy(ast.trailingComments) end

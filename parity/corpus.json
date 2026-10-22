@@ -1,9 +1,9 @@
 {
   "version": 1,
   "source": "noisefactorllc/noisemaker-for-rust-gpu",
-  "revision": "52be689b86f52a50adc32854cd97d2a0434bd78b",
+  "revision": "dc742a2557e4a048574f9c6dac2c2cf815a81646",
   "dirty": false,
-  "authority": "2f9736ebb6c39be683074edc3a2cd0338a8a0c9a",
+  "authority": "12751c78103ec352bd359a9944bbeac5ad239a4b",
   "files": [
     {
       "path": "parity/programs/adjust.dsl",
@@ -11341,7 +11341,7 @@
     },
     {
       "path": "parity/upstream/filter_text.json",
-      "sha256": "4c75fe99c9296e6dafa87326594ba8d8091919006b986dd208f823edeaafdff7",
+      "sha256": "67678b1bb532e3102bb4e169957a83dc577c140404edf16f8815a269041cd158",
       "authority": "filter/text/parity-case.json"
     },
     {
@@ -11658,6 +11658,11 @@
       "path": "parity/upstream/synth3d_cell3d.json",
       "sha256": "80011c3fe71a9e4a3025dd137a101919d39352c0daeeedbf8704bf7397c326bf",
       "authority": "synth3d/cell3d/parity-case.json"
+    },
+    {
+      "path": "parity/upstream/synth3d_cellularAutomata3d.json",
+      "sha256": "b04841e8e826ef1c7e4f2b6c93039c14e66ebcaef50df74945d6ce4e97fd13ea",
+      "authority": "synth3d/cellularAutomata3d/parity-case.json"
     },
     {
       "path": "parity/upstream/synth3d_flythrough3d.json",

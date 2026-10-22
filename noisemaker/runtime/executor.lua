@@ -202,9 +202,15 @@ local function bindInputs(renderer, pass, info, shader, uniforms, globals, reads
   end
   for name, spec in pairs(info.uniforms) do
     if not (pass.inputs and pass.inputs[name]) and name ~= 'nmRemapDataTexture' then
-      local value = uniforms[name]
-      if not actual(value) then value = globals[name] end
-      send(shader, name, value, spec)
+      if spec.type == 'sampler2D' and (spec.count or 1) == 1 then
+        -- A declared sampler that the pass lists no input for reads transparent black, as the
+        -- WebGL2 reference binds its default texture there, not LÖVE's default texture.
+        send(shader, name, renderer.resources.textures.__black, spec)
+      else
+        local value = uniforms[name]
+        if not actual(value) then value = globals[name] end
+        send(shader, name, value, spec)
+      end
     end
   end
 end
