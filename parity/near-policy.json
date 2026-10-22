@@ -2,7 +2,7 @@
   "version": 1,
   "cases": {
     "boundary-filter_fibers__alpha_max": {
-      "authority": "2f9736ebb6c39be683074edc3a2cd0338a8a0c9a",
+      "authority": "12751c78103ec352bd359a9944bbeac5ad239a4b",
       "protocol": {
         "width": 257,
         "height": 129,
@@ -15,7 +15,7 @@
       "maxChannelDelta": 3,
       "minSsim": 0.9999,
       "mechanism": "filter/fibers draws its fibers into a CPU overlay; the native and reference rasterizers differ by 1-3 levels on fiber edges, and alpha 1 doubles the default overlay weight. 16 of 132,612 channels differ by 3.",
-      "review": "2026-10-18: Firefox 153.0 WebGL2 reference and LÖVE 11.5 candidate on Apple M4, side by side at native size: they look the same."
+      "review": "2026-10-18: Firefox 153.0 WebGL2 reference and LÖVE 11.5 candidate on Apple M4, side by side at native size: they look the same. 2026-10-22: authority moved to 12751c78, where filter/fibers and its overlay are unchanged; the reference and candidate hashes still bind this policy to that reviewed pair, so a capture that differs from it is unreviewed."
     }
   }
 }
