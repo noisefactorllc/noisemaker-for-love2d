@@ -44,7 +44,8 @@ local nm = require('noisemaker')
 local renderer, canvas, elapsed = nil, nil, 0
 
 function love.load()
-  local graph, errors = nm.compile(love.filesystem.read('program.dsl'))
+  local source = love.filesystem.read('program.dsl')
+  local graph, errors = nm.compile(source)
   assert(graph, errors and errors[1] and errors[1].message)
   local w, h = love.graphics.getDimensions()
   renderer, errors = nm.newRenderer(graph, {width = w, height = h})
