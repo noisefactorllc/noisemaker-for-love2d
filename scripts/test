@@ -7,6 +7,12 @@ node tools/import-catalog.mjs --check
 node tools/import-palettes.mjs --check
 node tools/import-shaders.mjs --check
 node tools/import-corpus.mjs --check
+# The capture tools launch a Playwright browser. The CI workflow installs it
+# before this entrypoint; a bare check environment may not have any.
+browser_cache="${PLAYWRIGHT_BROWSERS_PATH:-$HOME/.cache/ms-playwright}"
+if [ -z "$(ls "$browser_cache" 2>/dev/null)" ]; then
+  npx playwright install firefox
+fi
 if [ -n "${LOVE_BIN:-}" ]; then
   LOVE="$LOVE_BIN"
 elif command -v love >/dev/null 2>&1; then
