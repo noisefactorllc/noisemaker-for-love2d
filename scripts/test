@@ -21,6 +21,29 @@ else
   echo 'scripts/test: LÖVE is required for native CPU checks; set LOVE_BIN.' >&2
   exit 1
 fi
+# Focused lane (NM_CHANGED_FILES): when the supervisor lists the candidate's changed
+# paths, run only the checks that exercise authority-derived data and its catalog
+# artifacts. Any changed path outside that set falls through to the full suite, which
+# exact-source CI still runs when the variable is unset.
+focused=0
+if [ -n "${NM_CHANGED_FILES:-}" ]; then
+  focused=1
+  for changed in $NM_CHANGED_FILES; do
+    case "$changed" in
+      parity/reference.json|parity/near-policy.json|parity/corpus.json|\
+      noisemaker/catalog/*|noisemaker/shaders/source/*) ;;
+      *) focused=0 ;;
+    esac
+  done
+fi
+if [ "$focused" -eq 1 ]; then
+  node --test tests/*.test.mjs
+  node tools/import-catalog.mjs --check
+  node tools/import-palettes.mjs --check
+  node tools/import-shaders.mjs --check
+  node tools/import-corpus.mjs --check
+  exit 0
+fi
 "$LOVE" tests/unit
 "$LOVE" tests/compiler
 "$LOVE" tests/shaders
