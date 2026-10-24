@@ -2,7 +2,7 @@
   "schema": 1,
   "authority": {
     "repository": "https://github.com/noisefactorllc/noisemaker",
-    "commit": "321c5f85aa6e74d505a41fb690d1f3c27908301f"
+    "commit": "d0ed94ae19cca7328bc7d6b28902712a0838e1a9"
   },
   "sourceCount": 317,
   "programCount": 309,
@@ -24,8 +24,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/classicNoisedeck/caustic/glsl/caustic.glsl",
-          "sha256": "161cb6114f312a223d88a5c60a3ecb694a4c8766fca91b3fc47ae92078f2a00d",
-          "bytes": 15645
+          "sha256": "9ff29d7f4b4baacb800295540ab1c939f9482dbb1f2f48173819c947334c4fd7",
+          "bytes": 15714
         }
       }
     },
@@ -35,8 +35,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/classicNoisedeck/cellNoise/glsl/cellNoise.glsl",
-          "sha256": "9fd76306b377ef501a5dd340263179f04e3e890cc05d5e82f524f7bdf793d3b8",
-          "bytes": 9643
+          "sha256": "f9ef70baecd0e068f873792219b33f5a0391904ebbd480182d2233bb39227ce2",
+          "bytes": 9712
         }
       }
     },
@@ -145,8 +145,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/classicNoisedeck/moodscape/glsl/moodscape.glsl",
-          "sha256": "a2580a36096208dd7a63965d2b277be9356f29a8d3af634d1736df9142db1a44",
-          "bytes": 19559
+          "sha256": "2b020887bfb1a4dd366b1583e4ff68fd47193bd4993ba1052170de0981aabfa1",
+          "bytes": 19628
         }
       }
     },
@@ -156,8 +156,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/classicNoisedeck/noise/glsl/noise.glsl",
-          "sha256": "d86306e285a2f80dae86fe79cde92ceb89ec898ef78e6a15d140bfdf0e030bb2",
-          "bytes": 32527
+          "sha256": "513f8278e29564b7f2b0735b539b5990b53dc920d487fffb87d54a0c92fc5f0b",
+          "bytes": 32596
         }
       }
     },
@@ -167,8 +167,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/classicNoisedeck/noise3d/glsl/noise3d.glsl",
-          "sha256": "f359a11d4a3799686a554ee4dbaca725235ef38781a7b91e37628537cebb220f",
-          "bytes": 19654
+          "sha256": "e7762ec990058d51d2c07febd5a4dba9fa90d650cc21cf68c9a5a511d27485b2",
+          "bytes": 19723
         }
       }
     },
@@ -222,8 +222,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/classicNoisedeck/splat/glsl/splat.glsl",
-          "sha256": "cfdcc4edcc5097043ad72602feb62a40622c14ba1bee66fb1ac2e414d1b3cced",
-          "bytes": 5069
+          "sha256": "5e334703ddad3c16700adf20d2f1515303a5bef92a5b87bed92ff1a9928cfbf7",
+          "bytes": 5138
         }
       }
     },
@@ -475,8 +475,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/filter/corrupt/glsl/corrupt.glsl",
-          "sha256": "b81642d2e63294f9f51656eb2441cdaf479c495c5e4acb0d3a4907a13b070d02",
-          "bytes": 7421
+          "sha256": "f5bfb791671606227e8ecb2641c4a28e345c1c951a5405bc9fb3f631354df086",
+          "bytes": 7490
         }
       }
     },
@@ -849,8 +849,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/filter/lensWarp/glsl/lensWarp.glsl",
-          "sha256": "543b53a26b14dfdcf979e2601eaad32d6ec683c41427301b851173334a670480",
-          "bytes": 4033
+          "sha256": "88a3238756968229b41c0cb38266194a601bab9e6eef345ca79bbb271aba88c0",
+          "bytes": 4102
         }
       }
     },
@@ -1916,8 +1916,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/filter/warp/glsl/warp.glsl",
-          "sha256": "f3034ac02a2926b819ff874d2d1d0d3dacebf2b7a409c983237d6a71865942ee",
-          "bytes": 3095
+          "sha256": "9f12ebb2a1b93f3e957db6f2ad5494f06975f9f711ffd6c2392fb3f2c18fcc83",
+          "bytes": 3164
         }
       }
     },
@@ -2146,8 +2146,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/mixer/cellSplit/glsl/cellSplit.glsl",
-          "sha256": "c6de84cdf428b367ac95d345cf6d72f3438ddeeb728136ea34e8937af72ceff9",
-          "bytes": 4058
+          "sha256": "e11288bff92d1c26ea32d23ef1710cb5237d5666f7cabf846b80e21b9884a6b2",
+          "bytes": 4127
         }
       }
     },
@@ -2946,8 +2946,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/synth/cell/glsl/cell.glsl",
-          "sha256": "b2cae5ecdfd315194d4b3b04d2c5b39d1b48c56a9bd1a10396827e3b8d413a18",
-          "bytes": 3813
+          "sha256": "b16831bd6f84c798e6129f47ea81e0a8ab7041acd531c946fd75f353b0340d82",
+          "bytes": 3882
         }
       }
     },
@@ -2990,8 +2990,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/synth/gabor/glsl/gabor.glsl",
-          "sha256": "91665da2d584d6d88b38e8ba314dfc0b546dd49d29aa161f5d66aecf6bf67bf5",
-          "bytes": 3870
+          "sha256": "52dbe8d5ef5ae2bebf89096f029d9f9074499bd025cbbff6e9085da95cec5da8",
+          "bytes": 3939
         }
       }
     },
@@ -3001,8 +3001,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/synth/gradient/glsl/gradient.glsl",
-          "sha256": "308537be8f376750a2239be89a07e558e54ee1661a0ea360c6a3e48b8c6e7a75",
-          "bytes": 5439
+          "sha256": "05ad693f0c2d3cb590139c3cbd7cb5430843f36b09b9c2478d571a5aa0ec19a6",
+          "bytes": 5508
         }
       }
     },
@@ -3177,8 +3177,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/synth/noise/glsl/noise.glsl",
-          "sha256": "410a98f0d4ec80acde225cb5366a3bbaf752e5743f99bcd651a2c3cbb6cc3274",
-          "bytes": 18131
+          "sha256": "607378cb929b309b826bca05580769c18e93000faa7afdc69d9b7d57dff6fb7e",
+          "bytes": 18200
         }
       }
     },
@@ -3210,8 +3210,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/synth/perlin/glsl/perlin.glsl",
-          "sha256": "9580baa0f637b8b4f2488e6e26288d885fe748973a121f52281b63c16d530318",
-          "bytes": 10882
+          "sha256": "d36fe934e6f0833ba01862b14c11697cc1db9e6a1eaafc690ac9c70438b5ea05",
+          "bytes": 10951
         }
       }
     },

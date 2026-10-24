@@ -1,4 +1,4 @@
--- Generated from 321c5f85aa6e74d505a41fb690d1f3c27908301f; run node tools/import-catalog.mjs to refresh.
+-- Generated from d0ed94ae19cca7328bc7d6b28902712a0838e1a9; run node tools/import-catalog.mjs to refresh.
 -- Objects retain key order as entries; arrays retain their type even when empty.
 -- MIT License
 --

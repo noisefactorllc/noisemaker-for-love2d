@@ -2,7 +2,7 @@
   "version": 1,
   "cases": {
     "boundary-filter_fibers__alpha_max": {
-      "authority": "321c5f85aa6e74d505a41fb690d1f3c27908301f",
+      "authority": "d0ed94ae19cca7328bc7d6b28902712a0838e1a9",
       "protocol": {
         "width": 257,
         "height": 129,
@@ -15,7 +15,7 @@
       "maxChannelDelta": 3,
       "minSsim": 0.9999,
       "mechanism": "filter/fibers draws its fibers into a CPU overlay; the native and reference rasterizers differ by 1-3 levels on fiber edges, and alpha 1 doubles the default overlay weight. 16 of 132,612 channels differ by 3.",
-      "review": "2026-10-18: Firefox 153.0 WebGL2 reference and LÖVE 11.5 candidate on Apple M4, side by side at native size: they look the same. 2026-10-22: authority moved to 12751c78, where filter/fibers and its overlay are unchanged; the reference and candidate hashes still bind this policy to that reviewed pair, so a capture that differs from it is unreviewed. 2026-10-23: authority moved to 32d8d3e, where filter/fibers and its overlay are still unchanged; the reference and candidate hashes still bind this policy to that reviewed pair, so a capture that differs from it is unreviewed. 2026-10-24: authority moved to 321c5f85, where filter/fibers and its overlay are unchanged; the reference and candidate hashes still bind this policy to that reviewed pair, so a capture that differs from it is unreviewed."
+      "review": "2026-10-18: Firefox 153.0 WebGL2 reference and L\u00d6VE 11.5 candidate on Apple M4, side by side at native size: they look the same. 2026-10-22: authority moved to 12751c78, where filter/fibers and its overlay are unchanged; the reference and candidate hashes still bind this policy to that reviewed pair, so a capture that differs from it is unreviewed. 2026-10-23: authority moved to 32d8d3e, where filter/fibers and its overlay are still unchanged; the reference and candidate hashes still bind this policy to that reviewed pair, so a capture that differs from it is unreviewed. 2026-10-24: authority moved to 321c5f85, where filter/fibers and its overlay are unchanged; the reference and candidate hashes still bind this policy to that reviewed pair, so a capture that differs from it is unreviewed. 2026-10-24: authority moved to d0ed94ae, where filter/fibers and its overlay are unchanged; the reference and candidate hashes still bind this policy to that reviewed pair, so a capture that differs from it is unreviewed."
     }
   }
 }
