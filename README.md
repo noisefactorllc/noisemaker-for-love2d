@@ -189,16 +189,19 @@ local graph = assert(nm.compile('search user\nred().write(o0)\nrender(o0)'))
 ## What works and what does not
 
 The native compiler matches the locked upstream graphs for the catalog defaults, 1,815 choice and
-boolean parameter variants, 912 shared programs, and 143 authored upstream fixtures. Function-valued
+boolean parameter variants, 912 shared programs, and 144 authored upstream fixtures. Function-valued
 parameters are compared by evaluation on deterministic state vectors as well as by graph structure.
 The extracted package runs a CPU compilation check and a real LÖVE GPU check, including Portable GLSL,
 failed hot replacement, persistent resize, feedback, and 100 renderer lifecycles.
 
-The 2026-10-18 same-run qualification against upstream `2f9736ebb6c39be683074edc3a2cd0338a8a0c9a`
-executed all 3,557 cases with unchanged candidate source: 3,460 exact cases, 18 strict cases, and 79
-uninformative cases. Every one of the 210 effects has informative evidence. Near, deferred, skipped,
-failed, and missing counts are all zero. The 54 authored upstream cases with a `tiles` plan render
-each tile through the upstream tile region and grade the stitched frame. Strict comparison requires
+The 2026-10-24 same-run qualification against upstream `d0ed94ae19cca7328bc7d6b28902712a0838e1a9`
+in [Native parity run 40117270231](https://github.com/noisefactorllc/noisemaker-for-love2d/actions/runs/40117270231)
+executed all 5,533 cases with unchanged candidate source: 5,325 exact cases, 27 strict cases, one near
+case, and 180 uninformative cases. Every one of the 210 effects has informative evidence. Deferred,
+skipped, failed, and missing counts are all zero. The near case, `boundary-filter_fibers__alpha_max`,
+has a reviewed maximum channel error of 3 in 8-bit units and minimum SSIM of 0.9999, bound to the
+reference and candidate hashes in [`parity/near-policy.json`](parity/near-policy.json).
+The 54 authored upstream cases with a `tiles` plan render each tile through the upstream tile region and grade the stitched frame. Strict comparison requires
 maximum channel error ≤ 2.001 in 8-bit units and SSIM ≥ 0.98, with matching dimensions and alpha.
 
 | Qualification configuration | Result |
