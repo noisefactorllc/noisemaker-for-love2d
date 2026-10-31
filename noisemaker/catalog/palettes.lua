@@ -1,4 +1,4 @@
--- Generated from d0ed94ae19cca7328bc7d6b28902712a0838e1a9; run node tools/import-palettes.mjs to refresh.
+-- Generated from 06070900e506b6c8ff6eb7b12d33e6c1bf285108; run node tools/import-palettes.mjs to refresh.
 return {
   [1] = { paletteOffset={ 0.93, 0.97, 0.52 }, paletteAmp={ 0.76, 0.88, 0.37 }, paletteFreq={ 1, 1, 1 }, palettePhase={ 0.21, 0.41, 0.56 }, paletteMode=3 },
   [2] = { paletteOffset={ 0.5, 0.5, 0.5 }, paletteAmp={ 0.56851584, 0.7740668, 0.23485267 }, paletteFreq={ 1, 1, 1 }, palettePhase={ 0.727029, 0.08039695, 0.10427457 }, paletteMode=3 },
