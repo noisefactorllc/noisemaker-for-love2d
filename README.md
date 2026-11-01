@@ -194,13 +194,16 @@ parameters are compared by evaluation on deterministic state vectors as well as 
 The extracted package runs a CPU compilation check and a real LÖVE GPU check, including Portable GLSL,
 failed hot replacement, persistent resize, feedback, and 100 renderer lifecycles.
 
-The 2026-10-24 same-run qualification against upstream `d0ed94ae19cca7328bc7d6b28902712a0838e1a9`
-in [Native parity run 40117270231](https://github.com/noisefactorllc/noisemaker-for-love2d/actions/runs/40117270231)
-executed all 5,533 cases with unchanged candidate source: 5,325 exact cases, 27 strict cases, one near
+The 2026-11-01 same-run qualification against upstream `06070900e506b6c8ff6eb7b12d33e6c1bf285108`
+in [Native parity run 41275525641](https://github.com/noisefactorllc/noisemaker-for-love2d/actions/runs/41275525641)
+at `5007fae204c519470a3d69baabf1ea77256dfcdd` executed all 5,533 cases with unchanged candidate source: 5,325 exact cases, 27 strict cases, one near
 case, and 180 uninformative cases. Every one of the 210 effects has informative evidence. Deferred,
 skipped, failed, and missing counts are all zero. The near case, `boundary-filter_fibers__alpha_max`,
 has a reviewed maximum channel error of 3 in 8-bit units and minimum SSIM of 0.9999, bound to the
 reference and candidate hashes in [`parity/near-policy.json`](parity/near-policy.json).
+The previous 2026-10-24 qualification against `d0ed94ae19cca7328bc7d6b28902712a0838e1a9` in
+[Native parity run 40117270231](https://github.com/noisefactorllc/noisemaker-for-love2d/actions/runs/40117270231)
+passed with the same case counts.
 The 54 authored upstream cases with a `tiles` plan render each tile through the upstream tile region and grade the stitched frame. Strict comparison requires
 maximum channel error ≤ 2.001 in 8-bit units and SSIM ≥ 0.98, with matching dimensions and alpha.
 
