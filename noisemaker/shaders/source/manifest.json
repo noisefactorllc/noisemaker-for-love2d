@@ -2,7 +2,7 @@
   "schema": 1,
   "authority": {
     "repository": "https://github.com/noisefactorllc/noisemaker",
-    "commit": "67d6e44c750e4f9bebb34f88645b934e3b933a84"
+    "commit": "babf6b2dbb3d3bc991bfd095bcf6783c13cd9f07"
   },
   "sourceCount": 317,
   "programCount": 309,
@@ -3221,8 +3221,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/synth/polygon/glsl/shape.glsl",
-          "sha256": "e43087ee8ade2e59ff1a2098c1e6ceb4357a3eb9ee63755a3f8a3879824115e6",
-          "bytes": 1707
+          "sha256": "5bc4b55c00b2341b8b1bb8234fcf4b9afeb47214da470339c6d4d578a09a1996",
+          "bytes": 1866
         }
       }
     },
