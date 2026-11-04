@@ -11280,6 +11280,11 @@
       "authority": "filter/scanlineError/parity-case.json"
     },
     {
+      "path": "parity/upstream/filter_scatter.json",
+      "sha256": "903c52d3ca6a76c592e0989140a7fe3162d17070a344b21363b026f58d3e063a",
+      "authority": "filter/scatter/parity-case.json"
+    },
+    {
       "path": "parity/upstream/filter_scratches.json",
       "sha256": "e0b5f9c2de7c741055d427be4ddf32cebba11ab3d68812b0203a2147221182e3",
       "authority": "filter/scratches/parity-case.json"
