@@ -2,7 +2,7 @@
   "schema": 1,
   "authority": {
     "repository": "https://github.com/noisefactorllc/noisemaker",
-    "commit": "7aa54b54492c0a158b000a5c563e94e6e4dce3dc"
+    "commit": "1faed961be169863e84fd719a4ca85c27a8b1322"
   },
   "sourceCount": 317,
   "programCount": 309,
@@ -486,8 +486,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/filter/craquelure/glsl/craquelure.glsl",
-          "sha256": "a21be5c20bec6d75d648c0a2debcc69843193e676f5195efff7b643bb0cc9e2b",
-          "bytes": 9516
+          "sha256": "876e499ca270346151a873e74c744c884e96e9db7632a9341a0baf5107724d53",
+          "bytes": 10348
         }
       }
     },
@@ -596,8 +596,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/filter/feedback/glsl/feedback.glsl",
-          "sha256": "d0048fb91c30eafbb4532b2f02ed416e3dff61b14ce5861ce3565db81a743ca2",
-          "bytes": 10931
+          "sha256": "fcad07a4b0373fef883be7ac751e25b626d24c8c2a07dbba59661b5c47e88f6e",
+          "bytes": 12187
         }
       }
     },
@@ -1696,8 +1696,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/filter/stipple/glsl/stipple.glsl",
-          "sha256": "69d75b6fab4281fe0a0997eaf6b7b81e5ab30f0da5dfec9255c9dbb6e914c609",
-          "bytes": 8490
+          "sha256": "84755c2b6b2bf86a9c0b73a1faceda9b9bbb5fbf7d7a0570e91e2caf979f52a6",
+          "bytes": 10823
         }
       }
     },

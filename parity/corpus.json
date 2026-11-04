@@ -11105,6 +11105,11 @@
       "authority": "filter/convolutionFeedback/parity-case.json"
     },
     {
+      "path": "parity/upstream/filter_craquelure.json",
+      "sha256": "505aa35674b8786ce32b08221b4299f15c613663783c1005873da5762abb18c2",
+      "authority": "filter/craquelure/parity-case.json"
+    },
+    {
       "path": "parity/upstream/filter_corrupt.json",
       "sha256": "4e16af2b760930f5858f712ac0ae1e5e528c031b9eef9011da4342d501c87a43",
       "authority": "filter/corrupt/parity-case.json"
@@ -11338,6 +11343,11 @@
       "path": "parity/upstream/filter_spookyTicker.json",
       "sha256": "1c0060235adeea6f218b649b6ba4dd1e5ab917ec0a4ebc61c00ea55929d3aaa4",
       "authority": "filter/spookyTicker/parity-case.json"
+    },
+    {
+      "path": "parity/upstream/filter_stipple.json",
+      "sha256": "fb2bf9ef545b500cdc878e5034aedda162657735e3be046382e636d3cdc51aa8",
+      "authority": "filter/stipple/parity-case.json"
     },
     {
       "path": "parity/upstream/filter_strayHair.json",
