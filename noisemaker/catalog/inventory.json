@@ -2,7 +2,7 @@
   "schema": 1,
   "authority": {
     "repository": "https://github.com/noisefactorllc/noisemaker",
-    "commit": "71771987158d6a2583b50d68ea4ded90dd461548"
+    "commit": "7aa54b54492c0a158b000a5c563e94e6e4dce3dc"
   },
   "counts": {
     "definitions": 210,
@@ -6589,8 +6589,8 @@
       "path": "shaders/effects/filter/scatter/glsl/scatterJitter.glsl",
       "effect": "filter/scatter",
       "extension": "glsl",
-      "bytes": 4475,
-      "sha256": "e68ff4dc90236e866895d4720d58e81b9151a67d9cc62b43085efbf634fa4e71"
+      "bytes": 5665,
+      "sha256": "bf22d2fba241ce0ce0c05bd96c11ebb515e8ed458cf03e050aa5d1493dcf53e6"
     },
     {
       "path": "shaders/effects/filter/scatter/glsl/scatterSmooth.glsl",

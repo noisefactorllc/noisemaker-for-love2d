@@ -32,8 +32,12 @@ node tools/import-catalog.mjs --check
 node tools/import-palettes.mjs --check
 node tools/import-shaders.mjs --check
 node tools/import-corpus.mjs --check
-# The capture tools launch a Playwright browser. The CI workflow installs it
-# before this entrypoint; a bare check environment may not have any.
+# The capture tools launch a Playwright browser and require the Playwright
+# module. The CI workflow installs both before this entrypoint; a bare check
+# environment may not have any.
+if ! node -e "require.resolve('playwright')" 2>/dev/null; then
+  npm ci --no-audit --no-fund
+fi
 browser_cache="${PLAYWRIGHT_BROWSERS_PATH:-$HOME/.cache/ms-playwright}"
 if [ -z "$(ls "$browser_cache" 2>/dev/null)" ]; then
   npx playwright install firefox
