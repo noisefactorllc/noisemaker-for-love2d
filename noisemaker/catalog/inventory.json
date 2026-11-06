@@ -2,7 +2,7 @@
   "schema": 1,
   "authority": {
     "repository": "https://github.com/noisefactorllc/noisemaker",
-    "commit": "15d7719bd3eaa859920980d18184ab45329f8bd5"
+    "commit": "6f98d26ab84f17ba7fb154bb74252d6362736f89"
   },
   "counts": {
     "definitions": 210,
@@ -5672,64 +5672,64 @@
       "path": "shaders/effects/classicNoisedeck/bitEffects/glsl/bitEffects.glsl",
       "effect": "classicNoisedeck/bitEffects",
       "extension": "glsl",
-      "bytes": 12748,
-      "sha256": "1066c6794400f025288147568179b2913b3f6464201e21fa470f3f5a1f6ca06b"
+      "bytes": 12671,
+      "sha256": "ce0bc2e032849d863ddb733297367cd8c640c32caccad09000ac8199e23e18d5"
     },
     {
       "path": "shaders/effects/classicNoisedeck/caustic/glsl/caustic.glsl",
       "effect": "classicNoisedeck/caustic",
       "extension": "glsl",
-      "bytes": 15714,
-      "sha256": "9ff29d7f4b4baacb800295540ab1c939f9482dbb1f2f48173819c947334c4fd7"
+      "bytes": 15637,
+      "sha256": "601d01e7ba6b3a9d97c760c14401541d6d37e03826a83bd3c492491a7abba5d0"
     },
     {
       "path": "shaders/effects/classicNoisedeck/cellNoise/glsl/cellNoise.glsl",
       "effect": "classicNoisedeck/cellNoise",
       "extension": "glsl",
-      "bytes": 9712,
-      "sha256": "f9ef70baecd0e068f873792219b33f5a0391904ebbd480182d2233bb39227ce2"
+      "bytes": 9635,
+      "sha256": "bd71605f96541f445e435ca5f65d5b80c5ee7b1e29b136cea4a63ec30431e651"
     },
     {
       "path": "shaders/effects/classicNoisedeck/cellRefract/glsl/cellRefract.glsl",
       "effect": "classicNoisedeck/cellRefract",
       "extension": "glsl",
-      "bytes": 13719,
-      "sha256": "aa93167faa07ee22ff0be9c653b5602ac88b1b962e405548cafab43b9e867a70"
+      "bytes": 13642,
+      "sha256": "ada20a78762ccfa36b83995b7020f37e434e23da20650027ffa1784a8344430b"
     },
     {
       "path": "shaders/effects/classicNoisedeck/coalesce/glsl/coalesce.glsl",
       "effect": "classicNoisedeck/coalesce",
       "extension": "glsl",
-      "bytes": 9962,
-      "sha256": "a0f96df68ce058e5e2154c78880b5a611eaf5ab9adcd64242368978c813b6b58"
+      "bytes": 9885,
+      "sha256": "8141548c1de6aa0da2dccf4599c2a1bf29a26321c837fa4802103014587a919b"
     },
     {
       "path": "shaders/effects/classicNoisedeck/colorLab/glsl/colorLab.glsl",
       "effect": "classicNoisedeck/colorLab",
       "extension": "glsl",
-      "bytes": 9276,
-      "sha256": "4bf9ea925634ee684e01917ea3b690d332b37905d21c8aa7377bf88625570945"
+      "bytes": 9199,
+      "sha256": "8fb3a991281479e65376151223e52e23ea7b7301c391788feca855a66ceabdcc"
     },
     {
       "path": "shaders/effects/classicNoisedeck/composite/glsl/composite.glsl",
       "effect": "classicNoisedeck/composite",
       "extension": "glsl",
-      "bytes": 6120,
-      "sha256": "ae3f29a129016653a5705647cb61c5c6448504e44ad321539fb4ce2e120d9123"
+      "bytes": 6043,
+      "sha256": "b6ff5bd8b3b0f98499f91b8a9ec679b88e08a123f9662157801543429bdd4a79"
     },
     {
       "path": "shaders/effects/classicNoisedeck/effects/glsl/effects.glsl",
       "effect": "classicNoisedeck/effects",
       "extension": "glsl",
-      "bytes": 28403,
-      "sha256": "b4f4279698ce60bd3c0c45f8339a4869cd6c2f0714f219ee6b2e997328057316"
+      "bytes": 28326,
+      "sha256": "ed942954001dc94c191bd617c462e63d68bd68e3e3d4545c8863b7228f64879d"
     },
     {
       "path": "shaders/effects/classicNoisedeck/fractal/glsl/fractal.glsl",
       "effect": "classicNoisedeck/fractal",
       "extension": "glsl",
-      "bytes": 10067,
-      "sha256": "a73c8044185be58e3ae1b0f14b954dbaa7bb8852290b821dba44167fee5e037b"
+      "bytes": 9990,
+      "sha256": "737c53308c306163c02885e2edc3700b571aaec41ef98b8cf817e3175b5475bd"
     },
     {
       "path": "shaders/effects/classicNoisedeck/glitch/glsl/glitch.glsl",
@@ -5742,36 +5742,36 @@
       "path": "shaders/effects/classicNoisedeck/kaleido/glsl/kaleido.glsl",
       "effect": "classicNoisedeck/kaleido",
       "extension": "glsl",
-      "bytes": 27570,
-      "sha256": "18a201e5189430578a2cd1d03cea911957a08f3bd7f3e74e78b97eb9f946ed52"
+      "bytes": 27493,
+      "sha256": "2cf9e5528e3b19debec7e9761afbcf0f47452a124dd4bef74b907b2ee67f9642"
     },
     {
       "path": "shaders/effects/classicNoisedeck/lensDistortion/glsl/lensDistortion.glsl",
       "effect": "classicNoisedeck/lensDistortion",
       "extension": "glsl",
-      "bytes": 8269,
-      "sha256": "f4e6453fe233692fa67c5fdbb3eb8f7a512d21bc722e63af6fc23166a62dd444"
+      "bytes": 8192,
+      "sha256": "925f4150c4029d13c35de55203d58cb91d8a1f9abfb8146fbb40dcf7cfc1b402"
     },
     {
       "path": "shaders/effects/classicNoisedeck/moodscape/glsl/moodscape.glsl",
       "effect": "classicNoisedeck/moodscape",
       "extension": "glsl",
-      "bytes": 19628,
-      "sha256": "2b020887bfb1a4dd366b1583e4ff68fd47193bd4993ba1052170de0981aabfa1"
+      "bytes": 19551,
+      "sha256": "c93cc8744c2368446fe6214a80cdc9e6fd8b36b1dee89f511812c7ba2f0145dc"
     },
     {
       "path": "shaders/effects/classicNoisedeck/noise/glsl/noise.glsl",
       "effect": "classicNoisedeck/noise",
       "extension": "glsl",
-      "bytes": 32596,
-      "sha256": "513f8278e29564b7f2b0735b539b5990b53dc920d487fffb87d54a0c92fc5f0b"
+      "bytes": 32519,
+      "sha256": "276b5ca70973c57057adb389d8cb49946a0bdedb4486ffafbaa8e8e876d14a9a"
     },
     {
       "path": "shaders/effects/classicNoisedeck/noise3d/glsl/noise3d.glsl",
       "effect": "classicNoisedeck/noise3d",
       "extension": "glsl",
-      "bytes": 19723,
-      "sha256": "e7762ec990058d51d2c07febd5a4dba9fa90d650cc21cf68c9a5a511d27485b2"
+      "bytes": 19646,
+      "sha256": "ad1bbcfe511216aadec7d0bfbf53e1b1317a333bcc0d31cd29203c6a73b83cd3"
     },
     {
       "path": "shaders/effects/classicNoisedeck/refract/glsl/refract.glsl",
@@ -5784,22 +5784,22 @@
       "path": "shaders/effects/classicNoisedeck/shapeMixer/glsl/shapeMixer.glsl",
       "effect": "classicNoisedeck/shapeMixer",
       "extension": "glsl",
-      "bytes": 21721,
-      "sha256": "51bee071387b3498bd9e8abad5ca3b93b3e38100b9a56b8f4abcb177ea9d675b"
+      "bytes": 21644,
+      "sha256": "ae511c7398c65a9a8b5adc09d00efda254184da5636abea143685a92363e1a7c"
     },
     {
       "path": "shaders/effects/classicNoisedeck/shapes/glsl/shapes.glsl",
       "effect": "classicNoisedeck/shapes",
       "extension": "glsl",
-      "bytes": 21292,
-      "sha256": "28775b3e960c9051a320d48c7974792fbef33eaab80e5ca9aed5af43e8645d5e"
+      "bytes": 21215,
+      "sha256": "a9885b0ceeb5d73bf5c851775d28f9d948fb0521bbc6b42d2b4afc206f5ec7e5"
     },
     {
       "path": "shaders/effects/classicNoisedeck/shapes3d/glsl/shapes3d.glsl",
       "effect": "classicNoisedeck/shapes3d",
       "extension": "glsl",
-      "bytes": 16152,
-      "sha256": "818badfbadcf295d1863d208c0d0582a1349ff64f44dbf43f905a92fcfd4c5ad"
+      "bytes": 16075,
+      "sha256": "e17550180972bf97883c33eb4b280bfb3456d9212162c91e76cc8befbae941dc"
     },
     {
       "path": "shaders/effects/classicNoisedeck/splat/glsl/splat.glsl",
@@ -6043,8 +6043,8 @@
       "path": "shaders/effects/filter/feedback/glsl/feedback.glsl",
       "effect": "filter/feedback",
       "extension": "glsl",
-      "bytes": 12192,
-      "sha256": "4e6fd1acc5b7e262a22cfc5e7c8a35b91bc66d05f9f64ee77132ad240789f6e3"
+      "bytes": 12346,
+      "sha256": "047cbf124875f9d146c41c24f58081e19fb78b7d8c5cf4887e4255ea5bb43ca3"
     },
     {
       "path": "shaders/effects/filter/fibers/glsl/fibersBlend.glsl",
@@ -6498,8 +6498,8 @@
       "path": "shaders/effects/filter/prismaticAberration/glsl/prismaticAberration.glsl",
       "effect": "filter/prismaticAberration",
       "extension": "glsl",
-      "bytes": 4247,
-      "sha256": "513eac95fdf7f67a6839ee5d96e5bbfd76b6cfa62d3254df6fed23d8effe380e"
+      "bytes": 4170,
+      "sha256": "3461a6b0ec3d47f4be1d06ae3ecfbacdb98836a8424bb0ed7f3d3c67af3173d9"
     },
     {
       "path": "shaders/effects/filter/reindex/glsl/nmReindexApply.glsl",
