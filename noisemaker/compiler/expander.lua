@@ -105,6 +105,39 @@ local function resolveGlobal(name)
   return name
 end
 
+-- Find globals deliberately shared by different effects in a chain.
+local function collectGlobalTextureUsers(chain)
+  local users = {}
+  local effects = {}
+  for _, step in ipairs(chain or {}) do
+    if not step.builtin and not (step.args and step.args._skip == true) then
+      local effect = registry.getEffect(step.op)
+      if effect then effects[effect] = true end
+    end
+  end
+  for effect in pairs(effects) do
+    local refs = {}
+    local function addRef(ref) if ref ~= nil then refs[#refs+1] = ref end end
+    for name in pairs(effect.textures or {}) do addRef(name) end
+    for name in pairs(effect.textures3d or {}) do addRef(name) end
+    for _, spec in pairs(effect.globals or {}) do addRef(spec and spec.default or nil) end
+    addRef(effect.outputTex); addRef(effect.outputTex3d); addRef(effect.outputGeo)
+    addRef(effect.outputXyz); addRef(effect.outputVel); addRef(effect.outputRgba)
+    for _, passDef in ipairs(effect.passes or {}) do
+      for _, ref in pairs(passDef.inputs or {}) do addRef(ref) end
+      for _, ref in pairs(passDef.outputs or {}) do addRef(ref) end
+    end
+    for _, ref in ipairs(refs) do
+      if type(ref) == 'string' and starts(ref, 'global_') then
+        local entry = users[ref]
+        if not entry then entry = {count=0, seen={}}; users[ref] = entry end
+        if not entry.seen[effect] then entry.seen[effect] = true; entry.count = entry.count + 1 end
+      end
+    end
+  end
+  return users
+end
+
 function M.expand(compilation, options)
   options = options or {}
   local passes, errors, programs, textureSpecs, textureMap = {}, {}, {}, {}, {}
@@ -129,14 +162,11 @@ function M.expand(compilation, options)
     local pipelineUniforms = {}
     local chainId = 'chain_' .. (planIndex-1)
     local volumeSizeParam = 'volumeSize_' .. chainId
+    local globalTextureUsers = collectGlobalTextureUsers(plan.chain)
+    local seenEffects = {}
+    local sizeParamOwners = {} -- chain-scoped sizing param -> first node that sizes from it
     local function scopeParticle(name)
       if particleId and particleTexture(name) then return name .. '_' .. particleId end
-      return name
-    end
-    local function scopeChain(name)
-      local particle = scopeParticle(name)
-      if particle ~= name then return particle end
-      if starts(name,'global_') then return name .. '_' .. chainId end
       return name
     end
     local function passthrough(nodeId)
@@ -200,6 +230,37 @@ function M.expand(compilation, options)
         local effect = registry.getEffect(effectName)
         if not effect then errors[#errors+1]={message="Effect '" .. tostring(effectName) .. "' not found",step=step}
         else
+          -- Preserve legacy IDs for the first instance. Repeated private state
+          -- gets a node suffix; cooperating effects retain the shared chain scope.
+          local instanceScopeId = seenEffects[effect] and chainId .. '_' .. nodeId or chainId
+          seenEffects[effect] = true
+          local ownedTextures = {}
+          for name in pairs(effect.textures or {}) do ownedTextures[name] = true end
+          for name in pairs(effect.textures3d or {}) do ownedTextures[name] = true end
+          for _, passDef in ipairs(effect.passes or {}) do
+            for _, ref in pairs(passDef.outputs or {}) do ownedTextures[ref] = true end
+          end
+          -- Read-only globals can be external uploads, whose bindings retain chain IDs.
+          local function isPrivateGlobal(texName)
+            return ownedTextures[texName] == true and (globalTextureUsers[texName] or {count=0}).count == 1
+          end
+          local function globalScope(texName)
+            return isPrivateGlobal(texName) and instanceScopeId or chainId
+          end
+          -- The first node to size private state from a param keeps the legacy
+          -- chain-scoped name; any other node, of the same or another effect, gets its own.
+          local function claimSizeParam(scopedParam, isPrivate)
+            local owner = sizeParamOwners[scopedParam]
+            if owner == nil then sizeParamOwners[scopedParam] = nodeId end
+            return isPrivate and owner ~= nil and owner ~= nodeId and scopedParam .. '_' .. nodeId or scopedParam
+          end
+          -- Particle scoping takes priority over private state and shared chain state.
+          local function scopeChain(name)
+            local particle = scopeParticle(name)
+            if particle ~= name then return particle end
+            if starts(name,'global_') then return name .. '_' .. globalScope(name) end
+            return name
+          end
           local createParticles = effect.textures and effect.textures.global_xyz
           if createParticles then particleId=nodeId; current.xyz=nil; current.vel=nil; current.rgba=nil end
           local defines,defineOrder = {},{}
@@ -251,7 +312,7 @@ function M.expand(compilation, options)
             local spec = effect.textures[texName]
             local particle = particleTexture(texName) and particleId
             local global = starts(texName,'global_')
-            local id = global and (particle and texName .. '_' .. particleId or texName .. '_' .. chainId) or nodeId .. '_' .. texName
+            local id = global and (particle and texName .. '_' .. particleId or texName .. '_' .. globalScope(texName)) or nodeId .. '_' .. texName
             local resolved = clone(spec)
             for _, axis in ipairs({'width','height'}) do
               local dim = resolved[axis]
@@ -260,8 +321,20 @@ function M.expand(compilation, options)
                 if field then
                   local original = dim[field]
                   local scope = particle or chainId
-                  if original == 'stateSize' and particleId and not global then scope=particleId end
-                  local scoped = original == 'volumeSize' and volumeSizeParam or original .. '_' .. scope
+                  -- Node-local textures are private state; a global texture is private
+                  -- only when this instance is its sole user in the chain.
+                  local isPrivateTex = not global or isPrivateGlobal(texName)
+                  local scoped
+                  if original == 'volumeSize' then scoped = volumeSizeParam
+                  elseif field == 'param' and original == 'stateSize' and particleId and not global then scoped = original .. '_' .. particleId
+                  else
+                    -- The first node to size private state from a param keeps the
+                    -- legacy chain-scoped name; an inherited dimension always reads
+                    -- the scope's value and never claims its own.
+                    local scopedParam = original .. '_' .. scope
+                    if particle or (field == 'param' and dim.inherit) then scoped = scopedParam
+                    else scoped = claimSizeParam(scopedParam, isPrivateTex) end
+                  end
                   dim[field] = scoped
                   -- An inherited dimension reads the scope's value and never writes this
                   -- effect's own value over it.
