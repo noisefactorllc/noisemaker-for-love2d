@@ -6,6 +6,22 @@ local ok, err = xpcall(function()
   local lexer = require('noisemaker.shaders.lexer')
   local tokens = lexer.lex('/* out vec4 fake; */\nout vec4 fragColor;\nvoid main() { fragColor = vec4(1.0); }')
   assert(tokens[1].kind == 'comment' and tokens[1].line == 1)
+  -- The injected half-float helper must compile on every GLSL 3.30 driver. GLSL 3.30
+  -- section 3.6 makes any use of these future-reserved words an error. NVIDIA enforces
+  -- it ("abstract parameters not allowed" for a parameter named packed); others accept.
+  local futureReserved = {}
+  for word in ([[asm class union enum typedef template this packed goto inline
+    noinline volatile public static extern external interface long short double half fixed
+    unsigned superp input output hvec2 hvec3 hvec4 dvec2 dvec3 dvec4 fvec2 fvec3 fvec4
+    sampler3DRect filter image1D image2D image3D imageCube iimage1D iimage2D iimage3D
+    iimageCube uimage1D uimage2D uimage3D uimageCube image1DArray image2DArray
+    iimage1DArray iimage2DArray uimage1DArray uimage2DArray image1DShadow image2DShadow
+    image1DArrayShadow image2DArrayShadow imageBuffer iimageBuffer uimageBuffer sizeof cast
+    namespace using row_major common partition active]]):gmatch('%S+') do futureReserved[word] = true end
+  for _, token in ipairs(lexer.lex(require('noisemaker.shaders.half'))) do
+    assert(token.kind ~= 'identifier' or not futureReserved[token.text],
+      'half helper uses the reserved word ' .. token.text .. ' on line ' .. tostring(token.line))
+  end
   local adapter = require('noisemaker.shaders.adapter')
   local source = '#version 300 es\nprecision highp float;\n// gl_FragCoord in comment\nout vec4 fragColor;\nuniform sampler2D inputTex;\nvoid main() { fragColor = texture(inputTex, vec2(0.5)) + vec4(gl_FragCoord.xy,0,0); }'
   local result, diagnostic = adapter.adapt{pixel = source, path = 'test/basic.glsl', defines = {MODE = 2}}

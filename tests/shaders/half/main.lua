@@ -6,10 +6,10 @@ local source = [[
 uniform vec2 inputPair;
 out vec4 fragColor;
 void main() {
-  uint packed = packHalf2x16(inputPair);
-  vec2 decoded = unpackHalf2x16(packed);
+  uint pair = packHalf2x16(inputPair);
+  vec2 decoded = unpackHalf2x16(pair);
   uint roundtrip = packHalf2x16(decoded);
-  fragColor = vec4(float(packed & 0xffffu), float(packed >> 16u), float(roundtrip & 0xffffu), float(roundtrip >> 16u));
+  fragColor = vec4(float(pair & 0xffffu), float(pair >> 16u), float(roundtrip & 0xffffu), float(roundtrip >> 16u));
 }
 ]]
 local cases = {

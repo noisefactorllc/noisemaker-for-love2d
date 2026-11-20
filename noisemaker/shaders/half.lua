@@ -45,7 +45,7 @@ float nmHalfToFloat(uint halfBits) {
 uint nmPackHalf2x16(vec2 values) {
   return nmFloatToHalf(values.x) | (nmFloatToHalf(values.y) << 16u);
 }
-vec2 nmUnpackHalf2x16(uint packed) {
-  return vec2(nmHalfToFloat(packed & 0xffffu), nmHalfToFloat(packed >> 16u));
+vec2 nmUnpackHalf2x16(uint pair) {
+  return vec2(nmHalfToFloat(pair & 0xffffu), nmHalfToFloat(pair >> 16u));
 }
 ]]
