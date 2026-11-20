@@ -5,7 +5,7 @@ local values=require('noisemaker.compiler.values')
 local compiler=require('noisemaker.compiler.init')
 local renderer=require('noisemaker.runtime.renderer')
 local resources=require('noisemaker.runtime.resources')
-local function parent(path)return path:match('^(.*)/[^/]+$') or '.' end
+local parent=require('parity.runner.paths').parent
 local function read(path)local f=assert(io.open(path,'rb'));local data=f:read('*a');f:close();return data end
 local function write(path,data)local f=assert(io.open(path,'wb'));f:write(data);f:close()end
 local function captureBytes(canvas,width,height,flipRows)

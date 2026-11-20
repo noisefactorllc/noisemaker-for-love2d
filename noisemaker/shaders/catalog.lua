@@ -1,7 +1,8 @@
 local manifest = require('noisemaker.shaders.source.manifest')
 local M = {}
 local location = debug.getinfo(1, 'S').source:sub(2)
-local packageRoot = location:match('^(.*)/noisemaker/shaders/catalog%.lua$')
+-- require() joins module path parts with the platform separator ('\' on Windows).
+local packageRoot = location:match('^(.*)[/\\]noisemaker[/\\]shaders[/\\]catalog%.lua$')
 local function read(path)
   local contents
   if love and love.filesystem then contents = love.filesystem.read(path) end
