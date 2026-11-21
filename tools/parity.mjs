@@ -10,14 +10,15 @@ import {resolveReference} from './reference.mjs'
 import {authoredAttributionTarget,rgbContrast,effectEvidenceKind} from './attribution.mjs'
 import {parseParityArguments,selectParityCases} from './parity-args.mjs'
 import {boundaryCases} from './boundary.mjs'
+import {isReviewed,reviewNearCase,validateNearPolicies} from './near-policy.mjs'
 const root=resolve(import.meta.dirname,'..')
 const definitions=JSON.parse(readFileSync(join(root,'noisemaker/catalog/definitions.json')))
 const authority=await resolveReference()
 // Reviewed per-case NEAR policies: each binds the case, the pinned authority, the capture
-// protocol, the reviewed reference and candidate bytes, and the measured bound. A near case
-// passes only when its policy matches; any other near case fails the run.
-const nearPolicies=JSON.parse(readFileSync(join(root,'parity/near-policy.json'),'utf8'))
-if(nearPolicies.version!==1||typeof nearPolicies.cases!=='object')throw Error('Invalid parity/near-policy.json')
+// protocol, a reviewed pair of reference and candidate bytes (or one of its listed `pairs`),
+// and the measured bound. A near case passes only when its policy matches; any other near case
+// fails the run (tools/near-policy.mjs).
+const nearPolicies=validateNearPolicies(JSON.parse(readFileSync(join(root,'parity/near-policy.json'),'utf8')))
 const effects=Object.keys(JSON.parse(readFileSync(join(authority.root,'shaders/effects/manifest.json'))))
 if(effects.length!==Object.keys(definitions).length||effects.some(id=>!definitions[id]))throw Error('Candidate catalog differs from locked authority')
 execFileSync(process.execPath,['tools/import-corpus.mjs','--check'],{cwd:root,stdio:'inherit'})
@@ -220,10 +221,9 @@ for(const fixture of cases){
   const policy=nearPolicies.cases[fixture.id]
   const referenceBytes=readFileSync(join(output,'reference',fixture.id+'.rgba')),candidateBytes=readFileSync(join(output,'candidate',fixture.id+'.rgba'))
   const protocol={width:fixture.capture.width,height:fixture.capture.height,time:fixture.capture.time,frames:fixture.capture.frames,seedPolicy:fixture.capture.seedPolicy}
-  const checks=policy&&{authority:policy.authority===authority.lock.commit,protocol:JSON.stringify(policy.protocol)===JSON.stringify(protocol),
-   reference:policy.referenceSha256===sha256(referenceBytes),candidate:policy.candidateSha256===sha256(candidateBytes),
-   bound:result.max<=policy.maxChannelDelta&&result.ssim>=policy.minSsim}
-  result.nearPolicy=checks&&Object.values(checks).every(Boolean)?'reviewed':{unreviewed:checks||'no policy',referenceSha256:sha256(referenceBytes),candidateSha256:sha256(candidateBytes),protocol}
+  const checks=reviewNearCase(policy,{authority:authority.lock.commit,protocol,referenceSha256:sha256(referenceBytes),
+   candidateSha256:sha256(candidateBytes),max:result.max,ssim:result.ssim})
+  result.nearPolicy=isReviewed(checks)?'reviewed':{unreviewed:checks||'no policy',referenceSha256:sha256(referenceBytes),candidateSha256:sha256(candidateBytes),protocol}
   console.error('PARITY-NEAR '+JSON.stringify({id:fixture.id,max:result.max,ssim:result.ssim,policy:result.nearPolicy}))
  }
  summary[result.bucket]++
