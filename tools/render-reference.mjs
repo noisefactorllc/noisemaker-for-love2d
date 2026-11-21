@@ -6,13 +6,26 @@ import {createRequire} from 'node:module'
 import {createHash} from 'node:crypto'
 import {resolveReference} from './reference.mjs'
 
+// The reference browser and its GL path. NM_REFERENCE_GL=native makes Firefox render WebGL on
+// the host's OpenGL driver instead of through ANGLE, the same driver path as the native LÖVE
+// candidate (on Windows, Firefox otherwise renders through ANGLE on Direct3D 11).
+export function referenceBrowserPlan(env=process.env){
+ const browserName=env.NM_REFERENCE_BROWSER||'firefox'
+ if(browserName!=='chrome'&&browserName!=='firefox')throw Error('NM_REFERENCE_BROWSER must be chrome or firefox')
+ if(browserName==='firefox'&&env.NM_ANGLE_BACKEND)throw Error('NM_ANGLE_BACKEND applies only to Chrome')
+ const referenceGl=env.NM_REFERENCE_GL||null
+ if(referenceGl!==null&&referenceGl!=='native')throw Error('NM_REFERENCE_GL must be native or unset')
+ if(referenceGl&&browserName!=='firefox')throw Error('NM_REFERENCE_GL applies only to Firefox; Chrome takes NM_ANGLE_BACKEND')
+ return {browserName,angleBackend:env.NM_ANGLE_BACKEND||null,referenceGl,
+  firefoxUserPrefs:{'webgl.sanitize-unmasked-renderer':false,...(referenceGl==='native'?{'webgl.disable-angle':true}:{})}}
+}
+
 export async function renderReference({cases,output,referenceRoot=process.env.NM_REFERENCE_ROOT,onProgress=()=>{},testInputReadbackFailureCaseId=null,testInputIncompleteFramebufferCaseId=null,nativeMaxTextureSize=null}){
+ const plan=referenceBrowserPlan()
  const reference=await resolveReference({referenceRoot})
  const fixtureAssets=new Map()
  const require=createRequire(import.meta.url)
- const browserName=process.env.NM_REFERENCE_BROWSER||'firefox'
- if(browserName!=='chrome'&&browserName!=='firefox')throw Error('NM_REFERENCE_BROWSER must be chrome or firefox')
- if(browserName==='firefox'&&process.env.NM_ANGLE_BACKEND)throw Error('NM_ANGLE_BACKEND applies only to Chrome')
+ const browserName=plan.browserName
  const browsers=process.env.NM_PLAYWRIGHT_MODULE?await import(process.env.NM_PLAYWRIGHT_MODULE):require('playwright')
  const server=createServer((req,res)=>{
   try{
@@ -33,8 +46,8 @@ export async function renderReference({cases,output,referenceRoot=process.env.NM
  let browser
  try{
   browser=browserName==='firefox'
-   ?await browsers.firefox.launch({headless:true,firefoxUserPrefs:{'webgl.sanitize-unmasked-renderer':false}})
-   :await browsers.chromium.launch({channel:process.env.NM_BROWSER_CHANNEL||'chrome',headless:true,args:['--enable-gpu',...(process.env.NM_ANGLE_BACKEND?['--use-angle='+process.env.NM_ANGLE_BACKEND]:[])]})
+   ?await browsers.firefox.launch({headless:true,firefoxUserPrefs:plan.firefoxUserPrefs})
+   :await browsers.chromium.launch({channel:process.env.NM_BROWSER_CHANNEL||'chrome',headless:true,args:['--enable-gpu',...(plan.angleBackend?['--use-angle='+plan.angleBackend]:[])]})
   const page=await browser.newPage()
   let browserErrors=[]
   page.on('console',message=>{if(message.type()==='error')browserErrors.push(message.text())})
@@ -418,7 +431,7 @@ export async function renderReference({cases,output,referenceRoot=process.env.NM
    if(browserErrors.length){result.browserErrors=browserErrors;result.status='failed';result.message=result.message||browserErrors.join(' | ')}
    results.push({id:fixture.id,...result});onProgress(results.at(-1))
   }
-  const report={authority:reference.sourceIdentity,browser:browser.version(),requestedBrowser:browserName,requestedAngleBackend:process.env.NM_ANGLE_BACKEND||null,capabilities:{browserMaxTextureSize,nativeMaxTextureSize,commonMaxTextureSize},capture:'authored surface when specified, otherwise presented default framebuffer; RGBA8 top-down',cases:results}
+  const report={authority:reference.sourceIdentity,browser:browser.version(),requestedBrowser:browserName,requestedAngleBackend:plan.angleBackend,requestedReferenceGl:plan.referenceGl,capabilities:{browserMaxTextureSize,nativeMaxTextureSize,commonMaxTextureSize},capture:'authored surface when specified, otherwise presented default framebuffer; RGBA8 top-down',cases:results}
   writeFileSync(join(output,'reference.json'),JSON.stringify(report,null,2)+'\n')
   return report
  }finally{if(browser)await browser.close();await new Promise(r=>server.close(r))}
