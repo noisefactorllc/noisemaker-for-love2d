@@ -53,8 +53,10 @@ It is self-contained: the runtime needs no Node.js, browser, or network connecti
 
 ## Install
 
-No packaged release is published yet. Copy the `noisemaker/` directory from this repository, or from
-the source zip that `scripts/package` builds, into your LÖVE game root. Then `require('noisemaker')`.
+Packaged releases are published as the love2d export kit at `https://kits.noisedeck.app/love2d/`,
+tagged `kit-love2d-v*`. To use the module
+directly, copy the `noisemaker/` directory from this repository, or from the source zip that
+`scripts/package` builds, into your LÖVE game root. Then `require('noisemaker')`.
 
 ## Your first render
 
@@ -194,16 +196,12 @@ parameters are compared by evaluation on deterministic state vectors as well as 
 The extracted package runs a CPU compilation check and a real LÖVE GPU check, including Portable GLSL,
 failed hot replacement, persistent resize, feedback, and 100 renderer lifecycles.
 
-The 2026-11-01 same-run qualification against upstream `06070900e506b6c8ff6eb7b12d33e6c1bf285108`
-in [Native parity run 41275525641](https://github.com/noisefactorllc/noisemaker-for-love2d/actions/runs/41275525641)
-at `5007fae204c519470a3d69baabf1ea77256dfcdd` executed all 5,533 cases with unchanged candidate source: 5,325 exact cases, 27 strict cases, one near
-case, and 180 uninformative cases. Every one of the 210 effects has informative evidence. Deferred,
-skipped, failed, and missing counts are all zero. The near case, `boundary-filter_fibers__alpha_max`,
-has a reviewed maximum channel error of 3 in 8-bit units and minimum SSIM of 0.9999, bound to the
-reference and candidate hashes in [`parity/near-policy.json`](parity/near-policy.json).
-The previous 2026-10-24 qualification against `d0ed94ae19cca7328bc7d6b28902712a0838e1a9` in
-[Native parity run 40117270231](https://github.com/noisefactorllc/noisemaker-for-love2d/actions/runs/40117270231)
-passed with the same case counts.
+Each code push to `main` runs a same-run qualification in the Native parity workflow, against the
+upstream authority pinned in [`parity/reference.json`](parity/reference.json). A passing run executes
+every case with unchanged candidate source, has informative evidence for every effect, matches every
+near case to its reviewed policy, and reports no deferred, skipped, failed, or missing case. The near case, `boundary-filter_fibers__alpha_max`, has a reviewed maximum channel error
+of 3 in 8-bit units and minimum SSIM of 0.9999, bound to the reference and candidate hashes in
+[`parity/near-policy.json`](parity/near-policy.json).
 The 54 authored upstream cases with a `tiles` plan render each tile through the upstream tile region and grade the stitched frame. Strict comparison requires
 maximum channel error ≤ 2.001 in 8-bit units and SSIM ≥ 0.98, with matching dimensions and alpha.
 
@@ -277,8 +275,9 @@ LOVE_BIN=/path/to/love scripts/package
   and a standalone `dist/noisemaker-love2d.love` viewer.
 
 The CI workflow runs the capability, source, GPU regression, full catalog parity, and package checks
-on every code push. It requires a native GPU host. There are no release or deployment
-workflows.
+on every code push. It requires a native GPU host. After a successful run on `main`, the Export kit
+workflow dispatches the release of this repository's export kit at that commit, unless that commit
+already carries a kit tag.
 
 ## Contributing
 
