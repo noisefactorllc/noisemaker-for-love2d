@@ -139,7 +139,10 @@ export async function resolveReference({ projectRoot = DEFAULT_PROJECT_ROOT, ref
     root = join(cache, 'source')
     try {
       mkdirSync(root)
-      const archive = execFileSync('git', ['-c','core.autocrlf=false','-C',checkout,'archive',lock.commit,...Object.keys(sourceIdentity.files)], {maxBuffer:128*1024*1024})
+      // Archive by source root, not by file: the full file list exceeds the Windows command-line limit.
+      // The checkout is clean at the locked commit, so each root holds exactly the identity's files.
+      const archiveRoots=[...new Set(Object.keys(sourceIdentity.files).map(path=>SOURCE_PREFIXES.find(prefix=>path.startsWith(prefix))?.slice(0,-1)??path))]
+      const archive = execFileSync('git', ['-c','core.autocrlf=false','-C',checkout,'archive',lock.commit,...archiveRoots], {maxBuffer:128*1024*1024})
       execFileSync('tar',['-xf','-','-C',root],{input:archive,env:{...process.env,LC_ALL:'C'}})
       const hashes = hashReferenceFiles(root,Object.keys(sourceIdentity.files))
       if (JSON.stringify(hashes)!==JSON.stringify(sourceIdentity.files)) throw new Error('Locked archive differs from clean source identity')

@@ -205,6 +205,25 @@ test('explicit clean source is snapshotted before later checkout changes', () =>
   } finally {rmSync(project,{recursive:true,force:true})}
 }))
 
+test('a checkout whose source list exceeds a Windows command line is snapshotted', () => fixtureRepository(async (root, commit) => {
+  // The upstream source list is longer than the 32,767-character Windows command line.
+  const dir = join(root, 'shaders', 'effects', 'synth', 'solid')
+  for (let index = 0; index < 400; index++) writeFileSync(join(dir, `${'long_effect_program_name_'.repeat(4)}${index}.frag`), `// ${index}\n`)
+  git(root, 'add', '.')
+  git(root, 'commit', '-m', 'many sources')
+  const head = git(root, 'rev-parse', 'HEAD')
+  const project = mkdtempSync(join(tmpdir(), 'love-reference-lock-'))
+  try {
+    mkdirSync(join(project, 'parity'))
+    writeFileSync(join(project, 'parity/reference.json'), JSON.stringify({ repository: 'https://github.com/example/reference', commit: head }))
+    const files = listReferenceSourceFiles(root)
+    assert.ok(files.join(' ').length > 32767)
+    const snapshot = await resolveReference({ projectRoot: project, referenceRoot: root })
+    assert.equal(Object.keys(snapshot.sourceIdentity.files).length, files.length)
+    assert.equal(readFileSync(join(snapshot.root, 'shaders/effects/synth/solid', `${'long_effect_program_name_'.repeat(4)}399.frag`), 'utf8'), '// 399\n')
+  } finally { rmSync(project, { recursive: true, force: true }) }
+}))
+
 test('a clean CRLF checkout of LF blobs keeps the committed source identity', () => fixtureRepository(async (root, commit) => {
   const lf = assertLockedReference(root, { commit })
   await withAutocrlf(() => {
