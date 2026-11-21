@@ -1,9 +1,10 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {spawnSync} from 'node:child_process'
-import {chmodSync,existsSync,mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs'
+import {existsSync,mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs'
 import {tmpdir} from 'node:os'
 import {join,resolve} from 'node:path'
+import {pathToFileURL} from 'node:url'
 import {parseParityArguments,selectParityCases} from '../tools/parity-args.mjs'
 
 const root=resolve(import.meta.dirname,'..')
@@ -40,13 +41,17 @@ test('--ids, --tier, --limit and --out keep their behavior',()=>{
 
 // parity.mjs exits on an unknown case-ID argument before it starts the native runner
 // (and so before the reference browser, which starts after it). The stub LÖVE records any start.
+// The stub is Node itself with a preloaded module, because Windows cannot execute a shell
+// script as LOVE_BIN. The module acts only when Node is started on parity/runner.
 function runWithStub(argv){
  const work=mkdtempSync(join(tmpdir(),'love-parity-args-'))
  try{
-  const stub=join(work,'love'),marker=join(work,'love-started')
-  writeFileSync(stub,'#!/bin/sh\necho "$@" >> "$STUB_LOVE_MARKER"\nexit 3\n');chmodSync(stub,0o755)
+  const stub=join(work,'love-stub.mjs'),marker=join(work,'love-started')
+  writeFileSync(stub,"import {appendFileSync} from 'node:fs'\nimport {relative,sep} from 'node:path'\n"+
+   "const main=process.argv[1]&&relative(process.cwd(),process.argv[1]).split(sep).join('/')\n"+
+   "if(main==='parity/runner'){appendFileSync(process.env.STUB_LOVE_MARKER,main+'\\n');process.exit(3)}\n")
   const run=spawnSync(process.execPath,['tools/parity.mjs',...argv,'--out',join(work,'out')],{cwd:root,encoding:'utf8',
-   env:{...process.env,LOVE_BIN:stub,STUB_LOVE_MARKER:marker}})
+   env:{...process.env,LOVE_BIN:process.execPath,NODE_OPTIONS:`--import=${pathToFileURL(stub).href}`,STUB_LOVE_MARKER:marker}})
   return {status:run.status,stderr:run.stderr,loveStarted:existsSync(marker)?readFileSync(marker,'utf8'):null}
  }finally{rmSync(work,{recursive:true,force:true})}
 }
