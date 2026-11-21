@@ -1,11 +1,15 @@
-import { chromium, firefox } from 'playwright'
 import { execFileSync } from 'node:child_process'
+import { createRequire } from 'node:module'
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { resolveReference } from './reference.mjs'
 import { gradePixels } from './grade.mjs'
-import { renderReference } from './render-reference.mjs'
+import { referenceBrowserPlan, renderReference } from './render-reference.mjs'
+// The overlay check's own browser takes the same plan as the reference renderer, so one
+// run uses one reference path (NM_REFERENCE_BROWSER, NM_ANGLE_BACKEND, NM_REFERENCE_GL).
+const plan=referenceBrowserPlan()
+const {chromium,firefox}=process.env.NM_PLAYWRIGHT_MODULE?await import(process.env.NM_PLAYWRIGHT_MODULE):createRequire(import.meta.url)('playwright')
 const projectRoot=resolve(import.meta.dirname,'..')
 const {root,sourceIdentity}=await resolveReference({projectRoot,referenceRoot:process.env.NM_REFERENCE_ROOT})
 const source=readFileSync(join(root,'shaders/src/cpu/wormTracer.js'),'utf8')
@@ -16,11 +20,10 @@ for(const [effect,params] of [
   ['filter/strayHair',{seed:1,density:0.5}],
 ]) for(const [width,height] of [[8,8],[31,23]]) cases.push({hooksOverlay:{effect,width,height,params}})
 if(process.env.NM_HOOK_FULL==='1') cases.push({hooksOverlay:{effect:'filter/fibers',width:257,height:129,params:{seed:1,density:Number(process.env.NM_HOOK_DENSITY??1)}}})
-const browserName=process.env.NM_REFERENCE_BROWSER||'firefox'
-if(browserName!=='firefox'&&browserName!=='chrome')throw Error('NM_REFERENCE_BROWSER must be firefox or chrome')
+const browserName=plan.browserName
 const browser=browserName==='firefox'
-  ?await firefox.launch({headless:true,firefoxUserPrefs:{'webgl.sanitize-unmasked-renderer':false}})
-  :await chromium.launch({channel:process.env.NM_BROWSER_CHANNEL||'chrome',headless:true,args:['--enable-gpu']})
+  ?await firefox.launch({headless:true,firefoxUserPrefs:plan.firefoxUserPrefs})
+  :await chromium.launch({channel:process.env.NM_BROWSER_CHANNEL||'chrome',headless:true,args:['--enable-gpu',...(plan.angleBackend?['--use-angle='+plan.angleBackend]:[])]})
 const browserVersion=browser.version()
 let expected,stages
 try {
@@ -93,7 +96,7 @@ try {
    console.log(JSON.stringify({case:cases[i].hooksOverlay,segments:actual[i].segments,alphaRef,alphaGot,maxDiff:caseMax,mae:caseSum/expected[i].length,over2:caseNonzero,finalMax:blendMax,finalMAE:blendSum/blendN,finalOver2:blendOver2,visibleGrade,examples}))
    if(visibleGrade.bucket!=='exact'&&visibleGrade.bucket!=='strict')errors++
  }
- console.log(`HOOKS-VISIBLE-RASTER-DIFFERENTIAL ${JSON.stringify({reference:sourceIdentity.revision,browser:browserName,browserVersion,cases:cases.length,errors,maxDiff,mae:absolute/count,over2:nonzero,finalMax,finalMAE:finalSum/finalN,finalOver2})}`)
+ console.log(`HOOKS-VISIBLE-RASTER-DIFFERENTIAL ${JSON.stringify({reference:sourceIdentity.revision,browser:browserName,browserVersion,referenceGl:plan.referenceGl,cases:cases.length,errors,maxDiff,mae:absolute/count,over2:nonzero,finalMax,finalMAE:finalSum/finalN,finalOver2})}`)
  const gpuCases=cases.map(({hooksOverlay:o})=>({
    id:`overlay-${o.effect.split('/')[1]}-${o.width}`,
    source:`search synth, filter\nsolid(color: ${o.effect==='filter/scratches'?'#000000':'#4080c0'}).${o.effect.split('/')[1]}(seed: 1, density: ${o.params.density}, alpha: ${o.effect==='filter/scratches'?.75:.5}).write(o0)\nrender(o0)`,
