@@ -47,13 +47,34 @@ export function hashReferenceFiles(root, paths) {
   return hashes
 }
 
+// Content hashes of the committed blobs. A clean checkout can hold CRLF copies of LF
+// blobs (core.autocrlf=true, the Git for Windows default), so the identity comes from
+// the commit, not the working tree.
+function hashCommittedFiles(root, commit, paths) {
+  const output = execFileSync('git', ['cat-file', '--batch'], {
+    cwd: root, input: paths.map(path => `${commit}:${path}\n`).join(''), maxBuffer: 512 * 1024 * 1024,
+  })
+  const hashes = {}
+  let offset = 0
+  for (const path of paths) {
+    const end = output.indexOf(10, offset)
+    const [, type, size] = output.subarray(offset, end).toString('utf8').split(' ')
+    if (type !== 'blob') throw new Error(`Missing locked source: ${path}`)
+    const start = end + 1
+    hashes[path] = createHash('sha256').update(output.subarray(start, start + Number(size))).digest('hex')
+    offset = start + Number(size) + 1
+  }
+  return hashes
+}
+
 export function assertLockedReference(root, lock) {
   const revision = git(root, ['rev-parse', 'HEAD'])
   if (revision !== lock.commit) throw new Error(`Reference is at ${revision}, not locked commit ${lock.commit}`)
   const status = git(root, ['status', '--porcelain', '--untracked-files=all'])
   if (status) throw new Error(`Reference checkout is dirty at locked commit ${lock.commit}: ${status.split('\n')[0]}`)
   const files = listReferenceSourceFiles(root)
-  const hashes = hashReferenceFiles(root, files)
+  hashReferenceFiles(root, files) // path, presence, symlink and containment checks on the checkout
+  const hashes = hashCommittedFiles(root, revision, files)
   const digest = createHash('sha256')
   for (const path of files) digest.update(`${path}\0${hashes[path]}\n`)
   return { revision, dirty: false, fileCount: files.length, sourceSha256: digest.digest('hex'), files: hashes }
@@ -90,7 +111,8 @@ export async function resolveReference({ projectRoot = DEFAULT_PROJECT_ROOT, ref
         .filter(path => treePaths.some(file => file === path || file.startsWith(path + '/')))
       const treeEntries = git(bare, ['ls-tree', '-r', '-z', lock.commit, '--', ...archivePaths]).split('\0')
       if (treeEntries.some(entry => entry.startsWith('120000 '))) throw new Error('Locked source archive contains a symlink')
-      const archive = execFileSync('git', [`--git-dir=${bare}`, 'archive', lock.commit, ...archivePaths], { maxBuffer: 128 * 1024 * 1024 })
+      // Committed bytes, whatever the host's core.autocrlf (Git for Windows defaults to true).
+      const archive = execFileSync('git', ['-c', 'core.autocrlf=false', `--git-dir=${bare}`, 'archive', lock.commit, ...archivePaths], { maxBuffer: 128 * 1024 * 1024 })
       execFileSync('tar', ['-xf', '-', '-C', root], { input: archive, env: { ...process.env, LC_ALL: 'C' } })
       const files = treePaths.filter(path => SOURCE_PREFIXES.some(prefix => path.startsWith(prefix)) || SOURCE_FILES.has(path)).sort()
       const hashes = hashReferenceFiles(root, files)
@@ -117,7 +139,7 @@ export async function resolveReference({ projectRoot = DEFAULT_PROJECT_ROOT, ref
     root = join(cache, 'source')
     try {
       mkdirSync(root)
-      const archive = execFileSync('git', ['-C',checkout,'archive',lock.commit,...Object.keys(sourceIdentity.files)], {maxBuffer:128*1024*1024})
+      const archive = execFileSync('git', ['-c','core.autocrlf=false','-C',checkout,'archive',lock.commit,...Object.keys(sourceIdentity.files)], {maxBuffer:128*1024*1024})
       execFileSync('tar',['-xf','-','-C',root],{input:archive,env:{...process.env,LC_ALL:'C'}})
       const hashes = hashReferenceFiles(root,Object.keys(sourceIdentity.files))
       if (JSON.stringify(hashes)!==JSON.stringify(sourceIdentity.files)) throw new Error('Locked archive differs from clean source identity')

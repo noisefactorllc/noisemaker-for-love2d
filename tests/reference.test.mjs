@@ -23,6 +23,21 @@ function git(root, ...args) {
   return execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim()
 }
 
+// Git for Windows installs with core.autocrlf=true; these checks run under it on every host.
+async function withAutocrlf(fn) {
+  const keys = ['GIT_CONFIG_COUNT', 'GIT_CONFIG_KEY_0', 'GIT_CONFIG_VALUE_0']
+  const previous = keys.map(key => process.env[key])
+  Object.assign(process.env, { GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'core.autocrlf', GIT_CONFIG_VALUE_0: 'true' })
+  try {
+    return await fn()
+  } finally {
+    keys.forEach((key, index) => {
+      if (previous[index] === undefined) delete process.env[key]
+      else process.env[key] = previous[index]
+    })
+  }
+}
+
 async function fixtureRepository(fn) {
   const root = mkdtempSync(join(tmpdir(), 'love-reference-test-'))
   try {
@@ -71,10 +86,15 @@ test('fallback materializes the locked tree without a working checkout', async (
     mkdirSync(join(project, 'parity'))
     const repository = 'https://github.com/example/reference-fallback'
     writeFileSync(join(project, 'parity', 'reference.json'), JSON.stringify({ repository, commit }))
-    const previous = [process.env.GIT_CONFIG_COUNT, process.env.GIT_CONFIG_KEY_0, process.env.GIT_CONFIG_VALUE_0]
-    process.env.GIT_CONFIG_COUNT = '1'
+    const keys = ['GIT_CONFIG_COUNT', 'GIT_CONFIG_KEY_0', 'GIT_CONFIG_VALUE_0', 'GIT_CONFIG_KEY_1', 'GIT_CONFIG_VALUE_1']
+    const previous = keys.map(key => process.env[key])
+    process.env.GIT_CONFIG_COUNT = '2'
     process.env.GIT_CONFIG_KEY_0 = `url.file://${root}.insteadOf`
     process.env.GIT_CONFIG_VALUE_0 = repository
+    // Git for Windows installs with core.autocrlf=true. The materialized authority must
+    // still hold the committed bytes.
+    process.env.GIT_CONFIG_KEY_1 = 'core.autocrlf'
+    process.env.GIT_CONFIG_VALUE_1 = 'true'
     try {
       const resolved = await resolveReference({ projectRoot: project, referenceRoot: '' })
       assert.equal(resolved.sourceIdentity.revision, commit)
@@ -91,7 +111,7 @@ test('fallback materializes the locked tree without a working checkout', async (
       await assert.rejects(resolveReference({ projectRoot: project, referenceRoot: '' }), /cached reference source changed/i)
       rmSync(resolve(resolved.root, '..'), { recursive: true, force: true })
     } finally {
-      for (const [key, value] of [['GIT_CONFIG_COUNT', previous[0]], ['GIT_CONFIG_KEY_0', previous[1]], ['GIT_CONFIG_VALUE_0', previous[2]]]) {
+      for (const [key, value] of keys.map((key, index) => [key, previous[index]])) {
         if (value === undefined) delete process.env[key]
         else process.env[key] = value
       }
@@ -175,11 +195,29 @@ test('explicit clean source is snapshotted before later checkout changes', () =>
   try {
     mkdirSync(join(project,'parity'))
     writeFileSync(join(project,'parity/reference.json'),JSON.stringify({repository:'https://github.com/example/reference',commit}))
-    const snapshot=await resolveReference({projectRoot:project,referenceRoot:root})
+    // An LF checkout stays clean under core.autocrlf=true and must still be accepted.
+    const snapshot=await withAutocrlf(()=>resolveReference({projectRoot:project,referenceRoot:root}))
     assert.notEqual(snapshot.root,root)
     const before=readFileSync(join(snapshot.root,'shaders/src/compiler.js'),'utf8')
     writeFileSync(join(root,'shaders/src/compiler.js'),'changed while a render runs')
     assert.equal(readFileSync(join(snapshot.root,'shaders/src/compiler.js'),'utf8'),before)
     await assert.rejects(resolveReference({projectRoot:project,referenceRoot:root}),/dirty/)
   } finally {rmSync(project,{recursive:true,force:true})}
+}))
+
+test('a clean CRLF checkout of LF blobs keeps the committed source identity', () => fixtureRepository(async (root, commit) => {
+  const lf = assertLockedReference(root, { commit })
+  await withAutocrlf(() => {
+    for (const path of Object.keys(lf.files)) {
+      writeFileSync(join(root, path), readFileSync(join(root, path), 'utf8').replaceAll('\n', '\r\n'))
+    }
+    // Refresh the index as a checkout would. The blobs stay the committed LF blobs.
+    git(root, 'add', '--all')
+    assert.equal(git(root, 'diff', '--cached', '--name-only', commit), '')
+    assert.equal(git(root, 'status', '--porcelain', '--untracked-files=all'), '')
+    assert.ok(readFileSync(join(root, 'shaders/src/compiler.js'), 'utf8').includes('\r\n'))
+    const crlf = assertLockedReference(root, { commit })
+    assert.deepEqual(crlf.files, lf.files)
+    assert.equal(crlf.sourceSha256, lf.sourceSha256)
+  })
 }))
