@@ -2,7 +2,7 @@
   "schema": 1,
   "authority": {
     "repository": "https://github.com/noisefactorllc/noisemaker",
-    "commit": "b631fc2c37d75f4cedbdc5e760486f7ecd3a2ca8"
+    "commit": "478f94eae7ebe34116dfc661ac52b373b884008b"
   },
   "counts": {
     "definitions": 210,
@@ -7226,8 +7226,8 @@
       "path": "shaders/effects/points/heightGrid/glsl/agent.glsl",
       "effect": "points/heightGrid",
       "extension": "glsl",
-      "bytes": 1180,
-      "sha256": "9edb336514439c0cbe2c29eb38ad8acb26586bd5d59ac0f68ed999ba2ce9024a"
+      "bytes": 1607,
+      "sha256": "1a026b7c2f347e7d41e58d81b1674b000d73bd77be1d983e4b58ee8a89be248a"
     },
     {
       "path": "shaders/effects/points/heightGrid/glsl/passthrough.glsl",
@@ -7548,8 +7548,8 @@
       "path": "shaders/effects/render/renderLandscape3d/glsl/landscape.glsl",
       "effect": "render/renderLandscape3d",
       "extension": "glsl",
-      "bytes": 13406,
-      "sha256": "c9e9ab5c4d7226e774f8d1b9f8aff9d54fd4d6cd97e07c2d3c907df1d7b07ff8"
+      "bytes": 14915,
+      "sha256": "179f6394c13db68de0b2c0f07551c7a661380b7335421c36c4a3389792ac5f43"
     },
     {
       "path": "shaders/effects/render/renderLit3d/glsl/renderLit3d.glsl",
@@ -7863,8 +7863,8 @@
       "path": "shaders/effects/synth3d/heightmap3d/glsl/precompute.glsl",
       "effect": "synth3d/heightmap3d",
       "extension": "glsl",
-      "bytes": 1985,
-      "sha256": "2a634fd3355925d3590f5857523acf185f7d77e0d32a5488c6546a5ea51e1427"
+      "bytes": 3221,
+      "sha256": "5048bda8ed7006354d5b2492a65a8ac7064d7ab0c3c74bd5d9f989ff4c3ba29b"
     },
     {
       "path": "shaders/effects/synth3d/noise3d/glsl/precompute.glsl",
