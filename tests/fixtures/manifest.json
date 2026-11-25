@@ -2,6 +2,171 @@
   "version": 1,
   "cases": [
     {
+      "id": "let-audio-channel",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet ch = 2\nnoise(speed: audio(band: audioBand.vol, channel: ch, name: \"mic\")).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-midi-zone",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet zone = midiZone.lower\nlet count = 5\nnoise(speed: midi(zone: zone, members: count)).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-midi-nrpn",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet parameter = 12\nnoise(speed: midi(channel: 1, mode: midiMode.nrpn, nrpn: parameter)).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-midi-controller",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet ctl = 74\nnoise(speed: midi(channel: 1, mode: midiMode.cc, cc: ctl)).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-oscillator-enum",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet kind = oscKind.tri\nnoise(speed: osc(type: kind)).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-audio-enum-range",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet upper = channel.g\nnoise(speed: audio(band: audioBand.vol, max: upper)).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-midi-enum-channel",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet ch = midiMode.velocity\nnoise(speed: midi(channel: ch)).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-audio-selector",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet band = 1\nnoise(speed: audio(band: band, channel: 2, name: \"microphone\", id: \"input\")).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-midi-selector",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet ch = 5\nnoise(speed: midi(channel: ch, name: \"keyboard\", id: \"input\")).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-descriptor-binding-time",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet hi = 0.25\nlet control = osc(max: hi)\nlet hi = 0.75\nnoise(speed: control).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-nested-descriptor",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet hi = 0.25\nlet control = osc(max: hi)\nnoise(speed: osc(speed: control)).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-audio-band",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet band = 1\nnoise(speed: audio(band: band)).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-oscillator-max",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet hi = 0.25\nnoise(speed: osc(max: hi)).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-midi-channel",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet ch = 5\nnoise(speed: midi(channel: ch)).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "read-chain-argument",
+      "effects": [
+        "synth/gradient",
+        "mixer/alphaMask",
+        "filter/invert"
+      ],
+      "source": "search synth, mixer, filter\ngradient().write(o0)\ngradient().alphaMask(tex: read(o0).invert()).write(o1) render(o1)",
+      "capture": null
+    },
+    {
+      "id": "let-bound-color",
+      "effects": [
+        "synth/gradient",
+        "filter/tint"
+      ],
+      "source": "search synth, filter\nlet colored = tint(#804020)\ngradient().colored(alpha: 0.25).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "let-indexed-slots",
+      "effects": [
+        "synth/gradient",
+        "filter/tint"
+      ],
+      "source": "search synth, filter\nlet colored = tint(alpha: 0.25)\ngradient().colored(#804020, 0.5, 1).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "extra-positionals",
+      "effects": [
+        "synth/gradient"
+      ],
+      "source": "search synth\ngradient(0, 0, 1, 0, 1, #ff0000, #ffff00, #00ff00, #0000ff, 4, 8).write(o0) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "invalid-element-id",
+      "effects": [
+        "synth/noise"
+      ],
+      "source": "search synth\nlet id = \"source\"\nnoise(_id: id).write(o0, _id: 4) render(o0)",
+      "capture": null
+    },
+    {
+      "id": "element-ids",
+      "effects": [
+        "synth/noise",
+        "filter/invert"
+      ],
+      "source": "search synth, filter\nnoise(_id: \"source_1\").invert(_id: \"filter_1\").write(o0, _id: \"output_1\")\nread(tex: o0, _id: \"input_1\").write(o1) render(o1)",
+      "capture": null
+    },
+    {
       "id": "solid-red",
       "effects": ["synth/solid"],
       "source": "search synth\nsolid(color: #ff0000).write(o0)\nrender(o0)",

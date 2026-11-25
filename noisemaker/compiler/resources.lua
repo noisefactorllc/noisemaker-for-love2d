@@ -7,8 +7,36 @@ local function values(object)
   return result
 end
 
+local function inputAliases(passes)
+  local written, aliases = {}, {}
+  for _, pass in ipairs(passes) do
+    for _, id in ipairs(values(pass.outputs)) do
+      if type(id) == 'string' then written[id] = true end
+    end
+  end
+  for i, pass in ipairs(passes) do
+    if pass.nodeId then
+      for _, id in ipairs(values(pass.inputs)) do
+        if type(id) == 'string' and not written[id] and not aliases[id]
+          and (id == pass.nodeId .. '_inputTex' or id == pass.nodeId .. '_inputColor') then
+          for j = i - 1, 1, -1 do
+            for _, upstream in ipairs(values(passes[j].outputs)) do
+              if type(upstream) == 'string' and upstream ~= pass.nodeId .. '_out' and upstream:match('^node_%d+_out$') then
+                aliases[id] = upstream; break
+              end
+            end
+            if aliases[id] then break end
+          end
+        end
+      end
+    end
+  end
+  return aliases
+end
+
 function M.analyzeLiveness(passes)
   local lifetime = {}
+  local aliases = inputAliases(passes)
   local function touch(id, index)
     if type(id) ~= 'string' or id:sub(1, 7) == 'global_' then return end
     local span = lifetime[id]
@@ -19,7 +47,7 @@ function M.analyzeLiveness(passes)
     end
   end
   for i, pass in ipairs(passes) do
-    for _, id in ipairs(values(pass.inputs)) do touch(id, i - 1) end
+    for _, id in ipairs(values(pass.inputs)) do touch(aliases[id] or id, i - 1) end
     for _, id in ipairs(values(pass.outputs)) do touch(id, i - 1) end
   end
   return lifetime
@@ -27,6 +55,7 @@ end
 
 function M.allocateResources(passes)
   local lifetime = M.analyzeLiveness(passes)
+  local aliases = inputAliases(passes)
   local allocations, free, physicalCount = {}, {}, 0
   for i, pass in ipairs(passes) do
     local index = i - 1
@@ -46,6 +75,7 @@ function M.allocateResources(passes)
     end
     local seen = {}
     for _, id in ipairs(values(pass.inputs)) do
+      id = aliases[id] or id
       if type(id) == 'string' and id:sub(1, 7) ~= 'global_' and not seen[id] then
         seen[id] = true
         local span = lifetime[id]

@@ -46,6 +46,10 @@ function M.parse(tokens,options)
     while peek().type=='COMMENT' do comments[#comments+1]=advance().lexeme end
     return comments
   end
+  local function skipComments()
+    while peek().type=='COMMENT' do advance() end
+  end
+  local function locOf(token) return {line=token.line,col=token.col} end
   local function attachComments(node,comments)
     if #comments>0 then node.leadingComments=comments end
   end
@@ -161,6 +165,7 @@ function M.parse(tokens,options)
   local function parseKwarg(obj)
     local key=expect('IDENT','Expected identifier').lexeme
     expect('COLON',"Expect ':'")
+    skipComments()
     if not exprStart[peek().type] then
       local t=peek(); fail('P001',string.format("Expected expression after '=' at line %d col %d",t.line,t.col),t)
     end
@@ -175,8 +180,10 @@ function M.parse(tokens,options)
     local args,kwargs={},values.object()
     local keyword,positional=false,false
     local allowMixed=nameToken.lexeme=='midi' or nameToken.lexeme=='audio'
+    skipComments()
     if peek().type~='RPAREN' then
       while true do
+        skipComments()
         if peek().type=='IDENT' and peek(1).type=='COLON' then
           if positional and not allowMixed then
             local t=peek(); fail('P007',string.format('Cannot mix positional and keyword arguments at line %d col %d',t.line,t.col),t)
@@ -188,13 +195,15 @@ function M.parse(tokens,options)
           end
           positional=true; args[#args+1]=parseAdditive()
         end
+        skipComments()
         if peek().type~='COMMA' then break end
         advance()
+        skipComments()
         if peek().type=='RPAREN' then break end
       end
     end
     expect('RPAREN',"Expect ')'")
-    local call={type='Call',name=nameToken.lexeme,args=args}
+    local call={type='Call',name=nameToken.lexeme,args=args,loc=locOf(nameToken)}
     if keyword then call.kwargs=kwargs end
     if call.name=='from' then return transformFrom(call,nameToken) end
     if call.name=='osc' then
@@ -213,11 +222,13 @@ function M.parse(tokens,options)
     if call.name=='read' then
       local node={type='Read',surface=args[1] or kwargs.tex or kwargs.surface,loc={line=nameToken.line,col=nameToken.col}}
       if kwargs._skip and kwargs._skip.type=='Boolean' and kwargs._skip.value==true then node._skip=true end
+      node._id=kwargs._id
       return node
     end
     if call.name=='read3d' then
       local node={type='Read3D',tex3d=args[1] or kwargs.tex3d,geo=args[2] or kwargs.geo or NULL,loc={line=nameToken.line,col=nameToken.col}}
       if kwargs._skip and kwargs._skip.type=='Boolean' and kwargs._skip.value==true then node._skip=true end
+      node._id=kwargs._id
       return node
     end
     return call
@@ -225,22 +236,28 @@ function M.parse(tokens,options)
   local function parsePrimary()
     local token=peek()
     local t=token.type
-    if t=='NUMBER' then advance(); return {type='Number',value=tonumber(token.lexeme)} end
-    if t=='STRING' then advance(); return {type='String',value=token.lexeme} end
+    if t=='NUMBER' then advance(); return {type='Number',value=tonumber(token.lexeme),loc=locOf(token)} end
+    if t=='STRING' then advance(); return {type='String',value=token.lexeme,loc=locOf(token)} end
     if t=='HEX' then
       advance()
       local h=token.lexeme:sub(2)
       local r,g,b,a
       if #h==3 then r=tonumber(h:sub(1,1)..h:sub(1,1),16);g=tonumber(h:sub(2,2)..h:sub(2,2),16);b=tonumber(h:sub(3,3)..h:sub(3,3),16);a=1
       else r=tonumber(h:sub(1,2),16);g=tonumber(h:sub(3,4),16);b=tonumber(h:sub(5,6),16);a=#h==8 and tonumber(h:sub(7,8),16)/255 or 1 end
-      return {type='Color',value={r/255,g/255,b/255,a}}
+      return {type='Color',value={r/255,g/255,b/255,a},loc=locOf(token)}
     end
     if t=='LBRACKET' then
       advance()
       local elements={}
+      skipComments()
       if peek().type~='RBRACKET' then
         elements[#elements+1]=parseAdditive()
-        while peek().type=='COMMA' do advance(); elements[#elements+1]=parseAdditive() end
+        skipComments()
+        while peek().type=='COMMA' do
+          advance(); skipComments()
+          if peek().type=='RBRACKET' then break end
+          elements[#elements+1]=parseAdditive(); skipComments()
+        end
       end
       if peek().type~='RBRACKET' then
         local bad=peek(); fail('P001',string.format("Expected ']' at line %d col %d",bad.line,bad.col),bad)
@@ -251,11 +268,11 @@ function M.parse(tokens,options)
       return node
     end
     if t=='FUNC' then advance(); return {type='Func',src=token.lexeme} end
-    if t=='TRUE' then advance(); return {type='Boolean',value=true} end
-    if t=='FALSE' then advance(); return {type='Boolean',value=false} end
+    if t=='TRUE' then advance(); return {type='Boolean',value=true,loc=locOf(token)} end
+    if t=='FALSE' then advance(); return {type='Boolean',value=false,loc=locOf(token)} end
     if t=='IDENT' then
       if token.lexeme=='Math' and peek(1).type=='DOT' and peek(2).type=='IDENT' and peek(2).lexeme=='PI' then
-        advance();advance();advance();return {type='Number',value=math.pi}
+        advance();advance();advance();return {type='Number',value=math.pi,loc=locOf(token)}
       end
       if peek(1).type=='LPAREN' or hasCallAfterDot(current) then
         local chain=parseChain('expression')
@@ -288,7 +305,7 @@ function M.parse(tokens,options)
   end
   local function parseUnary()
     if peek().type=='PLUS' then advance();return parseUnary() end
-    if peek().type=='MINUS' then advance();return {type='Number',value=-toNumber(parseUnary())} end
+    if peek().type=='MINUS' then advance();local val=parseUnary();return {type='Number',value=-toNumber(val),loc=val.loc} end
     return parsePrimary()
   end
   local function parseMultiplicative()
@@ -296,7 +313,7 @@ function M.parse(tokens,options)
     while peek().type=='STAR' or peek().type=='SLASH' do
       local op=advance().type
       local right=parseUnary()
-      node={type='Number',value=op=='STAR' and toNumber(node)*toNumber(right) or toNumber(node)/toNumber(right)}
+      node={type='Number',value=op=='STAR' and toNumber(node)*toNumber(right) or toNumber(node)/toNumber(right),loc=node.loc}
     end
     return node
   end
@@ -305,9 +322,16 @@ function M.parse(tokens,options)
     while peek().type=='PLUS' or peek().type=='MINUS' do
       local op=advance().type
       local right=parseMultiplicative()
-      node={type='Number',value=op=='PLUS' and toNumber(node)+toNumber(right) or toNumber(node)-toNumber(right)}
+      node={type='Number',value=op=='PLUS' and toNumber(node)+toNumber(right) or toNumber(node)-toNumber(right),loc=node.loc}
     end
     return node
+  end
+  local function parseWriteId()
+    if peek().type~='COMMA' or peek(1).type~='IDENT' or peek(1).lexeme~='_id' or peek(2).type~='COLON' then return nil end
+    advance()
+    local kwargs=values.object()
+    parseKwarg(kwargs)
+    return kwargs._id
   end
   local function parseWriteCall()
     local token=peek()
@@ -321,8 +345,9 @@ function M.parse(tokens,options)
       if refs[t.type] then surface={type=refs[t.type],name=advance().lexeme}
       elseif t.type=='IDENT' and t.lexeme=='none' then surface={type='OutputRef',name=advance().lexeme}
       else fail('P005',string.format('write() requires an explicit surface reference (e.g., o0, o1, xyz0, vel0, rgba0, mesh0, none) at line %d col %d',t.line,t.col),t) end
+      local id=parseWriteId()
       expect('RPAREN',"Expect ')'")
-      return {type='Write',surface=surface,loc=loc}
+      return {type='Write',surface=surface,loc=loc,_id=id}
     elseif tokenType=='WRITE3D' then
       advance();expect('LPAREN',"Expect '('")
       local t=peek()
@@ -338,8 +363,9 @@ function M.parse(tokens,options)
       end
       refType={IDENT='Ident',OUTPUT_REF='OutputRef',GEO_REF='GeoRef'}
       local geo={type=refType[t.type],name=advance().lexeme}
+      local id=parseWriteId()
       expect('RPAREN',"Expect ')'")
-      return {type='Write3D',tex3d=tex3d,geo=geo,loc=loc}
+      return {type='Write3D',tex3d=tex3d,geo=geo,loc=loc,_id=id}
     end
     fail('P005',string.format('Expected write or write3d at line %d col %d',token.line,token.col),token)
   end

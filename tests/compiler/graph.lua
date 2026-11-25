@@ -1,5 +1,19 @@
 local registry = require('noisemaker.catalog.registry')
 local resources = require('noisemaker.compiler.resources')
+do
+  local compiler = require('noisemaker.compiler.init')
+  local globals = require('noisemaker.compiler.values').object()
+  for _, name in ipairs({'r','g','b','alpha'}) do
+    require('noisemaker.compiler.values').set(globals,name,{type='float',default=1,uniform=name})
+  end
+  assert(registry.registerEffect({name='RGB contract',namespace='user',func='rgbContract',globals=globals,
+    passes={{program='main',outputs={color='outputTex'}}},shaders={main={glsl='out vec4 fragColor;void main(){fragColor=vec4(1.0);}'}}}))
+  local ast = compiler.parse(compiler.lex('search user\nlet c = rgbContract(#804020)\nc(r: 0.25).write(o0) render(o0)'))
+  local result = compiler.validate(ast)
+  assert(#result.diagnostics==0)
+  local args = result.plans[1].chain[1].args
+  assert(args.r==.25 and args.g==64/255 and args.b==32/255 and args.alpha==1,'let-bound RGB color splat')
+end
 
 assert(registry.getEffect('synth.solid') == registry.getEffect('synth/solid'))
 assert(registry.getEffect('synth.solid').globals.alpha.default == 1)
@@ -18,6 +32,21 @@ assert(allocations.a == 'phys_0')
 assert(allocations.b == 'phys_1')
 assert(allocations.c == 'phys_0')
 assert(allocations.global_o0 == nil)
+do
+  local aliasPasses = {
+    {nodeId='node_0', outputs={color='node_0_out'}},
+    {nodeId='node_1', inputs={color='node_1_inputColor'}, outputs={color='node_1_out'}},
+    {nodeId='node_2', inputs={color='node_2_inputTex'}, outputs={color='node_2_out'}},
+  }
+  local spans = resources.analyzeLiveness(aliasPasses)
+  assert(spans.node_0_out['end'] == 1 and spans.node_1_out['end'] == 2)
+  assert(not spans.node_1_inputColor and not spans.node_2_inputTex)
+  local slots = resources.allocateResources(aliasPasses)
+  assert(slots.node_2_out == slots.node_0_out and slots.node_1_out ~= slots.node_0_out)
+  aliasPasses[1].outputs.upload = 'node_1_inputColor'
+  spans = resources.analyzeLiveness(aliasPasses)
+  assert(spans.node_0_out['end'] == 0 and spans.node_1_inputColor['end'] == 1)
+end
 local portable={name='Portable',namespace='user',func='portable',globals={gain={type='float',default=0.5,min=0,max=1,uniform='gain'}},
   passes={{program='main',inputs={},outputs={color='outputTex'}}},
   shaders={main={glsl='#version 300 es\nprecision highp float;\nout vec4 fragColor;\nvoid main(){fragColor=vec4(1.0);}'}}}

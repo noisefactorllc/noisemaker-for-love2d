@@ -14,6 +14,15 @@ local function run()
  case('uniform vec3 color;out vec4 fragColor;void main(){fragColor=vec4(isnan(color.x)?1.0:0.0,isnan(color.y)?1.0:0.0,isnan(color.z)?1.0:0.0,1.0);}',{color='#000000'},{1,1,1,1},'nonnumeric string vec3 NaN')
  case('uniform vec3 color;out vec4 fragColor;void main(){fragColor=vec4(color,1.0);}',{color='0.25'},{.25,.25,.25,1},'numeric string scalar replicated')
  case('uniform vec4 tint;uniform float gain;uniform int mode;uniform bool enabled;out vec4 fragColor;void main(){fragColor=vec4(float(mode)/10.0,enabled?1.0:0.0,gain,tint.w);}',{tint=values.array{.1,.2,.3},gain='0.375',mode='2.9',enabled='false'},{.2,0,.375,1},'vec4 missing fourth and JS integer/bool coercion')
+ local graph={passes={{id='clock',program='p',inputs={},outputs={color='global_o0'}}},programs={p={glsl='uniform float deltaTime;out vec4 fragColor;void main(){fragColor=vec4(deltaTime,0.0,0.0,1.0);}'}},textures={},allocations={},renderSurface='o0'}
+ local r=assert(renderer.new(graph,{width=17,height=9}))
+ for _,frame in ipairs({{time=0,expected=0},{time=.125,expected=.125},{time=.875,expected=.75},{time=.125,expected=.25},{time=.25,deltaTime=.375,expected=.375}}) do
+  local out=assert(r:render(frame));local data=out:newImageData();local red=data:getPixel(0,0)
+  assert(math.abs(red-frame.expected)<.002,'normalized clock delta mismatch: '..red..' expected '..frame.expected)
+  data:release()
+ end
+ assert(r:reset())
+ local data=assert(r:render{time=.75}):newImageData();assert(data:getPixel(0,0)==0);data:release();r:release()
  print('UNIFORM-COERCION numeric/non-numeric strings, scalar vector replication, fourth default and int/bool')
 end
 function love.load()local ok,err=xpcall(run,debug.traceback);if not ok then io.stderr:write(tostring(err),'\n')end;love.event.quit(ok and 0 or 1)end

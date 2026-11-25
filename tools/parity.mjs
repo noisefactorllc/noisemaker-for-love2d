@@ -28,7 +28,7 @@ mkdirSync(output,{recursive:true});mkdirSync(join(output,'inputs'),{recursive:tr
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex')
 const sourceEffects=source=>effects.filter(id=>new RegExp('\\b'+definitions[id].func+'\\s*\\(').test(source))
 const capture={backend:'webgl2',width:257,height:129,time:.25,deltaTime:0,frame:0,frames:8,seed:1,seedPolicy:'authored',reset:true,inputs:[]}
-const {parseOBJ,packMeshDataForTextures}=await import(pathToFileURL(join(authority.root,'shaders/src/runtime/obj-parser.js')).href)
+const {parseOBJ}=await import(pathToFileURL(join(authority.root,'shaders/src/runtime/obj-parser.js')).href)
 // Locked mesh files packed into the position, normal and UV textures that meshLoader reads.
 const meshInputs=(meshes,id,where)=>{
  const inputs=[]
@@ -36,7 +36,7 @@ const meshInputs=(meshes,id,where)=>{
   if(!/^share\/meshes\/[A-Za-z0-9_.-]+\.obj$/.test(mesh.path))throw Error(`${where}: invalid locked mesh path`)
   const bytes=readFileSync(join(authority.root,mesh.path))
   const parsed=parseOBJ(bytes.toString('utf8'))
-  const packed=packMeshDataForTextures(parsed.positions,parsed.normals,parsed.uvs,256,256)
+  const packed=parsed.toPackedTextures(256,256)
   if(!packed.vertexCount)throw Error(`${where}: empty mesh`)
   for(const [component,data] of [['positions',packed.positionData],['normals',packed.normalData],['uvs',packed.uvData]]){
    const binary=Buffer.from(data.buffer,data.byteOffset,data.byteLength)

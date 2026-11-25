@@ -7,7 +7,7 @@ local messages = {
   S001 = 'Unknown identifier', S002 = 'Argument out of range',
   S003 = 'Variable used before assignment', S004 = 'Cannot assign null or undefined',
   S005 = 'Illegal chain structure', S006 = 'Starter chain missing write() call',
-  S007 = 'Deprecated parameter alias', S008 = 'Deprecated effect'
+  S007 = 'Deprecated parameter alias', S008 = 'Deprecated effect', S009 = 'Too many positional arguments'
 }
 -- Hard removal date that upstream paramAliases.js states for all parameter aliases.
 local ALIAS_EOL_DATE = '2027-06-01'
@@ -15,6 +15,10 @@ local stateValues = {time=true, frame=true, mouse=true, resolution=true, seed=tr
   u1=true,u2=true,u3=true,u4=true,s1=true,s2=true,b1=true,b2=true,a1=true,a2=true,deltaTime=true}
 local stateSurfaces = {time=true,frame=true,mouse=true,resolution=true,seed=true,a=true}
 local stringAllow = {['text.text']=true,['text.font']=true,['text.justify']=true,['text.style']=true}
+
+local function keepElementId(node,args)
+  if type(node)=='table' and node.type=='String' and node._varRef==nil and node.value:match('^[A-Za-z][A-Za-z0-9_]*$') then args._id=node.value end
+end
 
 -- Identifier nodes that already have their S003 for a read before the let, in the validate
 -- call in progress. Copies of a marked node stay marked, as upstream reuses the node itself.
@@ -30,11 +34,45 @@ end
 
 -- A symbol's value in place of the identifier that names it. `_varRef` records the outermost
 -- name, as upstream substitute() does.
-local function substituteSymbol(node, symbols)
-  if type(node) ~= 'table' or node.type ~= 'Ident' or not symbols[node.name] then return node end
-  local result = copy(symbols[node.name])
-  if type(result) == 'table' and result ~= NULL then result._varRef = node._varRef or node.name end
-  return result
+local descriptorFields = {
+  Oscillator={'oscType','min','max','speed','offset','seed'},
+  Midi={'channel','mode','min','max','sensitivity','name','id','cc','nrpn','zone','members'},
+  Audio={'band','min','max','channel','name','id'},
+}
+local function substituteSymbol(node, symbols, diagnostic, resolving)
+  if type(node) ~= 'table' or node == NULL then return node end
+  resolving = resolving or {}
+  if node.type == 'Ident' then
+    for i, name in ipairs(resolving) do
+      if name == node.name then
+        local cycle={}
+        for j=i,#resolving do cycle[#cycle+1]=resolving[j] end
+        cycle[#cycle+1]=node.name
+        diagnostic('S001',node,'Automation cycle detected: '..table.concat(cycle,' -> '))
+        return {type='Number',value=0,_automationInvalid=true}
+      end
+    end
+    if not symbols[node.name] then return node end
+    local stack={}
+    for i,name in ipairs(resolving) do stack[i]=name end
+    stack[#stack+1]=node.name
+    local result=substituteSymbol(copy(symbols[node.name]),symbols,diagnostic,stack)
+    if type(result)=='table' and result~=NULL then result._varRef=node._varRef or node.name end
+    return result
+  end
+  local fields=descriptorFields[node.type]
+  if fields then
+    local result=copy(node)
+    for _,key in ipairs(fields) do result[key]=substituteSymbol(node[key],symbols,diagnostic,resolving) end
+    return result
+  end
+  if node.type=='Call' then
+    local result=copy(node)
+    for i,arg in ipairs(node.args or {}) do result.args[i]=substituteSymbol(arg,symbols,diagnostic,resolving) end
+    for key,arg in pairs(node.kwargs or {}) do result.kwargs[key]=substituteSymbol(arg,symbols,diagnostic,resolving) end
+    return result
+  end
+  return node
 end
 
 -- Upstream toBoolean: a number is true unless zero; any other value as JavaScript !!value.
@@ -112,7 +150,7 @@ end
 
 local function resolveArg(node, def, effectName, symbols, diagnostic)
   local kind = def.type == 'vec4' and 'color' or def.type
-  node = substituteSymbol(node, symbols)
+  node = substituteSymbol(node, symbols, diagnostic)
   if node and node.type == 'ArrayLiteral' then
     local result = {}
     for _, element in ipairs(node.elements or {}) do
@@ -270,16 +308,21 @@ function M.validate(ast)
     end
     local text = message or messages[code]
     if name and not text:find(name,1,true) and not text:find("'",1,true) then text = text .. ": '" .. name .. "'" end
-    local item = {code=code,message=text,severity=(code == 'S002' or code == 'S007' or code == 'S008') and 'warning' or 'error'}
+    local item = {code=code,message=text,severity=(code == 'S002' or code == 'S007' or code == 'S008' or code == 'S009') and 'warning' or 'error'}
     item.nodeId = node and node.id or values.UNDEFINED
     if node and node.loc then item.location = {line=node.loc.line,column=node.loc.column or node.loc.col} end
     if name then item.identifier = tostring(name) end
     diagnostics[#diagnostics+1] = item
   end
   local function declareVar(declaration)
-    local expr = copy(declaration.expr)
+    local expr = substituteSymbol(copy(declaration.expr), symbols, diagnostic, {declaration.name})
     if not expr or expr == NULL or expr.type == 'Ident' and (expr.name == 'null' or expr.name == 'undefined') then
       diagnostic('S004',declaration)
+    elseif expr.type=='Member' then
+      local resolved=enumValue(expr.path,symbols)
+      if type(resolved)=='number' then symbols[declaration.name]={type='Number',value=resolved}
+      elseif resolved~=nil then symbols[declaration.name]=resolved
+      else symbols[declaration.name]=expr end
     else symbols[declaration.name] = expr end
   end
   -- Top-level lets are declared in statement order: each statement sees the lets written
@@ -338,6 +381,7 @@ function M.validate(ast)
     local function add(op,args,from,builtin,original)
       local index = tempIndex; tempIndex = tempIndex + 1
       local step = {op=op,args=args,from=from,temp=index}
+      if builtin and original then keepElementId(original._id,args) end
       if builtin then step.builtin=true end
       if original and original.leadingComments then step.leadingComments=copy(original.leadingComments) end
       chain[#chain+1] = step
@@ -381,6 +425,10 @@ function M.validate(ast)
         if symbols[call.name] and symbols[call.name].type == 'Call' then
           merged = true
           local saved = symbols[call.name]
+          local hasBoundKeyword=false
+          for key in pairs(saved.kwargs or {}) do if key~='_skip' and key~='_id' then hasBoundKeyword=true end end
+          call.colorSplatLimit=hasBoundKeyword and (saved.colorSplatLimit or #(saved.args or {})) or math.huge
+          call.loc=call.loc or saved.loc
           call.name = saved.name
           local args = arraycopy(saved.args)
           for _, arg in ipairs(call.args or {}) do args[#args+1] = arg end
@@ -418,7 +466,7 @@ function M.validate(ast)
                     local order = rawget(own, '__nm_order')
                     if order then for i = #order, 1, -1 do if order[i] == oldName then table.remove(order, i) end end end
                   end
-                  diagnostic('S007', merged and {type='Call',name=call.name} or call,
+                  diagnostic('S007', call,
                     "param '" .. oldName .. "' is deprecated, use '" .. newName .. "' instead. Aliases will be removed on " .. ALIAS_EOL_DATE .. '.')
                 end
               end
@@ -430,12 +478,27 @@ function M.validate(ast)
               definitions[#definitions+1] = {name=key,type=def.type,default=def.default,min=def.min,max=def.max,
                 choices=def.choices,enum=def.enum,enumPath=def.enumPath,defaultFrom=def.defaultFrom}
             end
+            local splatValues
             for i, def in ipairs(definitions) do
               local node = kwargs[def.name] or (call.args or {})[i]
               if node then seen[def.name] = true end
-              node=substituteSymbol(node,symbols)
+              if i <= (call.colorSplatLimit or math.huge) and def.type~='color' and def.name=='r'
+                and definitions[i+1] and definitions[i+1].name=='g' and definitions[i+2] and definitions[i+2].name=='b' then
+                local positional=substituteSymbol((call.args or {})[i],symbols,diagnostic)
+                if positional and positional.type=='Color' then splatValues={r=positional.value[1],g=positional.value[2],b=positional.value[3]} end
+              end
+              node=substituteSymbol(node,symbols,diagnostic)
               local value, source
-              if def.type=='surface' and node and (node.type=='Chain' or node.type=='Call' and node.name~='read') then
+              local badChain=false
+              if node and node.type=='Chain' then
+                for _,entry in ipairs(node.chain) do if entry.type~='Call' then badChain=true end end
+              end
+              if not kwargs[def.name] and splatValues and splatValues[def.name]~=nil then
+                value=splatValues[def.name]
+              elseif badChain then
+                diagnostic('S001',node.chain[1],"Chain for argument '"..def.name.."' in "..call.name..'() may contain only effect calls')
+                value=NULL
+              elseif def.type=='surface' and node and (node.type=='Chain' or node.type=='Call' and node.name~='read') then
                 local nestedPlan=processStatement({chain=node.type=='Chain' and node.chain or {node}},true)
                 if nestedPlan then
                   for _,nestedStep in ipairs(nestedPlan.chain) do chain[#chain+1]=nestedStep end
@@ -447,12 +510,16 @@ function M.validate(ast)
               if value ~= nil then args[def.name] = value end
               if source then argSources=argSources or {}; argSources[def.name]=source end
             end
+            if kwargs._id then keepElementId(kwargs._id,args);seen._id=true end
             if kwargs._skip then
               args._skip = kwargs._skip.type == 'Boolean' and kwargs._skip.value or false
               seen._skip = true
             end
             for key,node in pairs(kwargs) do
               if not seen[key] then diagnostic('S001',node,"Unknown argument '" .. key .. "' for " .. call.name .. '()') end
+            end
+            if #(call.args or {})>#definitions then
+              diagnostic('S009',call.args[#definitions+1],"Too many positional arguments for "..call.name.."(): '"..call.name.."' takes "..#definitions)
             end
             local step = add(name,args,from,false,original)
             if call.namespace then
@@ -477,7 +544,7 @@ function M.validate(ast)
     return plan
   end
   local function evalExpr(node)
-    local expr = substituteSymbol(copy(node), symbols)
+    local expr = substituteSymbol(copy(node), symbols, diagnostic)
     if type(expr) == 'table' and expr.type == 'Chain' and expr.chain and expr.chain[1] and expr.chain[1].type == 'Call' then
       local name = resolveName(expr.chain[1])
       if name and starter(registry.getEffect(name)) then diagnostic('S006',expr.chain[1]) end

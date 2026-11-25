@@ -24433,8 +24433,7 @@
         "program": "render3d",
         "drawBuffers": 2,
         "inputs": {
-          "volumeCache": "inputTex3d",
-          "analyticalGeo": "inputGeo"
+          "volumeCache": "inputTex3d"
         },
         "outputs": {
           "color": "outputTex",
@@ -24558,8 +24557,7 @@
         "program": "renderCubemap3d",
         "drawBuffers": 2,
         "inputs": {
-          "volumeCache": "inputTex3d",
-          "analyticalGeo": "inputGeo"
+          "volumeCache": "inputTex3d"
         },
         "outputs": {
           "color": "outputTex",
@@ -24680,8 +24678,7 @@
         "program": "renderCubemapSurface",
         "drawBuffers": 2,
         "inputs": {
-          "volumeCache": "inputTex3d",
-          "analyticalGeo": "inputGeo"
+          "volumeCache": "inputTex3d"
         },
         "outputs": {
           "color": "outputTex",
@@ -25282,8 +25279,7 @@
         "program": "renderLit3d",
         "drawBuffers": 2,
         "inputs": {
-          "volumeCache": "inputTex3d",
-          "analyticalGeo": "inputGeo"
+          "volumeCache": "inputTex3d"
         },
         "outputs": {
           "color": "outputTex",

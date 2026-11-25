@@ -93,7 +93,7 @@ function M.new(graph,options,hookOverrides)
   local name=global(id)
   if name and graph.textures[id].persistent==true then persistentSurfaces[name]=true end
  end
- local self=setmetatable({texturePooling=options.texturePooling==true,graph=graph,width=options.width,height=options.height,uniforms=gatherUniforms(graph),feedbackSurfaces=feedbackSurfaces,persistentSurfaces=persistentSurfaces,external={},externalSources={},owned={},programs={},meshes={},frameIndex=0,lastTime=0,released=false,provenance={},lastPassCount=0,uploads={},inputManager=inputlib.new({needsMidiNoteGrid=(function() for _,pass in ipairs(graph.passes) do if pass.inputs and pass.inputs.midiNoteGrid then return true end end;return false end)()})},Renderer)
+ local self=setmetatable({texturePooling=options.texturePooling==true,graph=graph,width=options.width,height=options.height,uniforms=gatherUniforms(graph),feedbackSurfaces=feedbackSurfaces,persistentSurfaces=persistentSurfaces,external={},externalSources={},owned={},programs={},meshes={},frameIndex=0,lastTime=0,hasTimeReference=false,released=false,provenance={},lastPassCount=0,uploads={},inputManager=inputlib.new({needsMidiNoteGrid=(function() for _,pass in ipairs(graph.passes) do if pass.inputs and pass.inputs.midiNoteGrid then return true end end;return false end)()})},Renderer)
  local result,errors=guard('prepare',function()
   for _,pass in ipairs(graph.passes) do
    local id=pass.program..':'..(pass.drawMode or 'fullscreen')
@@ -245,7 +245,7 @@ function Renderer:render(frame)
  return guard('render',function()
   for _,entry in pairs(self.externalSources) do if entry.converted then flipInto(entry.texture,entry.converted,self) end end
   local time=frame.time or 0;local delta=frame.deltaTime
-  if delta==nil then delta=self.lastTime>0 and time-self.lastTime or 0;if delta<0 then delta=1/600 end end
+  if delta==nil then delta=self.hasTimeReference and time-self.lastTime or 0;if delta<0 then delta=delta+1 end end
   local globals=copy(self.uniforms)
   local inputUniforms,inputTextures,externalState=self.inputManager:update(frame)
   for name,spec in pairs(inputTextures) do globals[name]=self:_upload(name,spec.data,spec.width,spec.height,spec.format,false,self.uploads) end
@@ -283,7 +283,7 @@ function Renderer:render(frame)
   love.graphics.setCanvas(presented);love.graphics.setShader();love.graphics.setDepthMode();love.graphics.setMeshCullMode('none');love.graphics.setBlendMode('replace','premultiplied')
   love.graphics.draw(output,0,self.height,0,self.width/output:getWidth(),-self.height/output:getHeight())
   love.graphics.setCanvas()
-  self.lastTime=time;self.frameIndex=self.frameIndex+1;self.lastPassCount=count;self.output=presented;self.frameReadTextures=reads
+  self.lastTime=time;self.hasTimeReference=true;self.frameIndex=self.frameIndex+1;self.lastPassCount=count;self.output=presented;self.frameReadTextures=reads
   return presented
  end)
 end
@@ -415,7 +415,7 @@ function Renderer:setParameter(stepIndex,name,value)
    local retiring={}
    for _,resource in ipairs(self.resources.owned) do if not nextResources.reused[resource] then retiring[#retiring+1]=resource end end
    self.resources.owned=retiring
-   candidate.frameIndex=self.frameIndex;candidate.lastTime=self.lastTime
+   candidate.frameIndex=self.frameIndex;candidate.lastTime=self.lastTime;candidate.hasTimeReference=self.hasTimeReference
    candidate.inputManager:release();candidate.inputManager=self.inputManager;self.inputManager=nil
    self:release()
    for key in pairs(self) do self[key]=nil end
@@ -535,7 +535,7 @@ function Renderer:reset()
     else love.graphics.setCanvas(texture);love.graphics.clear(0,0,0,0) end
    end
   end
-  love.graphics.setCanvas();self.frameIndex=0;self.lastTime=0;self.output=nil;self.frameReadTextures=nil;return true
+  love.graphics.setCanvas();self.frameIndex=0;self.lastTime=0;self.hasTimeReference=false;self.output=nil;self.frameReadTextures=nil;return true
  end)
 end
 function Renderer:copyTo(destination)

@@ -145,7 +145,7 @@ test('reference export is deterministic and includes independent compiler stages
   assert.deepEqual(first, second)
   assert.equal(first.authority.revision, lock.commit)
   assert.equal(first.cases.length, manifest.cases.length)
-  assert.equal(first.normalizerVersion, 2)
+  assert.equal(first.normalizerVersion, 3)
   assert.equal(first.functionProbeStates.length, 4)
   const solid = first.cases.find(item => item.id === 'solid-red')
   assert.equal(solid.status, 'compiled')
@@ -162,6 +162,39 @@ test('reference export is deterministic and includes independent compiler stages
   assert.ok(first.sourceInventory.some(file => file.path === 'shaders/effects/synth/solid/definition.js'))
   assert.ok(first.sourceInventory.some(file => file.path === 'share/palettes.json'))
   assert.equal(first.cases.find(item => item.id === 'unknown-effect').refusal.stage, 'validate')
+  assert.equal(first.cases.find(item => item.id === 'extra-positionals').stages.validate.diagnostics[0].code, 'S009')
+  assert.equal(first.cases.find(item => item.id === 'read-chain-argument').refusal.diagnostics[0].code, 'S001')
+  const elementIds = first.cases.find(item => item.id === 'element-ids')
+  assert.equal(elementIds.status, 'compiled')
+  assert.equal(elementIds.stages.validate.plans[0].chain[0].args._id, 'source_1')
+  assert.ok(elementIds.stages.expand.passes.every(pass => !Object.hasOwn(pass.uniforms ?? {}, '_id')))
+  const indexed = first.cases.find(item => item.id === 'let-indexed-slots').stages.validate.plans[0].chain[1].args
+  assert.equal(indexed.alpha, 0.25)
+  assert.equal(indexed.mode, 1)
+  for (const [id, field, value] of [
+    ['let-midi-channel', 'channel', 5], ['let-oscillator-max', 'max', 0.25],
+    ['let-audio-band', 'band', 1], ['let-descriptor-binding-time', 'max', 0.25],
+    ['let-midi-enum-channel', 'channel', 4], ['let-audio-enum-range', 'max', 1],
+    ['let-oscillator-enum', 'oscType', 1], ['let-midi-controller', 'cc', 74],
+    ['let-midi-nrpn', 'nrpn', 12], ['let-audio-channel', 'channel', 2],
+    ['let-midi-zone', 'members', 5],
+  ]) {
+    const fixture = first.cases.find(item => item.id === id)
+    assert.equal(fixture.status, 'compiled', id)
+    assert.deepEqual(fixture.stages.validate.diagnostics, [], id)
+    assert.equal(fixture.stages.validate.plans[0].chain[0].args.speed[field], value, id)
+  }
+  const zone = first.cases.find(item => item.id === 'let-midi-zone').stages.validate.plans[0].chain[0].args.speed
+  assert.equal(zone.zone, 0)
+  assert.ok(!Object.hasOwn(zone, 'channel'))
+  for (const [id, channel, name] of [['let-midi-selector', 5, 'keyboard'], ['let-audio-selector', 2, 'microphone']]) {
+    const fixture = first.cases.find(item => item.id === id)
+    assert.equal(fixture.status, 'compiled', id)
+    const descriptor = fixture.stages.validate.plans[0].chain[0].args.speed
+    assert.equal(descriptor.channel, channel)
+    assert.equal(descriptor.name, name)
+    assert.equal(descriptor.id, 'input')
+  }
   const unicode = first.cases.find(item => item.id === 'utf16-source')
   assert.equal(unicode.status, 'compiled')
   assert.equal(unicode.stages.lex.find(token => token.type === 'SEARCH').position.start, 6)
