@@ -373,7 +373,7 @@ export async function renderReference({cases,output,referenceRoot=process.env.NM
         if(attributionActive)resetEvidence()
         p.frameIndex=(capture.frame||0)+i
         const time=(capture.time??.25)+(capture.advanceTime?i*(capture.deltaTime??1/60):0)
-        p.lastTime=time-(capture.deltaTime??0)
+        p.syncTime(time-(capture.deltaTime??0))
         p.render(time)
        }
        if(p.backend.getName().toLowerCase()!=='webgl2')throw Error('Backend changed before capture')

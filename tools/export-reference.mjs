@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { encodePortable, resolveReference } from './reference.mjs'
 
-const NORMALIZER_VERSION = 2
+const NORMALIZER_VERSION = 3
 const DEFAULT_PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const FUNCTION_PROBE_STATES = [
   { time: 0, frame: 0, deltaTime: 0, seed: 1, mouse: [0, 0], resolution: [64, 64], a: 0,
@@ -38,7 +38,14 @@ function encodeStage(value) {
   if (value instanceof Map) return { $type: 'map', entries: [...value].map(([key, item]) => [encodeStage(key), encodeStage(item)]) }
   if (value instanceof Set) return { $type: 'set', values: [...value].map(encodeStage) }
   if (value && typeof value === 'object' && (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null)) {
-    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, encodeStage(item)]))
+    // Lua nil represents an absent optional descriptor field. JavaScript ASTs
+    // and compiled descriptors carry own undefined fields; keep every defined
+    // value, including null, and preserve undefined outside these optional fields.
+    const selectorFields = value.type === 'Midi' ? new Set(['channel', 'name', 'id', 'cc', 'nrpn', 'zone', 'members'])
+      : value.type === 'Audio' ? new Set(['channel', 'name', 'id']) : null
+    return Object.fromEntries(Object.entries(value)
+      .filter(([key, item]) => !(selectorFields?.has(key) && item === undefined))
+      .map(([key, item]) => [key, encodeStage(item)]))
   }
   return encodePortable(value)
 }
@@ -150,7 +157,13 @@ async function exportCase(root, fixture, reference) {
     result.stages.allocate = encodePortable(reference.resources.allocateResources(expansion.passes))
     stage = 'graph'
     const graph = reference.compiler.compileGraph(fixture.source)
-    const { compiledAt: _compiledAt, ...semanticGraph } = graph
+    // Scene execution is outside this port's stable contract. Reject any active
+    // scene data before omitting its inert schema defaults from comparison.
+    if (graph._isScene !== false || graph.sceneIR !== null ||
+        !graph.sceneVolumeAtlasScopes || Object.keys(graph.sceneVolumeAtlasScopes).length !== 0) {
+      throw new Error('Experimental scene graph cannot be compared as a stable graph')
+    }
+    const { compiledAt: _compiledAt, _isScene, sceneIR, sceneVolumeAtlasScopes, ...semanticGraph } = graph
     result.stages.graph = encodeStage(semanticGraph)
     return result
   } catch (error) {

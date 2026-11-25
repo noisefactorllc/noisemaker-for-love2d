@@ -382,7 +382,8 @@ function M.compileAST(node,resolveEnum,diagnostic)
       end
       if hasZone and at.channel~=nil then validSelection=false end
       local validChannel=true
-      local channel=hasZone and nil or number(at.channel,'midi','channel',1,{integer=true,min=1,max=16,allowMember=false,onInvalid=function() validChannel=false end},depth)
+      local channel
+      if not hasZone then channel=number(at.channel,'midi','channel',1,{integer=true,min=1,max=16,allowMember=false,onInvalid=function() validChannel=false end},depth) end
       local validCc=true
       local cc
       if at.cc~=nil or mode==5 or mode==6 then

@@ -2,7 +2,7 @@
   "schema": 1,
   "authority": {
     "repository": "https://github.com/noisefactorllc/noisemaker",
-    "commit": "478f94eae7ebe34116dfc661ac52b373b884008b"
+    "commit": "24250c8c69610017b1413ccb9dc29a627663a790"
   },
   "sourceCount": 317,
   "programCount": 309,
@@ -2880,8 +2880,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/render/render3d/glsl/render3d.glsl",
-          "sha256": "138d3e0daa247100fe3553b2699bce3f302e77fce25d9d4fb507868d31a84a30",
-          "bytes": 14393
+          "sha256": "88708d8a300ebdf74c4fa2470ecba4e214efba5c2bc476f59ccb0019c7c9b226",
+          "bytes": 14244
         }
       }
     },
@@ -2891,8 +2891,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/render/renderCubemap3d/glsl/renderCubemap3d.glsl",
-          "sha256": "bcebff481c2d945e140870b50ce3e32e12bc3f198f75a53dc6d2450d5777db26",
-          "bytes": 14026
+          "sha256": "46046c3360de7b70ae0e48a54bc6a4b643ce1bc158625bf3239c60b6e3123f31",
+          "bytes": 14113
         }
       }
     },
@@ -2902,8 +2902,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/render/renderCubemapSurface/glsl/renderCubemapSurface.glsl",
-          "sha256": "ce467e742120b8a2ec9c34898a2fd1e2f56a85cbe5d27774bcbb1b7f204511fc",
-          "bytes": 4410
+          "sha256": "07ed8f69414d43e6bac80151965b8f200c54634f0e208b7847131cdc197ea4c1",
+          "bytes": 4749
         }
       }
     },
@@ -2924,8 +2924,8 @@
       "files": {
         "glsl": {
           "path": "noisemaker/shaders/source/render/renderLit3d/glsl/renderLit3d.glsl",
-          "sha256": "ea309e7e9c4bcb13fd96bf05f0e587bfd25557b7184872b32aabc160df49b627",
-          "bytes": 12406
+          "sha256": "8129bf08ffef71df58ac24dd5838795c173b9744765f807c36c3fd845e2f4f93",
+          "bytes": 12414
         }
       }
     },

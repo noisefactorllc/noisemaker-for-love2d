@@ -367,7 +367,7 @@ function M.expand(compilation, options)
             end
           end
           for argName,arg in pairs(step.args or {}) do
-            if not textureArg(arg) then
+            if argName~='_id' and not textureArg(arg) then
               local globalDef=effect.globals and effect.globals[argName]
               local uniform=globalDef and globalDef.uniform or argName
               if not colorControlled[uniform] and not (uniform=='volumeSize' and current.input3d and pipelineUniforms.volumeSize ~= nil) then
@@ -423,7 +423,7 @@ function M.expand(compilation, options)
               end
             end
             for argName,arg in pairs(step.args or {}) do
-              if not textureArg(arg) then
+              if argName~='_id' and not textureArg(arg) then
                 local globalDef=effect.globals and effect.globals[argName]
                 local uniform=globalDef and globalDef.uniform or argName
                 local controlled=false

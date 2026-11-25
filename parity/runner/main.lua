@@ -43,9 +43,8 @@ local function normalizeVolumes(graph,limit)
 end
 local function referenceDeltaTime(time,requested)
  local lastTime=time-requested
- if lastTime<=0 then return 0 end
  local delta=time-lastTime
- return delta<0 and 1/600 or delta
+ return delta<0 and delta+1 or delta
 end
 function love.load()
  local ok,err=xpcall(function()
