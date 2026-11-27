@@ -3,7 +3,7 @@
   "source": "noisefactorllc/noisemaker-for-rust-gpu",
   "revision": "dc742a2557e4a048574f9c6dac2c2cf815a81646",
   "dirty": false,
-  "authority": "24250c8c69610017b1413ccb9dc29a627663a790",
+  "authority": "5596e69fd6e3b9014e9df0f8674e10e70c332e11",
   "files": [
     {
       "path": "parity/programs/adjust.dsl",
@@ -10995,6 +10995,11 @@
       "authority": "classicNoisedeck/coalesce/parity-case.json"
     },
     {
+      "path": "parity/upstream/classicNoisedeck_colorLab.json",
+      "sha256": "d4f9c005bcb2824c11bd86c39fe5fb6011d21289feba1ef41e2b38e1cd361786",
+      "authority": "classicNoisedeck/colorLab/parity-case.json"
+    },
+    {
       "path": "parity/upstream/classicNoisedeck_composite.json",
       "sha256": "33680cb0794abaad4bcc6406a48c9ca4121ca52f8d1a008f28b9c0077df83f83",
       "authority": "classicNoisedeck/composite/parity-case.json"
@@ -11105,14 +11110,14 @@
       "authority": "filter/convolutionFeedback/parity-case.json"
     },
     {
-      "path": "parity/upstream/filter_craquelure.json",
-      "sha256": "505aa35674b8786ce32b08221b4299f15c613663783c1005873da5762abb18c2",
-      "authority": "filter/craquelure/parity-case.json"
-    },
-    {
       "path": "parity/upstream/filter_corrupt.json",
       "sha256": "4e16af2b760930f5858f712ac0ae1e5e528c031b9eef9011da4342d501c87a43",
       "authority": "filter/corrupt/parity-case.json"
+    },
+    {
+      "path": "parity/upstream/filter_craquelure.json",
+      "sha256": "505aa35674b8786ce32b08221b4299f15c613663783c1005873da5762abb18c2",
+      "authority": "filter/craquelure/parity-case.json"
     },
     {
       "path": "parity/upstream/filter_crt.json",
@@ -11355,6 +11360,11 @@
       "authority": "filter/strayHair/parity-case.json"
     },
     {
+      "path": "parity/upstream/filter_tetraColorArray.json",
+      "sha256": "48a396d4c821841602389d9d5a7590cab818fcf8c6c922242d2717c2e9d41285",
+      "authority": "filter/tetraColorArray/parity-case.json"
+    },
+    {
       "path": "parity/upstream/filter_text.json",
       "sha256": "67678b1bb532e3102bb4e169957a83dc577c140404edf16f8815a269041cd158",
       "authority": "filter/text/parity-case.json"
@@ -11445,6 +11455,11 @@
       "authority": "mixer/blendMode/parity-case.json"
     },
     {
+      "path": "parity/upstream/mixer_cellSplit.json",
+      "sha256": "97732db9c0ef3740f3fd9b1278d72a751101879aa25c1e5b948a935d481b0a80",
+      "authority": "mixer/cellSplit/parity-case.json"
+    },
+    {
       "path": "parity/upstream/mixer_centerMask.json",
       "sha256": "1c4941eeff85af64368f0e04dc0d6ee9fb1c776174ca3a185050fbbddc66cec6",
       "authority": "mixer/centerMask/parity-case.json"
@@ -11530,6 +11545,11 @@
       "authority": "points/physical/parity-case.json"
     },
     {
+      "path": "parity/upstream/render_meshLoader.json",
+      "sha256": "a2b613dfe2b76bbbe63ea0590b4c27e708f789c4995d80983ab4832fac68800f",
+      "authority": "render/meshLoader/parity-case.json"
+    },
+    {
       "path": "parity/upstream/render_meshRender.json",
       "sha256": "0e9336facb94c72d7625bd6d1e8e2773f57db0ea7f67202f90a605e7c73e3bf6",
       "authority": "render/meshRender/parity-case.json"
@@ -11555,6 +11575,16 @@
       "authority": "render/render3d/parity-case.json"
     },
     {
+      "path": "parity/upstream/render_renderCubemap3d.json",
+      "sha256": "767c4fbdb3ba0b326014028606d264790972f11e43e7f03afbf1197efbadab00",
+      "authority": "render/renderCubemap3d/parity-case.json"
+    },
+    {
+      "path": "parity/upstream/render_renderCubemapSurface.json",
+      "sha256": "244e8bfe9de7e538efd1d0a8a2bbae62ac8ed929fb27f3f59e67815fce06ce71",
+      "authority": "render/renderCubemapSurface/parity-case.json"
+    },
+    {
       "path": "parity/upstream/render_renderLandscape3d.json",
       "sha256": "52b5c5b1c922e9bc1479c4396a9c51b76a6caffb337473988dc2e1eaad1c0257",
       "authority": "render/renderLandscape3d/parity-case.json"
@@ -11578,6 +11608,16 @@
       "path": "parity/upstream/synth_curl.json",
       "sha256": "e88cd708ba601a0b836f340ab8228f6b2c32136d21fc727d55083b6d86e9bf2c",
       "authority": "synth/curl/parity-case.json"
+    },
+    {
+      "path": "parity/upstream/synth_gabor.json",
+      "sha256": "146440ed3e1fe21ac3346ab90858c3d404b48150f735a738a0f53d569f2d9d71",
+      "authority": "synth/gabor/parity-case.json"
+    },
+    {
+      "path": "parity/upstream/synth_gradient.json",
+      "sha256": "4d9c517992dcb4bb659e923d34c13e5465f4ea938bd62b1b88ed7e20516d9e6d",
+      "authority": "synth/gradient/parity-case.json"
     },
     {
       "path": "parity/upstream/synth_julia.json",
@@ -11630,6 +11670,11 @@
       "authority": "synth/pattern/parity-case.json"
     },
     {
+      "path": "parity/upstream/synth_perlin.json",
+      "sha256": "1610fa357de2b42169a390d50e4500349931f2acf380b0d2fa9083bfc7d9bf4a",
+      "authority": "synth/perlin/parity-case.json"
+    },
+    {
       "path": "parity/upstream/synth_polygon.json",
       "sha256": "89397e4d115db67b9720f159be7faf3ba038a74d086edc6bb917b82f903b4f95",
       "authority": "synth/polygon/parity-case.json"
@@ -11643,6 +11688,11 @@
       "path": "parity/upstream/synth_remap.json",
       "sha256": "d2a332f4d99f249f5c058a29679cbedf46cb87556c6b69075acfe0bccdd33cbf",
       "authority": "synth/remap/parity-case.json"
+    },
+    {
+      "path": "parity/upstream/synth_roll.json",
+      "sha256": "8e78b94f782d839fa8ff417977e229ddfd8159ab82375a6a09bf8c04445aeaca",
+      "authority": "synth/roll/parity-case.json"
     },
     {
       "path": "parity/upstream/synth_scope.json",
@@ -11703,46 +11753,6 @@
       "path": "parity/upstream/synth3d_shape3d.json",
       "sha256": "3a83fb063fa127681a218056439a6e88a7b0bb177cdb2306d70492c88d105bfa",
       "authority": "synth3d/shape3d/parity-case.json"
-    },
-    {
-      "path": "parity/upstream/classicNoisedeck_colorLab.json",
-      "sha256": "d4f9c005bcb2824c11bd86c39fe5fb6011d21289feba1ef41e2b38e1cd361786",
-      "authority": "classicNoisedeck/colorLab/parity-case.json"
-    },
-    {
-      "path": "parity/upstream/filter_tetraColorArray.json",
-      "sha256": "48a396d4c821841602389d9d5a7590cab818fcf8c6c922242d2717c2e9d41285",
-      "authority": "filter/tetraColorArray/parity-case.json"
-    },
-    {
-      "path": "parity/upstream/mixer_cellSplit.json",
-      "sha256": "97732db9c0ef3740f3fd9b1278d72a751101879aa25c1e5b948a935d481b0a80",
-      "authority": "mixer/cellSplit/parity-case.json"
-    },
-    {
-      "path": "parity/upstream/render_renderCubemap3d.json",
-      "sha256": "767c4fbdb3ba0b326014028606d264790972f11e43e7f03afbf1197efbadab00",
-      "authority": "render/renderCubemap3d/parity-case.json"
-    },
-    {
-      "path": "parity/upstream/render_renderCubemapSurface.json",
-      "sha256": "244e8bfe9de7e538efd1d0a8a2bbae62ac8ed929fb27f3f59e67815fce06ce71",
-      "authority": "render/renderCubemapSurface/parity-case.json"
-    },
-    {
-      "path": "parity/upstream/synth_gabor.json",
-      "sha256": "146440ed3e1fe21ac3346ab90858c3d404b48150f735a738a0f53d569f2d9d71",
-      "authority": "synth/gabor/parity-case.json"
-    },
-    {
-      "path": "parity/upstream/synth_gradient.json",
-      "sha256": "4d9c517992dcb4bb659e923d34c13e5465f4ea938bd62b1b88ed7e20516d9e6d",
-      "authority": "synth/gradient/parity-case.json"
-    },
-    {
-      "path": "parity/upstream/synth_perlin.json",
-      "sha256": "1610fa357de2b42169a390d50e4500349931f2acf380b0d2fa9083bfc7d9bf4a",
-      "authority": "synth/perlin/parity-case.json"
     }
   ]
 }

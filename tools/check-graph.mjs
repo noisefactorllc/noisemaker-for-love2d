@@ -11,6 +11,39 @@ const projectRoot = resolve(import.meta.dirname, '..')
 const coverageIndex = process.argv.indexOf('--coverage')
 const variantIndex = process.argv.indexOf('--variants')
 let manifest
+if (process.argv.includes('--storage')) {
+  const fill='out vec4 outputBuffer;void main(){outputBuffer=vec4(1.0,.5,.25,1.0);}'
+  const copy='uniform sampler2D sourceTex;out vec4 fragColor;void main(){fragColor=texelFetch(sourceTex,ivec2(gl_FragCoord.xy),0);}'
+  const base={name:'storageProbe',namespace:'user',func:'storageProbe',globals:{},
+    passes:[{name:'fill',type:'compute',program:'fill',storageTextures:{outputBuffer:'outputTex'}}],shaders:{fill:{glsl:fill}}}
+  const filter={name:'storageCopy',namespace:'user',func:'storageCopy',globals:{},
+    passes:[{name:'copy',program:'copy',inputs:{sourceTex:'inputTex'},outputs:{fragColor:'outputTex'}}],shaders:{copy:{glsl:copy}}}
+  const cases=[]
+  const add=(id,change,chain='storageProbe().write(o0)',render='render(o0)')=>{
+    const definition=structuredClone(base);change(definition)
+    cases.push({id,source:`search user\n${chain}\n${render}`,effects:[],definitions:[definition,filter]})
+  }
+  add('storage-direct',()=>{})
+  add('storage-continuation',()=>{},'storageProbe().storageCopy().write(o0)')
+  add('storage-inline-write',()=>{},'storageProbe().write(o0).storageCopy().write(o1)','render(o1)')
+  add('storage-inferred-surface',()=>{},'storageProbe().write(o0)','')
+  add('storage-empty-render-outputs',d=>d.passes[0].outputs={})
+  add('storage-and-render-outputs',d=>d.passes[0].outputs={fragColor:'outputTex'})
+  for (const [label,usage] of [['default',undefined],['authored',['sample','copyDst']],['duplicate',['sample','sample']],['empty',[]]]) {
+    add(`storage-local-${label}`,d=>{
+      d.textures={work:{width:8,height:4,format:'rgba16f',...(usage===undefined?{}:{usage})}}
+      d.passes[0].storageTextures.outputBuffer='work';d.outputTex='work'
+    })
+  }
+  add('storage-global',d=>{d.passes[0].storageTextures.outputBuffer='global_work';d.outputTex='global_work'})
+  add('storage-global-repeat',d=>{d.passes[0].storageTextures.outputBuffer='global_work';d.outputTex='global_work'},
+    'storageProbe().storageProbe().write(o0)')
+  add('storage-empty',d=>{d.passes[0].storageTextures={};d.passes[0].outputs={fragColor:'outputTex'}})
+  for (const [label,value] of [['false',false],['null',null],['zero',0],['string','']]) {
+    add(`storage-falsy-${label}`,d=>{d.passes[0].storageTextures=value;d.passes[0].outputs={fragColor:'outputTex'}})
+  }
+  manifest={version:1,cases}
+}
 if (coverageIndex >= 0 || variantIndex >= 0) {
   const supplied = process.argv[(variantIndex >= 0 ? variantIndex : coverageIndex) + 1]
   const limit = supplied == null ? Infinity : Number(supplied)
@@ -102,7 +135,8 @@ function firstDiff(expected, actual, path = '', probeValue = false) {
 try {
   const input = join(directory, 'input.json')
   const output = join(directory, 'output.json')
-  writeFileSync(input, JSON.stringify(reference.cases.map(({ source }) => ({ source, probeStates: reference.functionProbeStates }))))
+  writeFileSync(input, JSON.stringify(reference.cases.map(({ source },index) => ({ source,
+    definitions:manifest?.cases[index].definitions,probeStates: reference.functionProbeStates }))))
   execFileSync(process.env.LOVE_BIN ?? 'love', ['tests/compiler'], {
     cwd: projectRoot, env: { ...process.env, NM_GRAPH_INPUT: input, NM_GRAPH_OUTPUT: output }, stdio: 'inherit'
   })

@@ -61,6 +61,21 @@ local outputPath=os.getenv('NM_GRAPH_OUTPUT')
 assert(inputPath and outputPath,'NM_GRAPH_INPUT and NM_GRAPH_OUTPUT required')
 local f=assert(io.open(inputPath,'rb')); local input=json.decode(f:read('*a')); f:close()
 local output=values.array()
-for _,item in ipairs(input) do output[#output+1]=run(item.source,item.probeStates) end
+local function catalogValue(value)
+  if type(value)~='table' or value==values.NULL then return value end
+  local registry=require('noisemaker.catalog.registry')
+  local result=registry.orderedObject()
+  for _,key in ipairs(values.keys(value)) do registry.set(result,key,catalogValue(value[key])) end
+  return result
+end
+for _,item in ipairs(input) do
+  for _,fixture in ipairs(item.definitions or {}) do
+    local definition=catalogValue(fixture)
+    local effects=require('noisemaker.catalog.registry').getAllEffects()
+    effects[definition.namespace..'.'..definition.func]=definition
+    effects[definition.namespace..'/'..definition.func]=definition
+  end
+  output[#output+1]=run(item.source,item.probeStates)
+end
 f=assert(io.open(outputPath,'wb')); f:write(json.encode(output)); f:close()
 print('graph differential runner: '..#output..' cases')

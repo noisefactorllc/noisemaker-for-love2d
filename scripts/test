@@ -57,6 +57,7 @@ for tool in check-frontend check-portable check-automation check-inputs check-ho
   LOVE_BIN="$LOVE" node "tools/$tool.mjs"
 done
 LOVE_BIN="$LOVE" node tools/check-graph.mjs
+LOVE_BIN="$LOVE" node tools/check-graph.mjs --storage
 LOVE_BIN="$LOVE" node tools/check-graph.mjs --upstream
 LOVE_BIN="$LOVE" node tools/check-graph.mjs --corpus
 LOVE_BIN="$LOVE" node tools/check-graph.mjs --coverage
@@ -65,3 +66,4 @@ LOVE_BIN="$LOVE" node tools/check-graph.mjs --boundary
 LOVE_BIN="$LOVE" node tools/check-capture.mjs
 LOVE_BIN="$LOVE" node tools/check-array-index.mjs
 LOVE_BIN="$LOVE" node tools/check-hooks-raster.mjs
+LOVE_BIN="$LOVE" node tools/check-authored-midi.mjs

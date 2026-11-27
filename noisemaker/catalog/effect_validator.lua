@@ -20,7 +20,7 @@ local dimKeys=set{'param','power','multiply','default','paramDefault','screenDiv
 local formats=set{'rgba16f','rgba16float','rgba8','rgba8unorm','rgba32f','rgba32float','r8','r8unorm','r16f','r16float','r32f','r32float'}
 local drawModes=set{'points','triangles','billboards'}
 local passTypes=set{'render','compute'}
-local topKeys=set{'name','namespace','func','description','tags','globals','passes','textures','textures3d','shaders','uniformLayout','uniformLayouts','paramAliases','openCategories','defaultProgram','hidden','deprecatedBy','externalTexture','externalMesh','builtinMeshes','outputTex3d','outputGeo','state','uniforms','onInit','onUpdate','onDestroy','asyncInit'}
+local topKeys=set{'name','namespace','func','description','tags','globals','passes','textures','textures3d','shaders','uniformLayout','uniformLayouts','paramAliases','openCategories','defaultProgram','hidden','deprecatedBy','externalTexture','externalMesh','builtinMeshes','outputTex','outputTex3d','outputGeo','outputXyz','outputVel','outputRgba','state','uniforms','onInit','onUpdate','onDestroy','asyncInit'}
 local pipelineInputs=set{'inputTex','inputTex3d','inputGeo','inputXyz','inputVel','inputRgba','noise','midiNoteGrid','feedback','selfTex','outputTex','none'}
 local pipelineOutputs=set{'outputTex','outputTex3d','outputXyz','outputVel','outputRgba'}
 local dimensionWords=set{'screen','auto','input','resolution'}
@@ -49,6 +49,15 @@ local function checkKeys(value,allowed,errors,label)
 end
 local function nonempty(value)
   return type(value)=='string' and #value>0
+end
+local function textureName(value)
+  if type(value)~='string' then return false end
+  for _,unit in ipairs(values.utf16(value)) do
+    if not (unit>=9 and unit<=13 or unit==32 or unit==160 or unit==5760 or
+      unit>=8192 and unit<=8202 or unit==8232 or unit==8233 or unit==8239 or
+      unit==8287 or unit==12288 or unit==65279) then return true end
+  end
+  return false
 end
 
 local function stdEnum(path)
@@ -554,7 +563,7 @@ function M.validateEffectDefinition(def)
     end
   end
   if not nonempty(def.name) then add(errors,'Missing or invalid "name" property') end
-  for _,field in ipairs({'namespace','func','deprecatedBy','externalTexture','externalMesh','outputTex3d','outputGeo'}) do
+  for _,field in ipairs({'namespace','func','deprecatedBy','externalTexture','externalMesh'}) do
     if def[field]~=nil and not nonempty(def[field]) then add(errors,'"'..field..'" must be a non-empty string') end
   end
   if def.description~=nil and type(def.description)~='string' then add(errors,'"description" must be a string') end
@@ -579,6 +588,9 @@ function M.validateEffectDefinition(def)
     else for _,name in ipairs(keys(def.builtinMeshes)) do
       if not nonempty(def.builtinMeshes[name]) then add(errors,"builtinMeshes['"..name.."'] must be a non-empty string") end
     end end
+  end
+  for _,field in ipairs({'outputTex','outputTex3d','outputGeo','outputXyz','outputVel','outputRgba'}) do
+    if def[field]~=nil and not textureName(def[field]) then add(errors,'"'..field..'" must be a non-empty string') end
   end
   for _,hook in ipairs({'onInit','onUpdate','onDestroy','asyncInit'}) do
     if def[hook]~=nil and type(def[hook])~='function' then add(errors,'"'..hook..'" must be a function') end

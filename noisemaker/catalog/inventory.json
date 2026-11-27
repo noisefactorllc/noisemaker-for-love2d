@@ -2,7 +2,7 @@
   "schema": 1,
   "authority": {
     "repository": "https://github.com/noisefactorllc/noisemaker",
-    "commit": "24250c8c69610017b1413ccb9dc29a627663a790"
+    "commit": "5596e69fd6e3b9014e9df0f8674e10e70c332e11"
   },
   "counts": {
     "definitions": 210,
@@ -3540,7 +3540,7 @@
     "filter3d/flow3d": {
       "definition": {
         "path": "shaders/effects/filter3d/flow3d/definition.js",
-        "sha256": "6b47b65aa97bca7d383675630cb8f7a56c36cae473e11ac0b4e8810b449bf71a",
+        "sha256": "300e4d17ec8a3c0962c2619d8b246890a73eb299fc497cbe5cee7bbc69b70f6a",
         "methods": []
       },
       "sources": [
@@ -3571,7 +3571,7 @@
     "filter3d/palette3d": {
       "definition": {
         "path": "shaders/effects/filter3d/palette3d/definition.js",
-        "sha256": "070b16496ef076823d52268bb662e44b2a28529251d3bc47a0e8bb94712a58f9",
+        "sha256": "ddb490265034ecd5b5ed80e3196201e1d37d96ecf85851d798fb89621275cb2c",
         "methods": []
       },
       "sources": [

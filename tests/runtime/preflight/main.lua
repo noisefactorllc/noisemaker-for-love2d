@@ -30,6 +30,16 @@ local function run()
   assert(math.abs(r-.25)<.01 and math.abs(gr-.5)<.01 and math.abs(b-.75)<.01 and math.abs(a-1)<.01)
   data:release();instance:release()
 
+  storage.passes[1].outputs={}
+  instance,diags=renderer.new(storage,{width=8,height=8})
+  assert(instance,diags and diags[1].message)
+  output,errors=instance:render{}
+  assert(output,errors and errors[1].message)
+  data=output:newImageData()
+  r,gr,b,a=data:getPixel(0,0)
+  assert(math.abs(r-.25)<.01 and math.abs(gr-.5)<.01 and math.abs(b-.75)<.01 and math.abs(a-1)<.01)
+  data:release();instance:release()
+
   local max=g.getSystemLimits().multicanvas
   local outputs,textures={},{}
   for i=1,max+1 do

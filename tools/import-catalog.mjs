@@ -113,7 +113,7 @@ function lifecycleMethods(instance) {
 export function convertComputeConvention(pass) {
   if (!pass.storageTextures && !pass.outputs?.outputBuffer) return null
   let outputs = pass.storageTextures ? { ...pass.storageTextures } : {}
-  if (pass.outputs) outputs = Object.fromEntries(Object.entries(pass.outputs).map(([key, value]) => [key === 'outputBuffer' ? 'color' : key, value]))
+  if (pass.outputs && Object.keys(pass.outputs).length) outputs = Object.fromEntries(Object.entries(pass.outputs).map(([key, value]) => [key === 'outputBuffer' ? 'color' : key, value]))
   if (Object.keys(outputs).length === 0) outputs = { color: 'outputTex' }
   return { type: 'render', originalType: 'compute', outputs }
 }

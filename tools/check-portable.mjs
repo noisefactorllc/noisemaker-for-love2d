@@ -16,6 +16,12 @@ const cases=[{name:'valid',def:base},{name:'null',def:null},{name:'array',def:[]
 function variant(name,change){const def=structuredClone(base); change(def); cases.push({name,def})}
 variant('name',d=>delete d.name)
 variant('unknown-top',d=>d.surprise=true)
+for (const field of ['outputTex','outputTex3d','outputGeo','outputXyz','outputVel','outputRgba']) {
+  for (const [label,value] of [['name','state'],['empty',''],['space',' \t\r\n'],['nbsp','\u00a0'],['bom','\ufeff'],
+    ['unicode-space','\u2000\u2007\u2028\u2029\u202f\u205f\u3000'],['nel','\u0085'],['zero',0],['false',false],['null',null],['object',{}],['array',[]]]) {
+    variant(`${field}-${label}`,d=>d[field]=value)
+  }
+}
 variant('missing-passes',d=>d.passes=[])
 variant('invalid-tag',d=>d.tags=['bogus'])
 variant('invalid-globals',d=>d.globals='bad')

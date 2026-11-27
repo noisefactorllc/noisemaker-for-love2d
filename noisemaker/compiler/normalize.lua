@@ -1,4 +1,6 @@
 local M = {}
+local values = require('noisemaker.compiler.values')
+local registry = require('noisemaker.catalog.registry')
 
 local digits = '0123456789abcdefghijklmnopqrstuvwxyz'
 local function base36(value)
@@ -56,7 +58,7 @@ function M.extractTextureSpecs(passes, options, effectSpecs)
   local textures={}
   for id, effect in pairs(effectSpecs or {}) do
     local spec={width=effect.width or 'screen',height=effect.height or 'screen',format=effect.format or 'rgba16f',
-      usage={'render','sample','copySrc','copyDst'}}
+      usage=values.truthy(effect.usage) and effect.usage or {'render','sample','copySrc','copyDst'}}
     if effect.is3D then
       spec.depth=effect.depth or effect.width or 64
       spec.is3D=true
@@ -72,6 +74,23 @@ function M.extractTextureSpecs(passes, options, effectSpecs)
     for _,id in pairs(pass.outputs or {}) do
       if type(id)=='string' and id:sub(1,7)~='global_' and not textures[id] then
         textures[id]={width='screen',height='screen',format='rgba16f',usage={'render','sample','copySrc','copyDst'}}
+      end
+    end
+  end
+  for _,pass in ipairs(passes or {}) do
+    if values.truthy(pass.storageTextures) then
+      for _,binding in ipairs(registry.keys(pass.storageTextures)) do
+        local id=pass.storageTextures[binding]
+        if type(id)=='string' and id:sub(1,7)~='global_' then
+          local spec=textures[id]
+          if spec then
+            local usage,found={},false
+            for _,name in ipairs(spec.usage) do usage[#usage+1]=name;if name=='storage' then found=true end end
+            if not found then usage[#usage+1]='storage';spec.usage=usage end
+          else
+            textures[id]={width='screen',height='screen',format='rgba16f',usage={'render','sample','storage','copySrc','copyDst'}}
+          end
+        end
       end
     end
   end

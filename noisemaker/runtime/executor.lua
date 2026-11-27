@@ -20,7 +20,7 @@ local function outputsFor(pass)
   if pass.storageTextures then
     for _, key in ipairs(keys(pass.storageTextures)) do values.set(out, key, pass.storageTextures[key]) end
   end
-  if pass.outputs then
+  if pass.outputs and #keys(pass.outputs)>0 then
     if pass.storageTextures or pass.outputs.outputBuffer then out = values.object() end
     for _, key in ipairs(keys(pass.outputs)) do
       values.set(out, key == 'outputBuffer' and 'color' or key, pass.outputs[key])
@@ -142,13 +142,12 @@ local function resolveCount(renderer, pass, uniforms, globals, reads, attachment
   end
   if mode == 'triangles' and pass.countUniform then
     local value = uniforms[pass.countUniform]
-    if not actual(value) then value = globals[pass.countUniform] end
+    if values.isUndefined(value) then value = globals[pass.countUniform] end
     if type(value) == 'number' and value > 0 then count = value end
-  elseif type(count) == 'string' and
-    ((mode == 'triangles' and (count == 'auto' or count == 'input')) or
-     (mode ~= 'triangles' and (count == 'auto' or count == 'screen' or count == 'input'))) then
+  end
+  if count == 'auto' or count == 'screen' or count == 'input' then
     local texture
-    if count == 'input' then
+    if mode == 'triangles' or count == 'input' then
       local inputs = pass.inputs or {}
       local id
       if mode == 'triangles' then id = inputs.meshPositions or inputs.inputTex
@@ -236,7 +235,8 @@ local function selectBlend(g, blend)
   if blend == true then g.setBlendMode('add', 'premultiplied'); return end
   if type(blend) ~= 'table' or #blend < 2 then fail('ERR_BLEND_FACTOR', 'Invalid blend descriptor') end
   local src, dst = tostring(blend[1]):upper(), tostring(blend[2]):upper()
-  if src == 'ONE' and dst == 'ONE_MINUS_SRC_ALPHA' then g.setBlendMode('alpha', 'premultiplied')
+  if src == 'ONE' and dst == 'ZERO' then g.setBlendMode('replace', 'premultiplied')
+  elseif src == 'ONE' and dst == 'ONE_MINUS_SRC_ALPHA' then g.setBlendMode('alpha', 'premultiplied')
   elseif src == 'ONE' and dst == 'ONE' then g.setBlendMode('add', 'premultiplied')
   elseif src == 'SRC_ALPHA' and dst == 'ONE_MINUS_SRC_ALPHA' then g.setBlendMode('alpha', 'alphamultiply')
   else fail('ERR_BLEND_FACTOR', 'Blend factors require explicit lowering: '..src..', '..dst) end

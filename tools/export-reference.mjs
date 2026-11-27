@@ -131,6 +131,14 @@ async function exportCase(root, fixture, reference) {
   let stage = 'effect-loading'
   try {
     await loadEffects(root, fixture.effects, reference)
+    if (fixture.definitions) {
+      const {Effect}=await loadModule(root,'shaders/src/runtime/effect.js')
+      for (const definition of fixture.definitions) {
+        const effect={namespace:definition.namespace,name:definition.func,instance:new Effect(structuredClone(definition))}
+        reference.canvas.CanvasRenderer.prototype.registerEffectWithRuntime.call({},effect)
+        reference.canvas.CanvasRenderer.prototype.registerStarterOpForEffect.call({},effect)
+      }
+    }
     stage = 'lex'
     const tokens = reference.lang.lex(fixture.source)
     result.stages.lex = encodePortable(tokens.map(token => ({ ...token, position: token.position ?? null })))

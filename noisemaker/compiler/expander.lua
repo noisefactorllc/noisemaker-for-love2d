@@ -399,9 +399,10 @@ function M.expand(compilation, options)
               inputs=registry.orderedObject(),outputs=registry.orderedObject(),uniforms={},
               effectKey=effectName,effectFunc=effect.func or effectName,effectNamespace=effect.namespace or NULL,nodeId=nodeId,stepIndex=step.temp}
             for _, field in ipairs({'entryPoint','drawMode','drawBuffers','count','countUniform','repeat','blend','conditions',
-              'workgroups','storageBuffers','storageTextures','name','type','clear','viewport','samplerTypes'}) do
+              'workgroups','storageBuffers','name','type','clear','viewport','samplerTypes'}) do
               if passDef[field] ~= nil then pass[field]=clone(passDef[field]) else pass[field]=UNDEFINED end
             end
+            pass.storageTextures=values.truthy(passDef.storageTextures) and registry.orderedObject() or UNDEFINED
             if current.input3d and pipelineUniforms.volumeSize ~= nil then pass.inheritsVolumeSize=true end
             pass.uniforms=clone(pipelineUniforms)
             if effect.globals then
@@ -493,6 +494,41 @@ function M.expand(compilation, options)
               elseif texRef=='outputTex' then bound=nodeId .. '_out'
               else bound=nodeId .. '_' .. texRef end
               if bound ~= nil then registry.set(pass.inputs,uniform,bound) end
+            end
+            if values.truthy(passDef.storageTextures) then
+              for _,binding in ipairs(ordered(passDef.storageTextures)) do
+                local texRef=passDef.storageTextures[binding]
+                local id
+                if texRef=='outputTex' then
+                  local lastPass=passNumber==#effect.passes
+                  local nextStep=plan.chain[stepIndex+1]
+                  local inline=lastPass and nextStep and nextStep.builtin and nextStep.op=='_write' and nextStep.args and nextStep.args.tex
+                  if inline and inline.name~='none' then
+                    id=(inline.kind=='feedback' and 'feedback_' or 'global_')..inline.name
+                    lastWrittenSurface=inline.name
+                  elseif stepIndex==#plan.chain and lastPass and values.truthy(plan.write) then
+                    local name=type(plan.write)=='table' and plan.write.name or plan.write
+                    id=(type(plan.write)=='table' and plan.write.kind=='feedback' and 'feedback_' or 'global_')..name
+                    lastWrittenSurface=name
+                  else id=nodeId..'_out' end
+                  textureMap[nodeId..'_out']=id
+                elseif type(texRef)~='string' then
+                  error(texRef==NULL and "Cannot read properties of null (reading 'startsWith')" or 'texRef.startsWith is not a function',0)
+                elseif starts(texRef,'global_') then id=scopeChain(texRef)
+                else
+                  id=nodeId..'_'..texRef
+                  local spec=textureSpecs[id]
+                  if spec then
+                    local usage=values.truthy(spec.usage) and spec.usage or {'render','sample','copySrc','copyDst'}
+                    local unique,seen={},{}
+                    for _,name in ipairs(usage) do if not seen[name] then unique[#unique+1]=name;seen[name]=true end end
+                    if not seen.storage then unique[#unique+1]='storage' end
+                    spec.usage=unique
+                  end
+                end
+                registry.set(pass.storageTextures,binding,id)
+              end
+              if not values.truthy(passDef.outputs) then pass.outputs=nil end
             end
             for _, attachment in ipairs(ordered(passDef.outputs)) do
               local texRef=passDef.outputs[attachment]

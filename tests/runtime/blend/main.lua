@@ -75,6 +75,8 @@ local function runAllocationFailure()
  assert(not stillLive,'first scratch must be released with renderer')
 end
 local function run()
+ runCase({'ONE','ZERO'},{.5,.1,.2,.4},'ONE ZERO')
+ runCase({'one','zero'},{.5,.1,.2,.4},'one zero')
  runCase(true,{.7,.4,.6,.65},'ONE ONE')
  runCase({'ONE','ONE'},{.7,.4,.6,.65},'ONE ONE array')
  runCase({'ONE','ONE_MINUS_SRC_ALPHA'},{.62,.28,.44,.55},'ONE ONE_MINUS_SRC_ALPHA')

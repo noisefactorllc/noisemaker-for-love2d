@@ -35,6 +35,22 @@ void main(){
 }]]
  local tri={passes={{id='tri',program='tri',drawMode='triangles',count=6,inputs={},outputs={color='global_o0'},uniforms={}}},programs={tri={vertex=triangleVertex,fragment=pixel}},textures={},allocations={},renderSurface='o0'}
  check(tri,17,9,{{8,4,{1,0,0,.6}}},'depth triangles')
+ local countedVertex=[[out vec4 vColor;
+void main(){
+ int triangle=gl_VertexID/3;int corner=gl_VertexID%3;
+ vec2 p=corner==0?vec2(-.4,-.75):corner==1?vec2(.4,-.75):vec2(0,.75);
+ p.x+=triangle==0?-.5:.5;gl_Position=vec4(p,0,1);
+ vColor=triangle==0?vec4(1,0,0,.6):vec4(0,1,0,.8);
+}]]
+ for _,mode in ipairs({'auto','screen','input'}) do
+  for _,hasMesh in ipairs({true,false}) do
+   local derived={passes={{id='derived',program='derived',drawMode='triangles',count=mode,countUniform='override',
+    inputs=hasMesh and {meshPositions='mesh'} or {},outputs={color='global_o0'},uniforms={override=0}}},
+    programs={derived={vertex=countedVertex,fragment=pixel}},
+    textures=hasMesh and {mesh={width=6,height=1,format='rgba16f'}} or {},allocations={},renderSurface='o0'}
+   check(derived,17,9,{{4,4,{1,0,0,.6}},{12,4,hasMesh and {0,1,0,.8} or {0,0,0,0}}},'derived triangles '..mode..' '..tostring(hasMesh))
+  end
+ end
  local state=love.graphics.newCanvas(2,1)
  local fallback=love.graphics.newCanvas(1,1)
  local attachment=love.graphics.newCanvas(5,3)
@@ -45,6 +61,16 @@ void main(){
  assert(count(fake,{count='input',inputs={inputTex='state'}},{},{},{},attachment,'billboards')==15,'Billboards without xyzTex use output dimensions')
  assert(count(fake,{count='input',inputs={meshPositions='missing'}},{},{},{},attachment,'triangles')==3,'Missing triangle input must fall back to one triangle')
  assert(count(fake,{count=2,countUniform='override',inputs={}},{override=7},{},{},attachment,'points')==2,'countUniform applies to triangles only')
+ for _,mode in ipairs({'auto','screen','input'}) do
+  local pass={count=mode,countUniform='override',inputs={meshPositions='state'}}
+  for _,value in ipairs({0,-1,'7',false,require('noisemaker.compiler.values').NULL}) do
+   assert(count(fake,pass,{override=value},{override=9},{},attachment,'triangles')==2,'Unusable triangle countUniform must derive mesh dimensions: '..mode)
+  end
+  assert(count(fake,pass,{},{},{},attachment,'triangles')==2,'Missing triangle countUniform must derive mesh dimensions: '..mode)
+  assert(count(fake,pass,{},{override=9},{},attachment,'triangles')==9,'Undefined triangle countUniform must read the global value')
+  assert(count(fake,pass,{override=6},{override=9},{},attachment,'triangles')==6,'Positive triangle countUniform must take priority')
+  assert(count(fake,{count=mode,inputs={meshPositions='missing'}},{},{},{},attachment,'triangles')==3,'Missing mesh must fall back to one triangle: '..mode)
+ end
  assert(not pcall(count,fake,{count=math.huge},{},{},{},attachment,'points'),'Infinite draw count must fail before allocation')
  assert(not pcall(count,fake,{count=3,countUniform='override'},{override=math.huge},{},{},attachment,'triangles'),'Infinite countUniform must fail before allocation')
  state:release();fallback:release();attachment:release()

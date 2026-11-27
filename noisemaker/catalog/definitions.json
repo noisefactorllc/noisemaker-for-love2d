@@ -17491,14 +17491,12 @@
         "viewport": {
           "width": {
             "param": "volumeSize",
-            "default": 32,
-            "inputOverride": "inputTex3d"
+            "default": 32
           },
           "height": {
             "param": "volumeSize",
             "power": 2,
-            "default": 1024,
-            "inputOverride": "inputTex3d"
+            "default": 1024
           }
         },
         "inputs": {
@@ -17517,14 +17515,12 @@
         "viewport": {
           "width": {
             "param": "volumeSize",
-            "default": 32,
-            "inputOverride": "inputTex3d"
+            "default": 32
           },
           "height": {
             "param": "volumeSize",
             "power": 2,
-            "default": 1024,
-            "inputOverride": "inputTex3d"
+            "default": 1024
           }
         },
         "inputs": {
@@ -17543,14 +17539,12 @@
         "viewport": {
           "width": {
             "param": "volumeSize",
-            "default": 32,
-            "inputOverride": "inputTex3d"
+            "default": 32
           },
           "height": {
             "param": "volumeSize",
             "power": 2,
-            "default": 1024,
-            "inputOverride": "inputTex3d"
+            "default": 1024
           }
         },
         "inputs": {
@@ -17571,14 +17565,12 @@
         "viewport": {
           "width": {
             "param": "volumeSize",
-            "default": 32,
-            "inputOverride": "inputTex3d"
+            "default": 32
           },
           "height": {
             "param": "volumeSize",
             "power": 2,
-            "default": 1024,
-            "inputOverride": "inputTex3d"
+            "default": 1024
           }
         },
         "inputs": {
@@ -17758,14 +17750,12 @@
         "viewport": {
           "width": {
             "param": "volumeSize",
-            "default": 64,
-            "inputOverride": "inputTex3d"
+            "default": 64
           },
           "height": {
             "param": "volumeSize",
             "power": 2,
-            "default": 4096,
-            "inputOverride": "inputTex3d"
+            "default": 4096
           }
         },
         "inputs": {
@@ -19660,7 +19650,10 @@
         },
         "format": "rgba8"
       }
-    }
+    },
+    "outputXyz": "global_xyz",
+    "outputVel": "global_vel",
+    "outputRgba": "global_rgba"
   },
   "points/buddhabrot": {
     "state": {},
@@ -19851,6 +19844,9 @@
         "format": "rgba32float"
       }
     },
+    "outputXyz": "global_xyz",
+    "outputVel": "global_vel",
+    "outputRgba": "global_rgba",
     "openCategories": [
       "fractal"
     ],
@@ -20094,6 +20090,9 @@
         "format": "rgba16f"
       }
     },
+    "outputXyz": "global_xyz",
+    "outputVel": "global_vel",
+    "outputRgba": "global_rgba",
     "paramAliases": {
       "fieldTex": "heightTex"
     }
@@ -20308,7 +20307,10 @@
         },
         "format": "rgba8"
       }
-    }
+    },
+    "outputXyz": "global_xyz",
+    "outputVel": "global_vel",
+    "outputRgba": "global_rgba"
   },
   "points/flow": {
     "state": {},
@@ -20486,6 +20488,9 @@
         "format": "rgba8"
       }
     },
+    "outputXyz": "global_xyz",
+    "outputVel": "global_vel",
+    "outputRgba": "global_rgba",
     "paramAliases": {
       "fieldTex": "heightTex"
     }
@@ -20728,7 +20733,10 @@
         },
         "format": "rgba8"
       }
-    }
+    },
+    "outputXyz": "global_xyz",
+    "outputVel": "global_vel",
+    "outputRgba": "global_rgba"
   },
   "points/lenia": {
     "state": {},
@@ -20957,7 +20965,10 @@
         "height": "50%",
         "format": "rgba16f"
       }
-    }
+    },
+    "outputXyz": "global_xyz",
+    "outputVel": "global_vel",
+    "outputRgba": "global_rgba"
   },
   "points/life": {
     "state": {},
@@ -21202,7 +21213,10 @@
         "height": 8,
         "format": "rgba16f"
       }
-    }
+    },
+    "outputXyz": "global_xyz",
+    "outputVel": "global_vel",
+    "outputRgba": "global_rgba"
   },
   "points/physarum": {
     "state": {},
@@ -21438,6 +21452,9 @@
         "format": "rgba16f"
       }
     },
+    "outputXyz": "global_xyz",
+    "outputVel": "global_vel",
+    "outputRgba": "global_rgba",
     "paramAliases": {
       "fieldTex": "heightTex"
     }
@@ -21603,7 +21620,10 @@
         },
         "format": "rgba8"
       }
-    }
+    },
+    "outputXyz": "global_xyz",
+    "outputVel": "global_vel",
+    "outputRgba": "global_rgba"
   },
   "render/loopBegin": {
     "state": {},
@@ -23979,7 +23999,10 @@
         },
         "format": "rgba8"
       }
-    }
+    },
+    "outputXyz": "global_xyz",
+    "outputVel": "global_vel",
+    "outputRgba": "global_rgba"
   },
   "render/pointsRender": {
     "state": {},

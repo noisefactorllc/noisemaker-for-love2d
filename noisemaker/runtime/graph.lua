@@ -84,7 +84,7 @@ function M.validate(graph)
   ids[pass.id]=true
   for _,key in ipairs(M.keys(pass)) do if key~='__nm_order' and not known[key] then return fail('ERR_GRAPH_FIELD','Unknown execution field '..tostring(key),pass.id) end end
   if not graph.programs[pass.program] then return fail('ERR_PROGRAM_NOT_FOUND',tostring(pass.program),pass.id) end
-  local effective=pass.outputs~=nil and pass.outputs or pass.storageTextures
+  local effective=pass.outputs and #M.keys(pass.outputs)>0 and pass.outputs or pass.storageTextures
   if type(effective)~='table' or #M.keys(effective)==0 then return fail('ERR_GRAPH_OUTPUT','Pass has no outputs',pass.id) end
   for _,bindings in ipairs({pass.inputs or {},pass.outputs or {},pass.storageTextures or {}}) do
    for _,key in ipairs(M.keys(bindings)) do if type(bindings[key])~='string' then return fail('ERR_GRAPH_BINDING','Texture binding must be string',pass.id) end end

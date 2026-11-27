@@ -101,6 +101,7 @@ test('compute convention output mapping follows the WebGL2 reference', async () 
   const { convertComputeConvention } = await import('../tools/import-catalog.mjs')
   assert.equal(convertComputeConvention({ type: 'compute', outputs: { color: 'surface' } }), null)
   assert.deepEqual(convertComputeConvention({ type: 'compute', storageTextures: { state: 'stateTex' } }).outputs, { state: 'stateTex' })
+  assert.deepEqual(convertComputeConvention({ type: 'compute', storageTextures: { state: 'stateTex' }, outputs: {} }).outputs, { state: 'stateTex' })
   assert.deepEqual(convertComputeConvention({ type: 'compute', storageTextures: { ignored: 'old' }, outputs: { outputBuffer: 'next', geo: 'normal' } }).outputs, { color: 'next', geo: 'normal' })
 })
 

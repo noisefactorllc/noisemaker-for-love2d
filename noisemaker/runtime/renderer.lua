@@ -58,7 +58,7 @@ end
 local function normalizedOutputs(pass)
  local out=values.object()
  if pass.storageTextures then for _,k in ipairs(keys(pass.storageTextures)) do values.set(out,k,pass.storageTextures[k]) end end
- if pass.outputs then
+ if pass.outputs and #keys(pass.outputs)>0 then
   if pass.storageTextures or pass.outputs.outputBuffer then out=values.object() end
   for _,k in ipairs(keys(pass.outputs)) do values.set(out,k=='outputBuffer' and 'color' or k,pass.outputs[k]) end
  end

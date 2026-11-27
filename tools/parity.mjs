@@ -113,6 +113,8 @@ if(tier==='upstream'||tier==='all'||tier==='supplemental'){
    inputs.push({kind:'texture',effect:texture.effect,uniform:texture.uniform,binding:texture.uniform,asset,assetRoot:'capture',width:texture.width,height:texture.height,format:'rgba8',sha256:sha256(bytes),origin:'bottom-left',flipY:false})
   }
   inputs.push(...meshInputs(authored.meshInputs,id,file))
+  const notes=(authored.midiInputs||[]).flatMap(input=>input.notes)
+  const midi=notes.length?{clockCount:0,notes}:null
   // An authored tiles plan renders the resolution as a grid of tiles (upstream setTileRegion).
   let tiles
   if(authored.tiles!==undefined){
@@ -121,7 +123,7 @@ if(tier==='upstream'||tier==='all'||tier==='supplemental'){
     throw Error(`${file}: invalid tiles plan`)
    tiles={size:[tileWidth,tileHeight],renderScale}
   }
-  cases.push({id,source,effects:declaredEffects,attributionTarget:target||undefined,authored:{schemaVersion:authored.schemaVersion,sourcePath:'parity/upstream/'+file,surface:authored.surface,settleMs:authored.settleMs||0,epsilon:authored.epsilon,requireColorVariation:authored.requireColorVariation===true,textureInputs:(authored.textureInputs||[]).length,meshInputs:(authored.meshInputs||[]).length,tiles:authored.tiles},capture:{...capture,width:authored.resolution[0],height:authored.resolution[1],frames:authored.frames||8,surface:authored.surface||'o0',settleMs:authored.settleMs||0,requireColorVariation:authored.requireColorVariation===true,inputs,...(tiles?{tiles}:{})}})
+  cases.push({id,source,effects:declaredEffects,attributionTarget:target||undefined,authored:{schemaVersion:authored.schemaVersion,sourcePath:'parity/upstream/'+file,surface:authored.surface,settleMs:authored.settleMs||0,epsilon:authored.epsilon,requireColorVariation:authored.requireColorVariation===true,textureInputs:(authored.textureInputs||[]).length,meshInputs:(authored.meshInputs||[]).length,tiles:authored.tiles},capture:{...capture,width:authored.resolution[0],height:authored.resolution[1],frames:authored.frames||8,surface:authored.surface||'o0',settleMs:authored.settleMs||0,requireColorVariation:authored.requireColorVariation===true,inputs,...(midi?{midi}:{}),...(tiles?{tiles}:{})}})
  }
  if(tier==='upstream'||tier==='all')for(const file of readdirSync(join(root,'parity/upstream')).filter(x=>x.endsWith('.json')).sort()){
   const authored=JSON.parse(readFileSync(join(root,'parity/upstream',file)))
