@@ -18,6 +18,49 @@ end
 assert(registry.getEffect('synth.solid') == registry.getEffect('synth/solid'))
 assert(registry.getEffect('synth.solid').globals.alpha.default == 1)
 
+-- Color constructors preserve the supplied components like their array literals, and a
+-- malformed constructor gives S002 with the parameter's default (upstream GAP-086).
+do
+  local compiler = require('noisemaker.compiler.init')
+  local function colorArg(source, op)
+    local result = compiler.validate(compiler.parse(compiler.lex('search synth, filter\n' .. source .. '.write(o0)\nrender(o0)')))
+    local codes = {}
+    for _, d in ipairs(result.diagnostics) do codes[#codes + 1] = d.code end
+    for _, entry in ipairs(result.plans[1].chain) do
+      if entry.op == op then return entry.args.color, codes end
+    end
+    error('missing step ' .. op)
+  end
+  local function same(actual, expected, label)
+    assert(#actual == #expected, label)
+    for i = 1, #expected do assert(actual[i] == expected[i], label) end
+  end
+  for _, case in ipairs({
+    {call = 'solid(color: %s)', op = 'synth.solid', fallback = {0.5, 0.5, 0.5}},
+    {call = 'solid().tint(color: %s)', op = 'filter.tint', fallback = {1, 1, 1}},
+  }) do
+    for _, form in ipairs({'vec3(0.3, 0.2, 0.25)', '[0.3, 0.2, 0.25]'}) do
+      local value, codes = colorArg(case.call:format(form), case.op)
+      same(value, {0.3, 0.2, 0.25}, form); same(codes, {}, form)
+    end
+    for _, form in ipairs({'vec4(0.3, 0.2, 0.25, 0.4)', '[0.3, 0.2, 0.25, 0.4]'}) do
+      local value, codes = colorArg(case.call:format(form), case.op)
+      same(value, {0.3, 0.2, 0.25, 0.4}, form); same(codes, {}, form)
+    end
+    for _, form in ipairs({'vec2(0.3, 0.2)', 'vec3(0.3, 0.2)', 'vec3(0.3, 0.2, 0.25, 0.4)',
+      'vec4(0.3, 0.2, 0.25)', 'vec4(0.3, 0.2, 0.25, 0.4, 1)'}) do
+      local value, codes = colorArg(case.call:format(form), case.op)
+      same(value, case.fallback, form); same(codes, {'S002'}, form)
+    end
+    -- The parser refuses mixed positional and keyword arguments (P007), so a
+    -- kwargs-bearing constructor cannot reach the validator's constructor branch.
+    for _, form in ipairs({'vec3(0.3, 0.2, 0.25, bogus: 1)', 'vec4(0.3, 0.2, 0.25, 0.4, bogus: 1)'}) do
+      assert(not pcall(colorArg, case.call:format(form), case.op), form)
+    end
+  end
+  print('compiler color constructor checks passed')
+end
+
 local passes = {
   {outputs = {color = 'a'}},
   {inputs = {first = 'a', second = 'a'}, outputs = {color = 'b'}},

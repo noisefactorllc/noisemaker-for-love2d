@@ -42,6 +42,7 @@ test('generated definitions preserve every upstream own data value', async () =>
   const actual = JSON.parse(readFileSync(join(generatedRoot, 'definitions.json'), 'utf8'))
   const expected = await sourceDefinitions()
   assert.deepEqual(actual, expected)
+  assert.equal(Object.hasOwn(actual['filter/text'], 'id'), false, 'filter/text must have no own id field')
   assert.deepEqual(actual['synth/remap'].globals.zone0_tex.default, 'none')
 })
 

@@ -179,12 +179,11 @@ local function resolveArg(node, def, effectName, symbols, diagnostic)
     if node then diagnostic('S001', node, 'Invalid ' .. kind .. " reference '" .. tostring(name) .. "' for '" .. def.name .. "'") end
     return def.default and {kind=prefix,name=def.default} or NULL
   end
-  if node and node.type == 'Call' and #(node.args or {}) == (node.name == 'vec2' and 2 or 4) and (
+  if node and node.type == 'Call' and #(node.args or {}) == (node.name == 'vec2' and 2 or node.name == 'vec3' and 3 or 4) and (
     (kind == 'vec2' and node.name == 'vec2') or
-    (kind == 'color' and node.name == 'vec4' and type(def.default) == 'table' and def.default ~= NULL and #def.default == 4)) then
-    -- vec2(x, y) on a vec2 parameter, and vec4(x, y, z, w) on a vec4 parameter, which upstream
-    -- registers as `color` with its four-component default. Any other form, including a wrong
-    -- component count, takes the branches below.
+    (kind == 'color' and node.kwargs == nil and (node.name == 'vec3' or node.name == 'vec4'))) then
+    -- Color constructors preserve the supplied components, independently of the parameter's
+    -- default length. Invalid constructor arity takes the branches below.
     local result = {}
     for i, element in ipairs(node.args) do
       if element.type == 'Number' then result[i] = element.value

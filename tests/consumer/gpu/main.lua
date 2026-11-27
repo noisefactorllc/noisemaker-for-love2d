@@ -331,6 +331,32 @@ local function check()
     assert(math.abs(red-.25)<.02,'Frame '..frame..' accumulated stale within-frame scratch')
   end
   scratchRenderer:release()
+  -- Color constructors must render exactly like their array literals (upstream
+  -- test_color_constructors_render): the validator preserves the supplied components
+  -- and the renderer uploads them unchanged.
+  local function renderColor(call)
+    local graph = assert(nm.compile('search synth, filter\n' .. call .. '.write(o0)\nrender(o0)'))
+    local renderer = assert(nm.newRenderer(graph, {width = 8, height = 8}))
+    local pixels = assert(renderer:render({time = 0})):newImageData()
+    local r, g, b, a = pixels:getPixel(0, 0)
+    pixels:release()
+    renderer:release()
+    return r, g, b, a
+  end
+  for _, effect in ipairs({'solid', 'tint'}) do
+    local call = effect == 'solid' and 'solid(color: %s)'
+      or 'solid(color: [0.2, 0.4, 0.6]).tint(color: %s, alpha: 1, mode: 0)'
+    local arrayR, arrayG, arrayB, arrayA = renderColor(call:format('[0.3, 0.2, 0.25]'))
+    assert(math.abs(arrayR - .3) < 1/255 and math.abs(arrayG - .2) < 1/255
+      and math.abs(arrayB - .25) < 1/255 and arrayA > .99, effect .. ' color array literal rendered unexpected channels')
+    local constructorR, constructorG, constructorB, constructorA = renderColor(call:format('vec3(0.3, 0.2, 0.25)'))
+    assert(constructorR == arrayR and constructorG == arrayG and constructorB == arrayB and constructorA == arrayA,
+      effect .. ' color vec3() rendered differently from its array literal')
+    arrayR, arrayG, arrayB, arrayA = renderColor(call:format('[0.3, 0.2, 0.25, 0.4]'))
+    constructorR, constructorG, constructorB, constructorA = renderColor(call:format('vec4(0.3, 0.2, 0.25, 0.4)'))
+    assert(constructorR == arrayR and constructorG == arrayG and constructorB == arrayB and constructorA == arrayA,
+      effect .. ' color vec4() rendered differently from its array literal')
+  end
   local originalNew=viewer.new
   local originalRead=love.filesystem.read
   local capturedSession
