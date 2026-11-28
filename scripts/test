@@ -21,7 +21,7 @@ if [ -n "${NM_CHANGED_FILES:-}" ]; then
   done
 fi
 if [ "$focused" -eq 1 ]; then
-  node --test tests/catalog.test.mjs tests/boundary.test.mjs tests/reference.test.mjs
+  node --test tests/catalog.test.mjs tests/boundary.test.mjs tests/reference.test.mjs tests/near-policy.test.mjs
   node tools/import-catalog.mjs --check
   node tools/import-palettes.mjs --check
   node tools/import-shaders.mjs --check
