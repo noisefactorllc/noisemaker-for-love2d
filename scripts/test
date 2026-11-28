@@ -14,7 +14,8 @@ if [ -n "${NM_CHANGED_FILES:-}" ]; then
   for changed in $NM_CHANGED_FILES; do
     case "$changed" in
       parity/reference.json|parity/near-policy.json|parity/corpus.json|\
-      noisemaker/catalog/*|noisemaker/shaders/source/*) ;;
+      noisemaker/catalog/*|noisemaker/shaders/source/*|scripts/test|\
+      tools/check-frontend.mjs) ;;
       *) focused=0 ;;
     esac
   done
@@ -25,6 +26,16 @@ if [ "$focused" -eq 1 ]; then
   node tools/import-palettes.mjs --check
   node tools/import-shaders.mjs --check
   node tools/import-corpus.mjs --check
+  # The frontend differential exercises the reference lock and tools/check-frontend.mjs.
+  if [ -n "${LOVE_BIN:-}" ]; then
+    LOVE="$LOVE_BIN"
+  elif command -v love >/dev/null 2>&1; then
+    LOVE=$(command -v love)
+  else
+    echo 'scripts/test: LÖVE is required for the frontend differential check; set LOVE_BIN.' >&2
+    exit 1
+  fi
+  LOVE_BIN="$LOVE" node tools/check-frontend.mjs
   exit 0
 fi
 node --test tests/*.test.mjs

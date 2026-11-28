@@ -43,6 +43,8 @@ for (const [name, source, options] of [
   ['if-block-let', 'search synth\nif (1) {\n  // c\n  let x = 2\n  noise(seed: x).write(o0);;\n}\nrender(o0)'],
   ['let-after-use', 'search synth\nnoise(seed: s).write(o0)\n// note\nlet s = 3\nrender(o0)'],
   ['control-flow', 'search synth\nreturn foo\nbreak\ncontinue'],
+  ['proto-ident-args', 'search synth\nlet toString = 2\nlet valueOf = 3\nlet constructor = 4\nlet hasOwnProperty = 5\nlet __proto__ = 6\nnoise(scaleX: toString, scaleY: valueOf).write(o0)\nrender(o0)'],
+  ['proto-ident-member', 'search synth\nnoise().write(o0)\nif (oscKind.toString) { noise().write(o1) }\nrender(o0)'],
 ]) cases.push({ name, source, options })
 const expressions = [
   ['3', {}], ['Math.sin(time) * 4 + 5', {time: 0.25}], ['seed + 1', {seed: 9}],
